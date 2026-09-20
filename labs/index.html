@@ -2,34 +2,571 @@
 <html lang="ca">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LABS // JOBOSU</title>
-    <link rel="stylesheet" href="../css/style.css">
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<meta
+    name="description"
+    content="JOBOSU LABS — experiments, tools and technology built in public."
+>
+
+<title>LABS // JOBOSU</title>
+
+<link
+    rel="stylesheet"
+    href="../css/style.css"
+>
+
+<style>
+
+/* ==================================================
+   LABS
+================================================== */
+
+.lab-header {
+    margin-bottom: 70px;
+}
+
+.lab-header h1 {
+    margin-bottom: 14px;
+}
+
+.lab-intro {
+    max-width: 680px;
+    line-height: 1.7;
+    opacity: .75;
+}
+
+
+/* ==================================================
+   LAB SECTIONS
+================================================== */
+
+.lab-section {
+    margin: 70px 0;
+}
+
+.lab-number {
+    color: #66ff66;
+    font-size: 13px;
+    letter-spacing: 2px;
+}
+
+.lab-title {
+    margin-top: 8px;
+    margin-bottom: 30px;
+    font-size: 22px;
+}
+
+
+/* ==================================================
+   EXPERIMENT
+================================================== */
+
+.experiment {
+
+    max-width: 720px;
+
+    padding: 28px;
+
+    border: 1px solid #333;
+
+    background: #050505;
+}
+
+.experiment-live {
+    border-color: #315c31;
+}
+
+.exp-status {
+
+    margin-bottom: 18px;
+
+    color: #66ff66;
+
+    font-size: 12px;
+
+    letter-spacing: 2px;
+}
+
+.exp-status.planned {
+    color: #888;
+}
+
+.exp-id {
+
+    margin-bottom: 8px;
+
+    font-size: 12px;
+
+    opacity: .55;
+
+    letter-spacing: 2px;
+}
+
+.experiment h3 {
+
+    margin:
+        0 0 20px 0;
+
+    font-size: 24px;
+}
+
+.experiment p {
+
+    max-width: 600px;
+
+    line-height: 1.7;
+
+    opacity: .78;
+}
+
+.tech {
+
+    margin-top: 22px;
+
+    color: #aaa;
+
+    font-size: 13px;
+
+    line-height: 1.8;
+}
+
+
+/* ==================================================
+   EXPERIMENT DATA
+================================================== */
+
+.exp-data {
+
+    display: flex;
+
+    flex-wrap: wrap;
+
+    gap: 28px;
+
+    margin-top: 26px;
+
+    padding-top: 20px;
+
+    border-top: 1px solid #222;
+}
+
+.data-item span {
+
+    display: block;
+
+    margin-bottom: 5px;
+
+    font-size: 10px;
+
+    color: #777;
+
+    letter-spacing: 1px;
+}
+
+.data-item strong {
+
+    font-size: 13px;
+
+    font-weight: normal;
+
+    color: #ddd;
+}
+
+
+/* ==================================================
+   BUTTON
+================================================== */
+
+.run {
+
+    display: inline-block;
+
+    margin-top: 30px;
+
+    padding: 12px 18px;
+
+    border: 1px solid #66ff66;
+
+    color: #66ff66;
+
+    text-decoration: none;
+
+    transition:
+        background .2s,
+        color .2s;
+}
+
+.run:hover {
+
+    background: #66ff66;
+
+    color: #000;
+}
+
+
+/* ==================================================
+   PLANNED
+================================================== */
+
+.planned-experiment {
+
+    opacity: .62;
+
+    border-style: dashed;
+}
+
+
+/* ==================================================
+   FOOT
+================================================== */
+
+.lab-footer {
+
+    margin-top: 100px;
+
+    padding-top: 30px;
+
+    border-top: 1px solid #222;
+}
+
+.lab-footer a {
+
+    color: #66ff66;
+
+    text-decoration: none;
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 600px) {
+
+    .lab-header {
+        margin-bottom: 50px;
+    }
+
+    .lab-section {
+        margin: 55px 0;
+    }
+
+    .experiment {
+        padding: 22px;
+    }
+
+    .experiment h3 {
+        font-size: 20px;
+    }
+
+}
+
+</style>
+
 </head>
+
 
 <body>
 
-<header>
-    <p><a href="../index.html">← JOBOSU // LAB</a></p>
-    <h1>LABS</h1>
-    <p>Areas of technological experimentation.</p>
+<main>
+
+
+<!-- =================================================
+     HEADER
+================================================== -->
+
+<header class="lab-header">
+
+    <div class="lab-number">
+        JOBOSU // LABS
+    </div>
+
+    <h1>
+        PUBLIC TECHNOLOGY LAB
+    </h1>
+
+    <p class="lab-intro">
+        Experiments, tools and systems built,
+        tested and documented in public.
+        The browser is the laboratory.
+    </p>
+
 </header>
 
-<section>
-    <div class="lab">AI</div>
-    <div class="lab">CYBERSECURITY</div>
-    <div class="lab">NETWORKS</div>
-    <div class="lab">DEVELOPMENT</div>
-    <div class="lab">HARDWARE</div>
-    <div class="lab">FINANCE</div>
-    <div class="lab">FRONTIER</div>
+
+
+<!-- =================================================
+     WEB TECHNOLOGIES
+================================================== -->
+
+<section class="lab-section">
+
+    <div class="lab-number">
+        01 / WEB TECHNOLOGIES
+    </div>
+
+    <h2 class="lab-title">
+        BROWSER EXPERIMENTS
+    </h2>
+
+
+    <article class="experiment experiment-live">
+
+        <div class="exp-status">
+            ● LIVE
+        </div>
+
+        <div class="exp-id">
+            EXP 001
+        </div>
+
+        <h3>
+            REALTIME WEBGL FOREST
+        </h3>
+
+        <p>
+            A realtime 3D forest rendered entirely
+            inside the browser.
+        </p>
+
+        <p>
+            Move through the environment using scroll
+            while lighting, atmosphere, vegetation and
+            depth change around the camera.
+        </p>
+
+        <div class="tech">
+            THREE.JS · WEBGL · GLTF · JAVASCRIPT
+        </div>
+
+
+        <div class="exp-data">
+
+            <div class="data-item">
+
+                <span>
+                    RENDER
+                </span>
+
+                <strong>
+                    REALTIME
+                </strong>
+
+            </div>
+
+
+            <div class="data-item">
+
+                <span>
+                    VIDEO
+                </span>
+
+                <strong>
+                    NONE
+                </strong>
+
+            </div>
+
+
+            <div class="data-item">
+
+                <span>
+                    EXECUTION
+                </span>
+
+                <strong>
+                    BROWSER
+                </strong>
+
+            </div>
+
+
+            <div class="data-item">
+
+                <span>
+                    ASSETS
+                </span>
+
+                <strong>
+                    ~2 MB
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <a
+            class="run"
+            href="../experiments/001-webgl-forest/"
+        >
+            [ RUN EXPERIMENT ]
+        </a>
+
+    </article>
+
 </section>
 
-<footer>
-    // jobosu lab<br>
-    // evolving since 2026
+
+
+<!-- =================================================
+     AI
+================================================== -->
+
+<section class="lab-section">
+
+    <div class="lab-number">
+        02 / ARTIFICIAL INTELLIGENCE
+    </div>
+
+    <h2 class="lab-title">
+        AI SYSTEMS
+    </h2>
+
+
+    <article class="experiment planned-experiment">
+
+        <div class="exp-status planned">
+            ○ PLANNED
+        </div>
+
+        <div class="exp-id">
+            EXP 002
+        </div>
+
+        <h3>
+            AI ECOSYSTEM MAP
+        </h3>
+
+        <p>
+            An interactive map of artificial
+            intelligence companies, models,
+            platforms and technologies around
+            the world.
+        </p>
+
+        <div class="tech">
+            DATA · APIs · VISUALIZATION · AI
+        </div>
+
+    </article>
+
+</section>
+
+
+
+<!-- =================================================
+     NETWORKS
+================================================== -->
+
+<section class="lab-section">
+
+    <div class="lab-number">
+        03 / NETWORKS
+    </div>
+
+    <h2 class="lab-title">
+        CONNECTED SYSTEMS
+    </h2>
+
+
+    <article class="experiment planned-experiment">
+
+        <div class="exp-status planned">
+            ○ PLANNED
+        </div>
+
+        <div class="exp-id">
+            NODE 01
+        </div>
+
+        <h3>
+            PUBLIC NETWORK NODE
+        </h3>
+
+        <p>
+            A physical computer connected to the
+            laboratory and exposed through a safe
+            public realtime interface.
+        </p>
+
+        <div class="tech">
+            NETWORKS · API · SERVER · TELEMETRY
+        </div>
+
+    </article>
+
+</section>
+
+
+
+<!-- =================================================
+     HARDWARE
+================================================== -->
+
+<section class="lab-section">
+
+    <div class="lab-number">
+        04 / HARDWARE
+    </div>
+
+    <h2 class="lab-title">
+        PHYSICAL COMPUTING
+    </h2>
+
+
+    <article class="experiment planned-experiment">
+
+        <div class="exp-status planned">
+            ○ PLANNED
+        </div>
+
+        <div class="exp-id">
+            EXP 003
+        </div>
+
+        <h3>
+            PHYSICAL WEB INTERFACE
+        </h3>
+
+        <p>
+            A browser interface capable of
+            interacting with a physical device
+            through the network.
+        </p>
+
+        <div class="tech">
+            WEB · ESP32 · SENSORS · API
+        </div>
+
+    </article>
+
+</section>
+
+
+
+<!-- =================================================
+     FOOTER
+================================================== -->
+
+<footer class="lab-footer">
+
+    <a href="../">
+        ← JOBOSU
+    </a>
+
 </footer>
 
+
+</main>
+
 </body>
+
 </html>
