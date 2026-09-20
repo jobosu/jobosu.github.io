@@ -110,7 +110,7 @@ canvas {
     </div>
 
     <div id="phase">
-        FOREST // 01
+        FOREST // COLD
     </div>
 
     <div class="scroll">
@@ -119,16 +119,15 @@ canvas {
 
 </div>
 
-
 <script type="module">
 
 import * as THREE from
 "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 
 
-/* ---------------------------------------------
+/* =================================================
    SCENE
---------------------------------------------- */
+================================================= */
 
 const scene = new THREE.Scene();
 
@@ -142,9 +141,9 @@ scene.fog =
     );
 
 
-/* ---------------------------------------------
+/* =================================================
    CAMERA
---------------------------------------------- */
+================================================= */
 
 const camera =
     new THREE.PerspectiveCamera(
@@ -154,12 +153,16 @@ const camera =
         400
     );
 
-camera.position.set(0, 4.5, 20);
+camera.position.set(
+    0,
+    4.5,
+    20
+);
 
 
-/* ---------------------------------------------
+/* =================================================
    RENDERER
---------------------------------------------- */
+================================================= */
 
 const renderer =
     new THREE.WebGLRenderer({
@@ -187,16 +190,17 @@ renderer.outputColorSpace =
 renderer.toneMapping =
     THREE.ACESFilmicToneMapping;
 
-renderer.toneMappingExposure = 0.75;
+renderer.toneMappingExposure =
+    0.7;
 
 document
     .getElementById("scene")
     .appendChild(renderer.domElement);
 
 
-/* ---------------------------------------------
+/* =================================================
    LIGHT
---------------------------------------------- */
+================================================= */
 
 const hemisphere =
     new THREE.HemisphereLight(
@@ -230,9 +234,157 @@ sun.shadow.mapSize.set(
 scene.add(sun);
 
 
-/* ---------------------------------------------
+/* =================================================
+   VISIBLE SUN
+================================================= */
+
+const sunGeometry =
+    new THREE.SphereGeometry(
+        2.8,
+        32,
+        32
+    );
+
+const sunMaterial =
+    new THREE.MeshBasicMaterial({
+        color: 0xffc27a,
+        transparent: true,
+        opacity: 0.15
+    });
+
+const sunDisc =
+    new THREE.Mesh(
+        sunGeometry,
+        sunMaterial
+    );
+
+sunDisc.position.set(
+    -18,
+    18,
+    -150
+);
+
+scene.add(sunDisc);
+
+
+/* =================================================
+   SUN GLOW
+================================================= */
+
+const glowGeometry =
+    new THREE.SphereGeometry(
+        6,
+        32,
+        32
+    );
+
+const glowMaterial =
+    new THREE.MeshBasicMaterial({
+        color: 0xff9a55,
+        transparent: true,
+        opacity: 0.02,
+        depthWrite: false,
+        blending: THREE.AdditiveBlending
+    });
+
+const sunGlow =
+    new THREE.Mesh(
+        glowGeometry,
+        glowMaterial
+    );
+
+sunGlow.position.copy(
+    sunDisc.position
+);
+
+scene.add(sunGlow);
+
+
+/* =================================================
+   LIGHT SHAFTS
+================================================= */
+
+const lightShafts = [];
+
+
+function createLightShaft(
+    x,
+    y,
+    z,
+    rotation,
+    scale
+) {
+
+    const geometry =
+        new THREE.ConeGeometry(
+            3 * scale,
+            35 * scale,
+            32,
+            1,
+            true
+        );
+
+    const material =
+        new THREE.MeshBasicMaterial({
+            color: 0xffc98b,
+            transparent: true,
+            opacity: 0.02,
+            depthWrite: false,
+            side: THREE.DoubleSide,
+            blending: THREE.AdditiveBlending
+        });
+
+    const shaft =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+    shaft.position.set(
+        x,
+        y,
+        z
+    );
+
+    shaft.rotation.z =
+        rotation;
+
+    scene.add(shaft);
+
+    lightShafts.push(
+        shaft
+    );
+}
+
+
+createLightShaft(
+    -12,
+    15,
+    -55,
+    -0.35,
+    1.2
+);
+
+createLightShaft(
+    8,
+    17,
+    -85,
+    0.28,
+    1.5
+);
+
+createLightShaft(
+    -5,
+    14,
+    -120,
+    -0.20,
+    1.8
+);
+
+
+/* =================================================
    TERRAIN
---------------------------------------------- */
+================================================= */
 
 function terrainHeight(x, z) {
 
@@ -252,26 +404,28 @@ const terrainGeometry =
         180
     );
 
-
 terrainGeometry.rotateX(
     -Math.PI / 2
 );
 
 
-const position =
+const terrainPosition =
     terrainGeometry.attributes.position;
 
 
 for (
     let i = 0;
-    i < position.count;
+    i < terrainPosition.count;
     i++
 ) {
 
-    const x = position.getX(i);
-    const z = position.getZ(i);
+    const x =
+        terrainPosition.getX(i);
 
-    position.setY(
+    const z =
+        terrainPosition.getZ(i);
+
+    terrainPosition.setY(
         i,
         terrainHeight(x, z)
     );
@@ -294,7 +448,6 @@ const terrain =
         terrainMaterial
     );
 
-
 terrain.position.z = -105;
 
 terrain.receiveShadow = true;
@@ -302,9 +455,9 @@ terrain.receiveShadow = true;
 scene.add(terrain);
 
 
-/* ---------------------------------------------
+/* =================================================
    TREE MATERIALS
---------------------------------------------- */
+================================================= */
 
 const trunkMaterial =
     new THREE.MeshStandardMaterial({
@@ -316,7 +469,7 @@ const trunkMaterial =
 const foliageMaterials = [
 
     new THREE.MeshStandardMaterial({
-        color: 0x0b1c12,
+        color: 0x09170f,
         roughness: 1
     }),
 
@@ -333,9 +486,9 @@ const foliageMaterials = [
 ];
 
 
-/* ---------------------------------------------
-   TREE
---------------------------------------------- */
+/* =================================================
+   TREE GENERATOR
+================================================= */
 
 function createTree(
     x,
@@ -446,9 +599,9 @@ function createTree(
 }
 
 
-/* ---------------------------------------------
+/* =================================================
    FOREST
---------------------------------------------- */
+================================================= */
 
 for (
     let i = 0;
@@ -461,11 +614,6 @@ for (
             ? 1
             : -1;
 
-
-    /*
-       Keep the centre relatively clear
-       so the camera has a path.
-    */
 
     const x =
         side *
@@ -495,9 +643,9 @@ for (
 }
 
 
-/* ---------------------------------------------
-   FOREGROUND TREES
---------------------------------------------- */
+/* =================================================
+   NEAR TREES
+================================================= */
 
 for (
     let i = 0;
@@ -531,9 +679,9 @@ for (
 }
 
 
-/* ---------------------------------------------
-   MIST LAYERS
---------------------------------------------- */
+/* =================================================
+   MIST
+================================================= */
 
 const mistLayers = [];
 
@@ -615,9 +763,9 @@ for (
 }
 
 
-/* ---------------------------------------------
+/* =================================================
    AIR PARTICLES
---------------------------------------------- */
+================================================= */
 
 const particleCount = 900;
 
@@ -695,9 +843,9 @@ const air =
 scene.add(air);
 
 
-/* ---------------------------------------------
+/* =================================================
    POINTER
---------------------------------------------- */
+================================================= */
 
 let pointerX = 0;
 let pointerY = 0;
@@ -720,9 +868,9 @@ addEventListener(
 );
 
 
-/* ---------------------------------------------
+/* =================================================
    SCROLL
---------------------------------------------- */
+================================================= */
 
 let scrollProgress = 0;
 
@@ -753,11 +901,6 @@ function updateScroll() {
             "%";
 
 
-    /*
-       Change label according
-       to position in forest.
-    */
-
     const phase =
         document.getElementById(
             "phase"
@@ -771,14 +914,18 @@ function updateScroll() {
         phase.textContent =
             "FOREST // COLD";
 
-    } else if (
+    }
+
+    else if (
         scrollProgress < 0.70
     ) {
 
         phase.textContent =
             "FOREST // MIST";
 
-    } else {
+    }
+
+    else {
 
         phase.textContent =
             "FOREST // LIGHT";
@@ -793,9 +940,9 @@ addEventListener(
 );
 
 
-/* ---------------------------------------------
-   COLOURS
---------------------------------------------- */
+/* =================================================
+   ATMOSPHERE COLOURS
+================================================= */
 
 const coldFog =
     new THREE.Color(
@@ -821,9 +968,9 @@ const warmSky =
     );
 
 
-/* ---------------------------------------------
+/* =================================================
    ANIMATION
---------------------------------------------- */
+================================================= */
 
 const clock =
     new THREE.Clock();
@@ -840,9 +987,7 @@ function animate() {
         clock.getElapsedTime();
 
 
-    /*
-       Camera journey
-    */
+    /* CAMERA JOURNEY */
 
     const targetZ =
         20 -
@@ -856,9 +1001,7 @@ function animate() {
         ) * 0.035;
 
 
-    /*
-       Pointer parallax
-    */
+    /* POINTER PARALLAX */
 
     const targetX =
         pointerX * 2.3;
@@ -891,9 +1034,7 @@ function animate() {
         ) * 0.035;
 
 
-    /*
-       Slight walking movement
-    */
+    /* SUBTLE CAMERA BREATHING */
 
     camera.position.y +=
         Math.sin(
@@ -901,9 +1042,7 @@ function animate() {
         ) * 0.0015;
 
 
-    /*
-       Moving mist
-    */
+    /* MOVING MIST */
 
     mistLayers.forEach(
         (mist, index) => {
@@ -921,9 +1060,27 @@ function animate() {
                     4 +
                     index * 0.15
                 );
+
+
+            mist.material.opacity =
+                Math.max(
+                    0.005,
+
+                    0.018 +
+
+                    Math.sin(
+                        time * 0.22 +
+                        index * 0.7
+                    ) * 0.008 +
+
+                    scrollProgress *
+                    0.012
+                );
         }
     );
 
+
+    /* AIR MOVEMENT */
 
     air.position.x =
         Math.sin(
@@ -931,9 +1088,13 @@ function animate() {
         ) * 2;
 
 
-    /*
-       Scroll controls atmosphere
-    */
+    air.position.y =
+        Math.sin(
+            time * 0.12
+        ) * 0.25;
+
+
+    /* ATMOSPHERE TRANSITION */
 
     scene.fog.color
         .lerpColors(
@@ -950,6 +1111,8 @@ function animate() {
             scrollProgress
         );
 
+
+    /* MAIN LIGHT */
 
     sun.color.setHSL(
         0.08 -
@@ -974,14 +1137,64 @@ function animate() {
         scrollProgress * 18;
 
 
+    /* VISIBLE SUN */
+
+    sunDisc.material.opacity =
+        0.10 +
+        scrollProgress * 0.90;
+
+
+    sunGlow.material.opacity =
+        0.02 +
+        scrollProgress * 0.16;
+
+
+    sunGlow.scale.setScalar(
+        1 +
+        Math.sin(
+            time * 0.4
+        ) * 0.08
+    );
+
+
+    /* LIGHT SHAFTS */
+
+    lightShafts.forEach(
+        (shaft, index) => {
+
+            shaft.material.opacity =
+                Math.max(
+                    0.004,
+
+                    0.012 +
+
+                    scrollProgress *
+                    0.045 +
+
+                    Math.sin(
+                        time * 0.35 +
+                        index
+                    ) * 0.006
+                );
+
+
+            shaft.rotation.y =
+                Math.sin(
+                    time * 0.08 +
+                    index
+                ) * 0.08;
+        }
+    );
+
+
+    /* EXPOSURE */
+
     renderer.toneMappingExposure =
         0.65 +
         scrollProgress * 0.55;
 
 
-    /*
-       Look further into forest
-    */
+    /* CAMERA DIRECTION */
 
     camera.lookAt(
         camera.position.x * 0.15,
@@ -998,12 +1211,13 @@ function animate() {
 
 
 updateScroll();
+
 animate();
 
 
-/* ---------------------------------------------
-   RESIZE
---------------------------------------------- */
+/* =================================================
+   RESPONSIVE
+================================================= */
 
 addEventListener(
     "resize",
