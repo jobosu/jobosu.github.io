@@ -1,73 +1,2146 @@
 <!doctype html>
 <html lang="ca">
+
 <head>
+
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="JOBOSU EXP 001 — realtime WebGL forest built with Three.js.">
+
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+>
+
+<meta
+    name="description"
+    content="JOBOSU EXP 001 — realtime WebGL forest built with Three.js."
+>
+
 <title>EXP 001 — WebGL Forest // JOBOSU</title>
+
+
 <style>
-*{box-sizing:border-box} html,body{margin:0;background:#020504;color:#eaf2ec;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace} body{height:650vh;overflow-x:hidden} #stage{position:fixed;inset:0;background:#020504} canvas{display:block;width:100%;height:100%}
-#ui{position:fixed;inset:0;z-index:5;pointer-events:none;padding:clamp(20px,4vw,44px);text-shadow:0 1px 10px #000} .kicker{font-size:12px;letter-spacing:.24em}.live{margin-top:10px;color:#83ff9d;font-size:11px;letter-spacing:.12em}.hint{position:absolute;right:clamp(20px,4vw,44px);bottom:clamp(20px,4vw,40px);font-size:10px;letter-spacing:.2em;opacity:.65}.phase{position:absolute;left:clamp(20px,4vw,44px);bottom:clamp(20px,4vw,40px);font-size:10px;letter-spacing:.2em;opacity:.55} #bar{position:fixed;z-index:7;top:0;left:0;width:0;height:2px;background:#7dff96;box-shadow:0 0 12px #7dff96} #loader{position:fixed;z-index:20;inset:0;display:grid;place-items:center;background:#020504;transition:opacity .8s ease}.loadbox{width:min(340px,75vw)}.loadtitle{font-size:12px;letter-spacing:.2em;margin-bottom:14px}.track{height:1px;background:#233029}.fill{height:100%;width:0;background:#7dff96;transition:width .2s}.loadpct{font-size:10px;opacity:.55;margin-top:10px}.credit{position:fixed;z-index:6;right:12px;top:12px;font-size:8px;opacity:.25;pointer-events:none}
-@media(max-width:650px){.credit{display:none}.kicker{font-size:10px}.live{font-size:9px}}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    background: #020504;
+    color: #eaf2ec;
+
+    font-family:
+        ui-monospace,
+        SFMono-Regular,
+        Menlo,
+        Consolas,
+        monospace;
+}
+
+body {
+    height: 650vh;
+    overflow-x: hidden;
+}
+
+
+/* ==================================================
+   WEBGL
+================================================== */
+
+#stage {
+    position: fixed;
+    inset: 0;
+    background: #020504;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+
+/* ==================================================
+   INTERFACE
+================================================== */
+
+#ui {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+
+    pointer-events: none;
+
+    padding:
+        clamp(20px, 4vw, 44px);
+
+    text-shadow:
+        0 1px 10px #000;
+}
+
+.kicker {
+    font-size: 12px;
+    letter-spacing: .24em;
+}
+
+.live {
+    margin-top: 10px;
+
+    color: #83ff9d;
+
+    font-size: 11px;
+    letter-spacing: .12em;
+}
+
+.hint {
+    position: absolute;
+
+    right:
+        clamp(20px, 4vw, 44px);
+
+    bottom:
+        clamp(20px, 4vw, 40px);
+
+    font-size: 10px;
+    letter-spacing: .2em;
+
+    opacity: .65;
+}
+
+.phase {
+    position: absolute;
+
+    left:
+        clamp(20px, 4vw, 44px);
+
+    bottom:
+        clamp(20px, 4vw, 40px);
+
+    font-size: 10px;
+    letter-spacing: .2em;
+
+    opacity: .55;
+}
+
+
+/* ==================================================
+   PROGRESS
+================================================== */
+
+#bar {
+    position: fixed;
+
+    z-index: 7;
+
+    top: 0;
+    left: 0;
+
+    width: 0;
+    height: 2px;
+
+    background: #7dff96;
+
+    box-shadow:
+        0 0 12px #7dff96;
+}
+
+
+/* ==================================================
+   LOADER
+================================================== */
+
+#loader {
+
+    position: fixed;
+
+    z-index: 20;
+
+    inset: 0;
+
+    display: grid;
+
+    place-items: center;
+
+    background: #020504;
+
+    transition:
+        opacity .8s ease;
+}
+
+.loadbox {
+    width:
+        min(380px, 78vw);
+}
+
+.loadtitle {
+    font-size: 12px;
+
+    letter-spacing: .2em;
+
+    margin-bottom: 14px;
+}
+
+.track {
+
+    height: 1px;
+
+    background: #233029;
+}
+
+.fill {
+
+    height: 100%;
+
+    width: 0;
+
+    background: #7dff96;
+
+    transition:
+        width .2s;
+}
+
+.loadpct {
+
+    font-size: 10px;
+
+    opacity: .55;
+
+    margin-top: 10px;
+}
+
+#error {
+
+    display: none;
+
+    margin-top: 24px;
+
+    color: #ff8a8a;
+
+    font-size: 10px;
+
+    line-height: 1.7;
+
+    letter-spacing: .08em;
+}
+
+
+/* ==================================================
+   CREDIT
+================================================== */
+
+.credit {
+
+    position: fixed;
+
+    z-index: 6;
+
+    right: 12px;
+    top: 12px;
+
+    font-size: 8px;
+
+    opacity: .25;
+
+    pointer-events: none;
+}
+
+
+@media (max-width: 650px) {
+
+    .credit {
+        display: none;
+    }
+
+    .kicker {
+        font-size: 10px;
+    }
+
+    .live {
+        font-size: 9px;
+    }
+
+}
+
 </style>
-</head>
-<body>
-<div id="stage"></div><div id="bar"></div>
-<div id="ui"><div class="kicker">JOBOSU // EXP 001</div><div class="live">● REALTIME WEBGL ENVIRONMENT</div><div class="phase" id="phase">FOREST // ENTRY</div><div class="hint">SCROLL ↓</div></div>
-<div id="loader"><div class="loadbox"><div class="loadtitle">LOADING FOREST</div><div class="track"><div class="fill" id="fill"></div></div><div class="loadpct" id="loadpct">0%</div></div></div>
-<div class="credit">3D ASSETS: QUATERNIUS · CC0</div>
-<script type="module">
-import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js';
-import {GLTFLoader} from 'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/loaders/GLTFLoader.js';
 
-const mobile=matchMedia('(max-width:700px)').matches;
-const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
-const scene=new THREE.Scene();
-const cold=new THREE.Color(0x07100d), warm=new THREE.Color(0x2b1b11);
-scene.background=cold.clone(); scene.fog=new THREE.FogExp2(cold.clone(),mobile?.032:.027);
-const camera=new THREE.PerspectiveCamera(mobile?66:61,innerWidth/innerHeight,.1,260); camera.position.set(0,3.2,16);
-const renderer=new THREE.WebGLRenderer({antialias:!mobile,powerPreference:'high-performance'}); renderer.setSize(innerWidth,innerHeight); renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.25:1.6)); renderer.outputColorSpace=THREE.SRGBColorSpace; renderer.toneMapping=THREE.ACESFilmicToneMapping; renderer.toneMappingExposure=.72; renderer.shadowMap.enabled=!mobile; renderer.shadowMap.type=THREE.PCFSoftShadowMap; document.querySelector('#stage').appendChild(renderer.domElement);
-scene.add(new THREE.HemisphereLight(0x8aa49a,0x101008,1.15));
-const sun=new THREE.DirectionalLight(0xffc07a,2.0); sun.position.set(-18,24,-35); if(!mobile){sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);sun.shadow.camera.left=-18;sun.shadow.camera.right=18;sun.shadow.camera.top=22;sun.shadow.camera.bottom=-10} scene.add(sun);
 
-function h(x,z){return Math.sin(x*.12)*.32+Math.sin(z*.055)*.48+Math.sin((x+z)*.038)*.25}
-const tg=new THREE.PlaneGeometry(72,230,34,110); tg.rotateX(-Math.PI/2); const pa=tg.attributes.position; for(let i=0;i<pa.count;i++){const x=pa.getX(i),z=pa.getZ(i);pa.setY(i,h(x,z))} tg.computeVertexNormals(); const terrain=new THREE.Mesh(tg,new THREE.MeshStandardMaterial({color:0x10160e,roughness:1})); terrain.position.z=-94; terrain.receiveShadow=!mobile; scene.add(terrain);
+<!-- =================================================
+     THREE.JS IMPORT MAP
+================================================== -->
 
-const loader=new GLTFLoader(), manager=THREE.DefaultLoadingManager; const fill=document.querySelector('#fill'),pct=document.querySelector('#loadpct'); manager.onProgress=(u,l,t)=>{const p=Math.round(l/t*100);fill.style.width=p+'%';pct.textContent=p+'%'};
-const load=url=>new Promise((res,rej)=>loader.load(url,g=>res(g.scene),undefined,rej));
-const A='./assets/';
-const [pine1,pine3,pine5,fern,grass,rock1,rock2]=await Promise.all(['Pine_1.gltf','Pine_3.gltf','Pine_5.gltf','Fern_1.gltf','Grass_Common_Short.gltf','Rock_Medium_1.gltf','Rock_Medium_2.gltf'].map(x=>load(A+x)));
-[pine1,pine3,pine5].forEach(root=>root.traverse(o=>{if(o.isMesh){o.castShadow=!mobile;o.receiveShadow=!mobile;if(o.material){o.material.alphaTest=.35;o.material.side=THREE.DoubleSide}}}));
-[fern,grass].forEach(root=>root.traverse(o=>{if(o.isMesh){o.castShadow=false;o.receiveShadow=false;if(o.material){o.material.alphaTest=.4;o.material.side=THREE.DoubleSide}}}));
-[rock1,rock2].forEach(root=>root.traverse(o=>{if(o.isMesh){o.castShadow=!mobile;o.receiveShadow=!mobile}}));
+<script type="importmap">
 
-function seeded(n){const x=Math.sin(n*9283.17)*43758.5453;return x-Math.floor(x)}
-const treeModels=[pine1,pine3,pine5], treeCount=mobile?62:92;
-for(let i=0;i<treeCount;i++){const r1=seeded(i+1),r2=seeded(i+101),r3=seeded(i+301); const side=r1>.5?1:-1; let x=side*(4.3+r2*24); const z=10-r3*205; // clearings for text
- if((z<-47&&z>-72)||(z<-120&&z>-143)) x*=1.28;
- const t=treeModels[i%3].clone(true),s=.72+seeded(i+501)*1.15; t.scale.setScalar(s);t.rotation.y=seeded(i+701)*Math.PI*2;t.rotation.z=(seeded(i+801)-.5)*.035;t.position.set(x,h(x,z+94),z);scene.add(t)}
-const plantCount=mobile?45:90; for(let i=0;i<plantCount;i++){const z=8-seeded(i+900)*205,x=(seeded(i+1000)-.5)*32;if(Math.abs(x)<2.2)continue;const p=(i%3===0?fern:grass).clone(true),s=.45+seeded(i+1100)*.75;p.scale.setScalar(s);p.rotation.y=seeded(i+1200)*6.28;p.position.set(x,h(x,z+94)+.03,z);scene.add(p)}
-for(let i=0;i<(mobile?14:24);i++){const z=4-seeded(i+1300)*200,x=(seeded(i+1400)-.5)*28;if(Math.abs(x)<2.8)continue;const r=(i%2?rock1:rock2).clone(true),s=.5+seeded(i+1500)*1.4;r.scale.setScalar(s);r.rotation.y=seeded(i+1600)*6.28;r.position.set(x,h(x,z+94),z);scene.add(r)}
+{
+    "imports": {
 
-// 3D text sprites: depth-tested, so trunks and foliage can pass in front.
-function textSprite(lines,z,y=5.2,scale=1){const c=document.createElement('canvas');c.width=1400;c.height=420;const x=c.getContext('2d');x.clearRect(0,0,c.width,c.height);x.textAlign='center';x.textBaseline='middle';x.font='600 68px monospace';x.letterSpacing='5px';x.fillStyle='rgba(235,244,238,.96)';lines.forEach((line,i)=>x.fillText(line,700,155+i*92));const tex=new THREE.CanvasTexture(c);tex.colorSpace=THREE.SRGBColorSpace;const mat=new THREE.SpriteMaterial({map:tex,transparent:true,depthTest:true,depthWrite:false,opacity:0});const sp=new THREE.Sprite(mat);sp.position.set(0,y,z);sp.scale.set(16*scale,4.8*scale,1);scene.add(sp);return sp}
-const texts=[textSprite(['THE WEB','IS NOT FLAT.'],-58,5.0,.85),textSprite(['CODE CAN CREATE','WORLDS.'],-130,5.4,.9),textSprite(['JOBOSU','DIGITAL TECHNOLOGY LAB'],-184,5.7,.95)];
+        "three":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
 
-// Atmospheric dust — cheap points rather than volumetric simulation.
-const count=mobile?300:650,pos=new Float32Array(count*3);for(let i=0;i<count;i++){pos[i*3]=(seeded(i+1700)-.5)*42;pos[i*3+1]=seeded(i+1800)*9;pos[i*3+2]=12-seeded(i+1900)*215}const pg=new THREE.BufferGeometry();pg.setAttribute('position',new THREE.BufferAttribute(pos,3));const dust=new THREE.Points(pg,new THREE.PointsMaterial({color:0xd9e4d7,size:mobile?.035:.045,transparent:true,opacity:.28,depthWrite:false}));scene.add(dust);
+        "three/addons/":
+        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+    }
+}
 
-// Soft sun disc.
-const disc=new THREE.Mesh(new THREE.CircleGeometry(3.1,32),new THREE.MeshBasicMaterial({color:0xffd29a,transparent:true,opacity:0,depthWrite:false}));disc.position.set(-8,15,-196);scene.add(disc);
-
-let progress=0,px=0,py=0; addEventListener('pointermove',e=>{px=e.clientX/innerWidth-.5;py=e.clientY/innerHeight-.5},{passive:true});
-function scroll(){const m=document.documentElement.scrollHeight-innerHeight;progress=m?scrollY/m:0;document.querySelector('#bar').style.width=progress*100+'%';document.querySelector('#phase').textContent=progress<.28?'FOREST // ENTRY':progress<.62?'FOREST // MIST':progress<.86?'FOREST // LIGHT':'FOREST // EXIT'} addEventListener('scroll',scroll,{passive:true});scroll();
-function fadeAt(p,c,w){return THREE.MathUtils.clamp(1-Math.abs(progress-c)/w,0,1)}
-const clock=new THREE.Clock();
-function frame(){requestAnimationFrame(frame);const time=clock.getElapsedTime(),z=16-progress*202,x=reduced?0:px*1.35;camera.position.x+=(x-camera.position.x)*.025;camera.position.z+=(z-camera.position.z)*.035;const gy=h(camera.position.x,camera.position.z+94);camera.position.y+=(gy+3.15-py*.35-camera.position.y)*.04;camera.lookAt(camera.position.x*.08,camera.position.y-.18,camera.position.z-18);
- const warmth=THREE.MathUtils.smoothstep(progress,.48,.96);scene.background.lerpColors(cold,warm,warmth);scene.fog.color.lerpColors(cold,warm,warmth);scene.fog.density=(mobile?.032:.027)-fadeAt(progress,.58,.28)*.006;sun.intensity=1.6+warmth*3.1;sun.color.setRGB(1,.66+.18*warmth,.42+.18*warmth);renderer.toneMappingExposure=.7+warmth*.34;disc.material.opacity=THREE.MathUtils.smoothstep(progress,.70,.96)*.68;disc.lookAt(camera.position);
- texts[0].material.opacity=fadeAt(progress,.31,.13);texts[1].material.opacity=fadeAt(progress,.67,.13);texts[2].material.opacity=fadeAt(progress,.93,.10);dust.position.x=Math.sin(time*.08)*1.4;dust.position.y=Math.sin(time*.11)*.12;renderer.render(scene,camera)}
-frame();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight);renderer.setPixelRatio(Math.min(devicePixelRatio,mobile?1.25:1.6))});
-setTimeout(()=>{const l=document.querySelector('#loader');l.style.opacity='0';setTimeout(()=>l.remove(),850)},250);
 </script>
-</body></html>
+
+</head>
+
+
+<body>
+
+
+<div id="stage"></div>
+
+<div id="bar"></div>
+
+
+<div id="ui">
+
+    <div class="kicker">
+        JOBOSU // EXP 001
+    </div>
+
+    <div class="live">
+        ● REALTIME WEBGL ENVIRONMENT
+    </div>
+
+    <div
+        class="phase"
+        id="phase"
+    >
+        FOREST // ENTRY
+    </div>
+
+    <div class="hint">
+        SCROLL ↓
+    </div>
+
+</div>
+
+
+<div id="loader">
+
+    <div class="loadbox">
+
+        <div
+            class="loadtitle"
+            id="loadtitle"
+        >
+            LOADING FOREST
+        </div>
+
+        <div class="track">
+
+            <div
+                class="fill"
+                id="fill"
+            ></div>
+
+        </div>
+
+        <div
+            class="loadpct"
+            id="loadpct"
+        >
+            INITIALIZING...
+        </div>
+
+        <div id="error"></div>
+
+    </div>
+
+</div>
+
+
+<div class="credit">
+    3D ASSETS: QUATERNIUS · CC0
+</div>
+
+
+<script type="module">
+
+
+/* ==================================================
+   IMPORTS
+================================================== */
+
+import * as THREE
+from "three";
+
+import {
+    GLTFLoader
+}
+from "three/addons/loaders/GLTFLoader.js";
+
+
+/* ==================================================
+   ERROR HANDLER
+================================================== */
+
+const loaderScreen =
+    document.querySelector("#loader");
+
+const loadTitle =
+    document.querySelector("#loadtitle");
+
+const fill =
+    document.querySelector("#fill");
+
+const pct =
+    document.querySelector("#loadpct");
+
+const errorBox =
+    document.querySelector("#error");
+
+
+function showError(error) {
+
+    console.error(error);
+
+    loadTitle.textContent =
+        "FOREST LOAD ERROR";
+
+    pct.textContent =
+        "A RESOURCE COULD NOT BE LOADED";
+
+    errorBox.style.display =
+        "block";
+
+    errorBox.textContent =
+        error?.message ||
+        String(error);
+
+}
+
+
+/* ==================================================
+   DEVICE QUALITY
+================================================== */
+
+const mobile =
+    matchMedia(
+        "(max-width:700px)"
+    ).matches;
+
+const reduced =
+    matchMedia(
+        "(prefers-reduced-motion:reduce)"
+    ).matches;
+
+
+/* ==================================================
+   SCENE
+================================================== */
+
+const scene =
+    new THREE.Scene();
+
+const cold =
+    new THREE.Color(
+        0x07100d
+    );
+
+const warm =
+    new THREE.Color(
+        0x2b1b11
+    );
+
+scene.background =
+    cold.clone();
+
+scene.fog =
+    new THREE.FogExp2(
+        cold.clone(),
+        mobile
+            ? 0.032
+            : 0.027
+    );
+
+
+/* ==================================================
+   CAMERA
+================================================== */
+
+const camera =
+    new THREE.PerspectiveCamera(
+
+        mobile
+            ? 66
+            : 61,
+
+        innerWidth /
+        innerHeight,
+
+        0.1,
+
+        260
+    );
+
+camera.position.set(
+    0,
+    3.2,
+    16
+);
+
+
+/* ==================================================
+   RENDERER
+================================================== */
+
+const renderer =
+    new THREE.WebGLRenderer({
+
+        antialias:
+            !mobile,
+
+        powerPreference:
+            "high-performance"
+
+    });
+
+renderer.setSize(
+    innerWidth,
+    innerHeight
+);
+
+renderer.setPixelRatio(
+
+    Math.min(
+
+        devicePixelRatio,
+
+        mobile
+            ? 1.25
+            : 1.6
+
+    )
+
+);
+
+renderer.outputColorSpace =
+    THREE.SRGBColorSpace;
+
+renderer.toneMapping =
+    THREE.ACESFilmicToneMapping;
+
+renderer.toneMappingExposure =
+    0.72;
+
+renderer.shadowMap.enabled =
+    !mobile;
+
+renderer.shadowMap.type =
+    THREE.PCFSoftShadowMap;
+
+document
+    .querySelector("#stage")
+    .appendChild(
+        renderer.domElement
+    );
+
+
+/* ==================================================
+   LIGHTING
+================================================== */
+
+scene.add(
+
+    new THREE.HemisphereLight(
+
+        0x8aa49a,
+
+        0x101008,
+
+        1.15
+
+    )
+
+);
+
+
+const sun =
+    new THREE.DirectionalLight(
+
+        0xffc07a,
+
+        2.0
+
+    );
+
+sun.position.set(
+    -18,
+    24,
+    -35
+);
+
+
+if (!mobile) {
+
+    sun.castShadow =
+        true;
+
+    sun.shadow.mapSize.set(
+        1024,
+        1024
+    );
+
+    sun.shadow.camera.left =
+        -18;
+
+    sun.shadow.camera.right =
+        18;
+
+    sun.shadow.camera.top =
+        22;
+
+    sun.shadow.camera.bottom =
+        -10;
+
+}
+
+scene.add(sun);
+
+
+/* ==================================================
+   TERRAIN
+================================================== */
+
+function terrainHeight(
+    x,
+    z
+) {
+
+    return (
+
+        Math.sin(
+            x * 0.12
+        ) * 0.32
+
+        +
+
+        Math.sin(
+            z * 0.055
+        ) * 0.48
+
+        +
+
+        Math.sin(
+            (x + z) *
+            0.038
+        ) * 0.25
+
+    );
+
+}
+
+
+const terrainGeometry =
+    new THREE.PlaneGeometry(
+
+        72,
+        230,
+        34,
+        110
+
+    );
+
+terrainGeometry.rotateX(
+    -Math.PI / 2
+);
+
+
+const terrainPosition =
+    terrainGeometry
+        .attributes
+        .position;
+
+
+for (
+    let i = 0;
+    i <
+    terrainPosition.count;
+    i++
+) {
+
+    const x =
+        terrainPosition
+            .getX(i);
+
+    const z =
+        terrainPosition
+            .getZ(i);
+
+    terrainPosition.setY(
+
+        i,
+
+        terrainHeight(
+            x,
+            z
+        )
+
+    );
+
+}
+
+terrainGeometry
+    .computeVertexNormals();
+
+
+const terrain =
+    new THREE.Mesh(
+
+        terrainGeometry,
+
+        new THREE.MeshStandardMaterial({
+
+            color:
+                0x10160e,
+
+            roughness:
+                1
+
+        })
+
+    );
+
+terrain.position.z =
+    -94;
+
+terrain.receiveShadow =
+    !mobile;
+
+scene.add(
+    terrain
+);
+
+
+/* ==================================================
+   ASSET LOADING
+================================================== */
+
+const manager =
+    new THREE.LoadingManager();
+
+
+manager.onStart =
+function () {
+
+    pct.textContent =
+        "LOADING ASSETS...";
+
+};
+
+
+manager.onProgress =
+function (
+    url,
+    loaded,
+    total
+) {
+
+    const progress =
+        total > 0
+            ? Math.round(
+                loaded /
+                total *
+                100
+            )
+            : 0;
+
+    fill.style.width =
+        progress + "%";
+
+    pct.textContent =
+        progress + "%";
+
+};
+
+
+manager.onError =
+function (url) {
+
+    console.error(
+        "Failed:",
+        url
+    );
+
+};
+
+
+const gltfLoader =
+    new GLTFLoader(
+        manager
+    );
+
+
+function loadModel(url) {
+
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+
+            gltfLoader.load(
+
+                url,
+
+                gltf => {
+
+                    resolve(
+                        gltf.scene
+                    );
+
+                },
+
+                undefined,
+
+                error => {
+
+                    reject(
+                        new Error(
+                            "Could not load " +
+                            url +
+                            " — " +
+                            (
+                                error?.message ||
+                                "unknown error"
+                            )
+                        )
+                    );
+
+                }
+
+            );
+
+        }
+    );
+
+}
+
+
+/* ==================================================
+   LOAD FOREST ASSETS
+================================================== */
+
+const ASSETS =
+    "./assets/";
+
+
+let pine1;
+let pine3;
+let pine5;
+
+let fern;
+let grass;
+
+let rock1;
+let rock2;
+
+
+try {
+
+    [
+
+        pine1,
+        pine3,
+        pine5,
+
+        fern,
+        grass,
+
+        rock1,
+        rock2
+
+    ] = await Promise.all([
+
+        "Pine_1.gltf",
+
+        "Pine_3.gltf",
+
+        "Pine_5.gltf",
+
+        "Fern_1.gltf",
+
+        "Grass_Common_Short.gltf",
+
+        "Rock_Medium_1.gltf",
+
+        "Rock_Medium_2.gltf"
+
+    ].map(
+
+        file =>
+            loadModel(
+                ASSETS +
+                file
+            )
+
+    ));
+
+}
+catch (error) {
+
+    showError(error);
+
+    throw error;
+
+}
+
+
+/* ==================================================
+   MATERIAL PREPARATION
+================================================== */
+
+[
+    pine1,
+    pine3,
+    pine5
+
+].forEach(root => {
+
+    root.traverse(
+        object => {
+
+            if (
+                object.isMesh
+            ) {
+
+                object.castShadow =
+                    !mobile;
+
+                object.receiveShadow =
+                    !mobile;
+
+                if (
+                    object.material
+                ) {
+
+                    object.material.alphaTest =
+                        0.35;
+
+                    object.material.side =
+                        THREE.DoubleSide;
+
+                }
+
+            }
+
+        }
+    );
+
+});
+
+
+[
+    fern,
+    grass
+
+].forEach(root => {
+
+    root.traverse(
+        object => {
+
+            if (
+                object.isMesh
+            ) {
+
+                object.castShadow =
+                    false;
+
+                object.receiveShadow =
+                    false;
+
+                if (
+                    object.material
+                ) {
+
+                    object.material.alphaTest =
+                        0.4;
+
+                    object.material.side =
+                        THREE.DoubleSide;
+
+                }
+
+            }
+
+        }
+    );
+
+});
+
+
+[
+    rock1,
+    rock2
+
+].forEach(root => {
+
+    root.traverse(
+        object => {
+
+            if (
+                object.isMesh
+            ) {
+
+                object.castShadow =
+                    !mobile;
+
+                object.receiveShadow =
+                    !mobile;
+
+            }
+
+        }
+    );
+
+});
+
+
+/* ==================================================
+   DETERMINISTIC RANDOM
+================================================== */
+
+function seeded(n) {
+
+    const x =
+        Math.sin(
+            n * 9283.17
+        ) *
+        43758.5453;
+
+    return (
+        x -
+        Math.floor(x)
+    );
+
+}
+
+
+/* ==================================================
+   TREES
+================================================== */
+
+const treeModels = [
+
+    pine1,
+    pine3,
+    pine5
+
+];
+
+
+const treeCount =
+    mobile
+        ? 62
+        : 92;
+
+
+for (
+    let i = 0;
+    i < treeCount;
+    i++
+) {
+
+    const r1 =
+        seeded(
+            i + 1
+        );
+
+    const r2 =
+        seeded(
+            i + 101
+        );
+
+    const r3 =
+        seeded(
+            i + 301
+        );
+
+
+    const side =
+        r1 > 0.5
+            ? 1
+            : -1;
+
+
+    let x =
+        side *
+        (
+            4.3 +
+            r2 * 24
+        );
+
+
+    const z =
+        10 -
+        r3 * 205;
+
+
+    /*
+       Clearings reserved
+       for 3D text.
+    */
+
+    if (
+        (
+            z < -47 &&
+            z > -72
+        )
+        ||
+        (
+            z < -120 &&
+            z > -143
+        )
+    ) {
+
+        x *= 1.28;
+
+    }
+
+
+    const tree =
+        treeModels[
+            i % 3
+        ].clone(true);
+
+
+    const scale =
+        0.72 +
+        seeded(
+            i + 501
+        ) *
+        1.15;
+
+
+    tree.scale.setScalar(
+        scale
+    );
+
+
+    tree.rotation.y =
+        seeded(
+            i + 701
+        ) *
+        Math.PI *
+        2;
+
+
+    tree.rotation.z =
+        (
+            seeded(
+                i + 801
+            ) -
+            0.5
+        ) *
+        0.035;
+
+
+    tree.position.set(
+
+        x,
+
+        terrainHeight(
+            x,
+            z + 94
+        ),
+
+        z
+
+    );
+
+
+    scene.add(
+        tree
+    );
+
+}
+
+
+/* ==================================================
+   UNDERGROWTH
+================================================== */
+
+const plantCount =
+    mobile
+        ? 45
+        : 90;
+
+
+for (
+    let i = 0;
+    i < plantCount;
+    i++
+) {
+
+    const z =
+        8 -
+        seeded(
+            i + 900
+        ) *
+        205;
+
+
+    const x =
+        (
+            seeded(
+                i + 1000
+            ) -
+            0.5
+        ) *
+        32;
+
+
+    if (
+        Math.abs(x) <
+        2.2
+    ) {
+
+        continue;
+
+    }
+
+
+    const plant =
+        (
+            i % 3 === 0
+                ? fern
+                : grass
+        ).clone(true);
+
+
+    const scale =
+        0.45 +
+        seeded(
+            i + 1100
+        ) *
+        0.75;
+
+
+    plant.scale.setScalar(
+        scale
+    );
+
+
+    plant.rotation.y =
+        seeded(
+            i + 1200
+        ) *
+        Math.PI *
+        2;
+
+
+    plant.position.set(
+
+        x,
+
+        terrainHeight(
+            x,
+            z + 94
+        ) +
+        0.03,
+
+        z
+
+    );
+
+
+    scene.add(
+        plant
+    );
+
+}
+
+
+/* ==================================================
+   ROCKS
+================================================== */
+
+const rockCount =
+    mobile
+        ? 14
+        : 24;
+
+
+for (
+    let i = 0;
+    i < rockCount;
+    i++
+) {
+
+    const z =
+        4 -
+        seeded(
+            i + 1300
+        ) *
+        200;
+
+
+    const x =
+        (
+            seeded(
+                i + 1400
+            ) -
+            0.5
+        ) *
+        28;
+
+
+    if (
+        Math.abs(x) <
+        2.8
+    ) {
+
+        continue;
+
+    }
+
+
+    const rock =
+        (
+            i % 2
+                ? rock1
+                : rock2
+        ).clone(true);
+
+
+    const scale =
+        0.5 +
+        seeded(
+            i + 1500
+        ) *
+        1.4;
+
+
+    rock.scale.setScalar(
+        scale
+    );
+
+
+    rock.rotation.y =
+        seeded(
+            i + 1600
+        ) *
+        Math.PI *
+        2;
+
+
+    rock.position.set(
+
+        x,
+
+        terrainHeight(
+            x,
+            z + 94
+        ),
+
+        z
+
+    );
+
+
+    scene.add(
+        rock
+    );
+
+}
+
+
+/* ==================================================
+   3D TEXT
+================================================== */
+
+function createTextSprite(
+    lines,
+    z,
+    y = 5.2,
+    scale = 1
+) {
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+    canvas.width =
+        1400;
+
+    canvas.height =
+        420;
+
+
+    const context =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    context.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    context.textAlign =
+        "center";
+
+    context.textBaseline =
+        "middle";
+
+    context.font =
+        "600 68px monospace";
+
+    context.fillStyle =
+        "rgba(235,244,238,.96)";
+
+
+    lines.forEach(
+        (
+            line,
+            index
+        ) => {
+
+            context.fillText(
+
+                line,
+
+                700,
+
+                155 +
+                index *
+                92
+
+            );
+
+        }
+    );
+
+
+    const texture =
+        new THREE.CanvasTexture(
+            canvas
+        );
+
+    texture.colorSpace =
+        THREE.SRGBColorSpace;
+
+
+    const material =
+        new THREE.SpriteMaterial({
+
+            map:
+                texture,
+
+            transparent:
+                true,
+
+            depthTest:
+                true,
+
+            depthWrite:
+                false,
+
+            opacity:
+                0
+
+        });
+
+
+    const sprite =
+        new THREE.Sprite(
+            material
+        );
+
+
+    sprite.position.set(
+        0,
+        y,
+        z
+    );
+
+
+    sprite.scale.set(
+
+        16 * scale,
+
+        4.8 * scale,
+
+        1
+
+    );
+
+
+    scene.add(
+        sprite
+    );
+
+
+    return sprite;
+
+}
+
+
+const texts = [
+
+    createTextSprite(
+        [
+            "THE WEB",
+            "IS NOT FLAT."
+        ],
+        -58,
+        5,
+        0.85
+    ),
+
+    createTextSprite(
+        [
+            "CODE CAN CREATE",
+            "WORLDS."
+        ],
+        -130,
+        5.4,
+        0.9
+    ),
+
+    createTextSprite(
+        [
+            "JOBOSU",
+            "DIGITAL TECHNOLOGY LAB"
+        ],
+        -184,
+        5.7,
+        0.95
+    )
+
+];
+
+
+/* ==================================================
+   ATMOSPHERIC PARTICLES
+================================================== */
+
+const particleCount =
+    mobile
+        ? 300
+        : 650;
+
+
+const particlePositions =
+    new Float32Array(
+        particleCount * 3
+    );
+
+
+for (
+    let i = 0;
+    i < particleCount;
+    i++
+) {
+
+    particlePositions[
+        i * 3
+    ] =
+        (
+            seeded(
+                i + 1700
+            ) -
+            0.5
+        ) *
+        42;
+
+
+    particlePositions[
+        i * 3 + 1
+    ] =
+        seeded(
+            i + 1800
+        ) *
+        9;
+
+
+    particlePositions[
+        i * 3 + 2
+    ] =
+        12 -
+        seeded(
+            i + 1900
+        ) *
+        215;
+
+}
+
+
+const particleGeometry =
+    new THREE.BufferGeometry();
+
+
+particleGeometry.setAttribute(
+
+    "position",
+
+    new THREE.BufferAttribute(
+
+        particlePositions,
+
+        3
+
+    )
+
+);
+
+
+const dust =
+    new THREE.Points(
+
+        particleGeometry,
+
+        new THREE.PointsMaterial({
+
+            color:
+                0xd9e4d7,
+
+            size:
+                mobile
+                    ? 0.035
+                    : 0.045,
+
+            transparent:
+                true,
+
+            opacity:
+                0.28,
+
+            depthWrite:
+                false
+
+        })
+
+    );
+
+
+scene.add(
+    dust
+);
+
+
+/* ==================================================
+   SUN DISC
+================================================== */
+
+const sunDisc =
+    new THREE.Mesh(
+
+        new THREE.CircleGeometry(
+            3.1,
+            32
+        ),
+
+        new THREE.MeshBasicMaterial({
+
+            color:
+                0xffd29a,
+
+            transparent:
+                true,
+
+            opacity:
+                0,
+
+            depthWrite:
+                false
+
+        })
+
+    );
+
+
+sunDisc.position.set(
+    -8,
+    15,
+    -196
+);
+
+
+scene.add(
+    sunDisc
+);
+
+
+/* ==================================================
+   SCROLL
+================================================== */
+
+let progress =
+    0;
+
+let pointerX =
+    0;
+
+let pointerY =
+    0;
+
+
+addEventListener(
+
+    "pointermove",
+
+    event => {
+
+        pointerX =
+            event.clientX /
+            innerWidth -
+            0.5;
+
+        pointerY =
+            event.clientY /
+            innerHeight -
+            0.5;
+
+    },
+
+    {
+        passive: true
+    }
+
+);
+
+
+function updateScroll() {
+
+    const maximum =
+        document.documentElement
+            .scrollHeight -
+        innerHeight;
+
+
+    progress =
+        maximum
+            ? scrollY /
+              maximum
+            : 0;
+
+
+    document
+        .querySelector("#bar")
+        .style.width =
+            progress *
+            100 +
+            "%";
+
+
+    const phase =
+        document.querySelector(
+            "#phase"
+        );
+
+
+    if (
+        progress <
+        0.28
+    ) {
+
+        phase.textContent =
+            "FOREST // ENTRY";
+
+    }
+
+    else if (
+        progress <
+        0.62
+    ) {
+
+        phase.textContent =
+            "FOREST // MIST";
+
+    }
+
+    else if (
+        progress <
+        0.86
+    ) {
+
+        phase.textContent =
+            "FOREST // LIGHT";
+
+    }
+
+    else {
+
+        phase.textContent =
+            "FOREST // EXIT";
+
+    }
+
+}
+
+
+addEventListener(
+
+    "scroll",
+
+    updateScroll,
+
+    {
+        passive: true
+    }
+
+);
+
+
+updateScroll();
+
+
+/* ==================================================
+   HELPERS
+================================================== */
+
+function fadeAt(
+    value,
+    center,
+    width
+) {
+
+    return THREE.MathUtils.clamp(
+
+        1 -
+        Math.abs(
+            value -
+            center
+        ) /
+        width,
+
+        0,
+
+        1
+
+    );
+
+}
+
+
+/* ==================================================
+   ANIMATION
+================================================== */
+
+const clock =
+    new THREE.Clock();
+
+
+function frame() {
+
+    requestAnimationFrame(
+        frame
+    );
+
+
+    const time =
+        clock.getElapsedTime();
+
+
+    const targetZ =
+        16 -
+        progress *
+        202;
+
+
+    const targetX =
+        reduced
+            ? 0
+            : pointerX *
+              1.35;
+
+
+    camera.position.x +=
+
+        (
+            targetX -
+            camera.position.x
+        ) *
+        0.025;
+
+
+    camera.position.z +=
+
+        (
+            targetZ -
+            camera.position.z
+        ) *
+        0.035;
+
+
+    const ground =
+        terrainHeight(
+
+            camera.position.x,
+
+            camera.position.z +
+            94
+
+        );
+
+
+    camera.position.y +=
+
+        (
+            ground +
+            3.15 -
+            pointerY *
+            0.35 -
+            camera.position.y
+        ) *
+        0.04;
+
+
+    camera.lookAt(
+
+        camera.position.x *
+        0.08,
+
+        camera.position.y -
+        0.18,
+
+        camera.position.z -
+        18
+
+    );
+
+
+    /* LIGHT TRANSITION */
+
+    const warmth =
+        THREE.MathUtils
+            .smoothstep(
+                progress,
+                0.48,
+                0.96
+            );
+
+
+    scene.background
+        .lerpColors(
+            cold,
+            warm,
+            warmth
+        );
+
+
+    scene.fog.color
+        .lerpColors(
+            cold,
+            warm,
+            warmth
+        );
+
+
+    scene.fog.density =
+
+        (
+            mobile
+                ? 0.032
+                : 0.027
+        )
+
+        -
+
+        fadeAt(
+            progress,
+            0.58,
+            0.28
+        ) *
+        0.006;
+
+
+    sun.intensity =
+        1.6 +
+        warmth *
+        3.1;
+
+
+    sun.color.setRGB(
+
+        1,
+
+        0.66 +
+        0.18 *
+        warmth,
+
+        0.42 +
+        0.18 *
+        warmth
+
+    );
+
+
+    renderer.toneMappingExposure =
+        0.7 +
+        warmth *
+        0.34;
+
+
+    /* SUN */
+
+    sunDisc.material.opacity =
+
+        THREE.MathUtils
+            .smoothstep(
+                progress,
+                0.70,
+                0.96
+            ) *
+        0.68;
+
+
+    sunDisc.lookAt(
+        camera.position
+    );
+
+
+    /* TEXT */
+
+    texts[0]
+        .material
+        .opacity =
+            fadeAt(
+                progress,
+                0.31,
+                0.13
+            );
+
+
+    texts[1]
+        .material
+        .opacity =
+            fadeAt(
+                progress,
+                0.67,
+                0.13
+            );
+
+
+    texts[2]
+        .material
+        .opacity =
+            fadeAt(
+                progress,
+                0.93,
+                0.10
+            );
+
+
+    /* PARTICLES */
+
+    dust.position.x =
+        Math.sin(
+            time *
+            0.08
+        ) *
+        1.4;
+
+
+    dust.position.y =
+        Math.sin(
+            time *
+            0.11
+        ) *
+        0.12;
+
+
+    renderer.render(
+        scene,
+        camera
+    );
+
+}
+
+
+/* ==================================================
+   START
+================================================== */
+
+fill.style.width =
+    "100%";
+
+pct.textContent =
+    "FOREST READY";
+
+
+setTimeout(
+    () => {
+
+        loaderScreen
+            .style.opacity =
+            "0";
+
+
+        setTimeout(
+            () => {
+
+                loaderScreen
+                    .remove();
+
+            },
+            850
+        );
+
+    },
+    350
+);
+
+
+frame();
+
+
+/* ==================================================
+   RESIZE
+================================================== */
+
+addEventListener(
+
+    "resize",
+
+    () => {
+
+        camera.aspect =
+            innerWidth /
+            innerHeight;
+
+
+        camera
+            .updateProjectionMatrix();
+
+
+        renderer.setSize(
+            innerWidth,
+            innerHeight
+        );
+
+
+        renderer.setPixelRatio(
+
+            Math.min(
+
+                devicePixelRatio,
+
+                mobile
+                    ? 1.25
+                    : 1.6
+
+            )
+
+        );
+
+    }
+
+);
+
+
+</script>
+
+</body>
+
+</html>
