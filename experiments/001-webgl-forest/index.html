@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>WebGL Forest // JOBOSU</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      background: #000;
+      color: white;
+      font-family: monospace;
+    }
+
+    /* Espai que permet fer scroll */
+    body {
+      height: 500vh;
+    }
+
+    #scene {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #interface {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      padding: 40px;
+      z-index: 10;
+    }
+
+    #title {
+      font-size: 14px;
+      letter-spacing: 4px;
+    }
+
+    #status {
+      margin-top: 12px;
+      color: #78ff78;
+      font-size: 12px;
+    }
+
+    #scroll {
+      position: absolute;
+      right: 40px;
+      bottom: 40px;
+      font-size: 11px;
+      letter-spacing: 3px;
+      opacity: 0.7;
+    }
+
+    #progress {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 0%;
+      height: 2px;
+      background: #78ff78;
+      z-index: 20;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="progress"></div>
+
+<div id="scene"></div>
+
+<div id="interface">
+  <div id="title">
+    JOBOSU // WEBGL FOREST
+  </div>
+
+  <div id="status">
+    ● REALTIME SCENE
+  </div>
+
+  <div id="scroll">
+    SCROLL ↓
+  </div>
+</div>
+
+
+<script type="module">
+
+import * as THREE from
+"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
+
+
+/* -------------------------------------------------
+   SCENE
+------------------------------------------------- */
+
+const scene = new THREE.Scene();
+
+scene.background = new THREE.Color(0x020608);
+
+scene.fog = new THREE.FogExp2(
+  0x071015,
+  0.035
+);
+
+
+/* -------------------------------------------------
+   CAMERA
+------------------------------------------------- */
+
+const camera = new THREE.PerspectiveCamera(
+  60,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  300
+);
+
+camera.position.set(0, 4, 18);
+
+
+/* -------------------------------------------------
+   RENDERER
+------------------------------------------------- */
+
+const renderer = new THREE.WebGLRenderer({
+  antialias: true
+});
+
+renderer.setPixelRatio(
+  Math.min(window.devicePixelRatio, 2)
+);
+
+renderer.setSize(
+  window.innerWidth,
+  window.innerHeight
+);
+
+renderer.shadowMap.enabled = true;
+
+document
+  .getElementById("scene")
+  .appendChild(renderer.domElement);
+
+
+/* -------------------------------------------------
+   LIGHT
+------------------------------------------------- */
+
+const ambient = new THREE.AmbientLight(
+  0x395060,
+  1.2
+);
+
+scene.add(ambient);
+
+
+const sun = new THREE.DirectionalLight(
+  0xffa45c,
+  4
+);
+
+sun.position.set(
+  -10,
+  20,
+  -20
+);
+
+sun.castShadow = true;
+
+scene.add(sun);
+
+
+/* -------------------------------------------------
+   GROUND
+------------------------------------------------- */
+
+const groundGeometry =
+  new THREE.PlaneGeometry(200, 300);
+
+const groundMaterial =
+  new THREE.MeshStandardMaterial({
+    color: 0x07100a,
+    roughness: 1
+  });
+
+const ground =
+  new THREE.Mesh(
+    groundGeometry,
+    groundMaterial
+  );
+
+ground.rotation.x = -Math.PI / 2;
+
+ground.position.y = 0;
+
+ground.receiveShadow = true;
+
+scene.add(ground);
+
+
+/* -------------------------------------------------
+   TREE GENERATOR
+------------------------------------------------- */
+
+function createTree(x, z, scale) {
+
+  const group = new THREE.Group();
+
+
+  /* trunk */
+
+  const trunkGeometry =
+    new THREE.CylinderGeometry(
+      0.18 * scale,
+      0.28 * scale,
+      4 * scale,
+      8
+    );
+
+  const trunkMaterial =
+    new THREE.MeshStandardMaterial({
+      color: 0x24160d
+    });
+
+  const trunk =
+    new THREE.Mesh(
+      trunkGeometry,
+      trunkMaterial
+    );
+
+  trunk.position.y =
+    2 * scale;
+
+  trunk.castShadow = true;
+
+  group.add(trunk);
+
+
+  /* foliage */
+
+  const foliageMaterial =
+    new THREE.MeshStandardMaterial({
+      color: 0x102419,
+      roughness: 1
+    });
+
+
+  for (let i = 0; i < 4; i++) {
+
+    const coneGeometry =
+      new THREE.ConeGeometry(
+        (2.2 - i * 0.25) * scale,
+        3.2 * scale,
+        8
+      );
+
+    const cone =
+      new THREE.Mesh(
+        coneGeometry,
+        foliageMaterial
+      );
+
+    cone.position.y =
+      (3.2 + i * 1.3) * scale;
+
+    cone.castShadow = true;
+
+    group.add(cone);
+  }
+
+
+  group.position.set(
+    x,
+    0,
+    z
+  );
+
+  scene.add(group);
+}
+
+
+/* -------------------------------------------------
+   FOREST
+------------------------------------------------- */
+
+for (let i = 0; i < 180; i++) {
+
+  let x;
+
+  /*
+     Leave a small path through
+     the middle of the forest.
+  */
+
+  if (Math.random() > 0.5) {
+
+    x =
+      5 +
+      Math.random() * 35;
+
+  } else {
+
+    x =
+      -5 -
+      Math.random() * 35;
+  }
+
+
+  const z =
+    10 -
+    Math.random() * 180;
+
+
+  const scale =
+    0.7 +
+    Math.random() * 1.5;
+
+
+  createTree(
+    x,
+    z,
+    scale
+  );
+}
+
+
+/* -------------------------------------------------
+   FOG PARTICLES
+------------------------------------------------- */
+
+const fogGeometry =
+  new THREE.BufferGeometry();
+
+const fogCount = 700;
+
+const fogPositions =
+  new Float32Array(
+    fogCount * 3
+  );
+
+
+for (let i = 0; i < fogCount; i++) {
+
+  fogPositions[i * 3] =
+    (Math.random() - 0.5) * 70;
+
+  fogPositions[i * 3 + 1] =
+    Math.random() * 12;
+
+  fogPositions[i * 3 + 2] =
+    20 -
+    Math.random() * 200;
+}
+
+
+fogGeometry.setAttribute(
+  "position",
+  new THREE.BufferAttribute(
+    fogPositions,
+    3
+  )
+);
+
+
+const fogMaterial =
+  new THREE.PointsMaterial({
+    color: 0xb8c8cc,
+    size: 0.35,
+    transparent: true,
+    opacity: 0.16,
+    depthWrite: false
+  });
+
+
+const fogParticles =
+  new THREE.Points(
+    fogGeometry,
+    fogMaterial
+  );
+
+
+scene.add(fogParticles);
+
+
+/* -------------------------------------------------
+   MOUSE PARALLAX
+------------------------------------------------- */
+
+let mouseX = 0;
+let mouseY = 0;
+
+
+window.addEventListener(
+  "pointermove",
+  (event) => {
+
+    mouseX =
+      (event.clientX /
+      window.innerWidth - 0.5);
+
+    mouseY =
+      (event.clientY /
+      window.innerHeight - 0.5);
+  }
+);
+
+
+/* -------------------------------------------------
+   SCROLL
+------------------------------------------------- */
+
+let scrollProgress = 0;
+
+
+function updateScroll() {
+
+  const maxScroll =
+    document.documentElement.scrollHeight -
+    window.innerHeight;
+
+
+  scrollProgress =
+    maxScroll > 0
+      ? window.scrollY / maxScroll
+      : 0;
+
+
+  document
+    .getElementById("progress")
+    .style.width =
+      (scrollProgress * 100) + "%";
+}
+
+
+window.addEventListener(
+  "scroll",
+  updateScroll
+);
+
+
+/* -------------------------------------------------
+   ANIMATION
+------------------------------------------------- */
+
+const clock =
+  new THREE.Clock();
+
+
+function animate() {
+
+  requestAnimationFrame(
+    animate
+  );
+
+
+  const time =
+    clock.getElapsedTime();
+
+
+  /*
+     Camera travels through forest
+  */
+
+  camera.position.z =
+    18 -
+    scrollProgress * 145;
+
+
+  /*
+     subtle movement
+  */
+
+  camera.position.x +=
+    (
+      mouseX * 2 -
+      camera.position.x
+    ) * 0.025;
+
+
+  camera.position.y +=
+    (
+      4 -
+      mouseY * 1.2 -
+      camera.position.y
+    ) * 0.025;
+
+
+  /*
+     Fog moves slowly
+  */
+
+  fogParticles.position.x =
+    Math.sin(time * 0.15) * 3;
+
+
+  fogParticles.position.z =
+    Math.sin(time * 0.08) * 4;
+
+
+  /*
+     Sun movement
+  */
+
+  sun.position.x =
+    Math.sin(time * 0.05) * 25;
+
+
+  /*
+     Light changes gradually
+  */
+
+  const intensity =
+    3 +
+    Math.sin(time * 0.15) * 1.5;
+
+  sun.intensity =
+    intensity;
+
+
+  camera.lookAt(
+    0,
+    3,
+    camera.position.z - 20
+  );
+
+
+  renderer.render(
+    scene,
+    camera
+  );
+}
+
+
+updateScroll();
+
+animate();
+
+
+/* -------------------------------------------------
+   RESPONSIVE
+------------------------------------------------- */
+
+window.addEventListener(
+  "resize",
+  () => {
+
+    camera.aspect =
+      window.innerWidth /
+      window.innerHeight;
+
+    camera.updateProjectionMatrix();
+
+    renderer.setSize(
+      window.innerWidth,
+      window.innerHeight
+    );
+  }
+);
+
+</script>
+
+</body>
+</html>
