@@ -1,521 +1,248 @@
-<!doctype html>
-<html lang="ca">
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
-<meta charset="utf-8">
-
-<meta
-    name="viewport"
-    content="width=device-width,initial-scale=1,viewport-fit=cover"
->
-
-<meta
-    name="description"
-    content="JOBOSU EXP 001 — realtime WebGL forest built with Three.js."
->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>EXP 001 — WebGL Forest // JOBOSU</title>
 
-
 <style>
-
 * {
     box-sizing: border-box;
 }
 
-html,
-body {
+html, body {
     margin: 0;
-    background: #020504;
-    color: #eaf2ec;
-
-    font-family:
-        ui-monospace,
-        SFMono-Regular,
-        Menlo,
-        Consolas,
-        monospace;
-}
-
-body {
-    height: 650vh;
-    overflow-x: hidden;
-}
-
-
-/* ==================================================
-   WEBGL
-================================================== */
-
-#stage {
-    position: fixed;
-    inset: 0;
-    background: #020504;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #050806;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 canvas {
+    position: fixed;
+    inset: 0;
     display: block;
-    width: 100%;
-    height: 100%;
 }
-
-
-/* ==================================================
-   INTERFACE
-================================================== */
 
 #ui {
     position: fixed;
     inset: 0;
-    z-index: 5;
-
+    z-index: 10;
     pointer-events: none;
-
-    padding:
-        clamp(20px, 4vw, 44px);
-
-    text-shadow:
-        0 1px 10px #000;
+    color: white;
 }
 
-.kicker {
-    font-size: 12px;
-    letter-spacing: .24em;
-}
-
-.live {
-    margin-top: 10px;
-
-    color: #83ff9d;
-
-    font-size: 11px;
-    letter-spacing: .12em;
-}
-
-.hint {
+#topline {
     position: absolute;
-
-    right:
-        clamp(20px, 4vw, 44px);
-
-    bottom:
-        clamp(20px, 4vw, 40px);
-
-    font-size: 10px;
-    letter-spacing: .2em;
-
-    opacity: .65;
-}
-
-.phase {
-    position: absolute;
-
-    left:
-        clamp(20px, 4vw, 44px);
-
-    bottom:
-        clamp(20px, 4vw, 40px);
-
-    font-size: 10px;
-    letter-spacing: .2em;
-
-    opacity: .55;
-}
-
-
-/* ==================================================
-   PROGRESS
-================================================== */
-
-#bar {
-    position: fixed;
-
-    z-index: 7;
-
     top: 0;
     left: 0;
-
-    width: 0;
+    width: 100%;
     height: 2px;
-
-    background: #7dff96;
-
-    box-shadow:
-        0 0 12px #7dff96;
+    background: #66ff88;
+    box-shadow: 0 0 10px rgba(102,255,136,.5);
 }
 
+#brand {
+    position: absolute;
+    top: 38px;
+    left: 32px;
+    font-size: 12px;
+    line-height: 1.8;
+    letter-spacing: 2px;
+}
 
-/* ==================================================
-   LOADER
-================================================== */
+#brand .live {
+    color: #66ff88;
+    font-size: 11px;
+}
+
+#assets {
+    position: absolute;
+    top: 38px;
+    right: 32px;
+    color: rgba(255,255,255,.35);
+    font-size: 9px;
+    letter-spacing: 1px;
+}
+
+#phase {
+    position: absolute;
+    bottom: 28px;
+    left: 32px;
+    color: rgba(255,255,255,.58);
+    font-size: 11px;
+    letter-spacing: 2px;
+}
+
+#scroll {
+    position: absolute;
+    bottom: 28px;
+    right: 32px;
+    color: rgba(255,255,255,.58);
+    font-size: 11px;
+    letter-spacing: 2px;
+}
 
 #loader {
-
     position: fixed;
-
-    z-index: 20;
-
     inset: 0;
-
-    display: grid;
-
-    place-items: center;
-
-    background: #020504;
-
-    transition:
-        opacity .8s ease;
-}
-
-.loadbox {
-    width:
-        min(380px, 78vw);
-}
-
-.loadtitle {
+    z-index: 100;
+    background: #030504;
+    color: #69ff8b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     font-size: 12px;
-
-    letter-spacing: .2em;
-
-    margin-bottom: 14px;
+    letter-spacing: 3px;
 }
 
-.track {
-
+#loadbar {
+    width: 180px;
     height: 1px;
-
-    background: #233029;
+    background: #162018;
+    margin-top: 18px;
 }
 
-.fill {
-
+#loadprogress {
+    width: 0%;
     height: 100%;
-
-    width: 0;
-
-    background: #7dff96;
-
-    transition:
-        width .2s;
-}
-
-.loadpct {
-
-    font-size: 10px;
-
-    opacity: .55;
-
-    margin-top: 10px;
+    background: #69ff8b;
+    transition: width .2s;
 }
 
 #error {
-
-    display: none;
-
-    margin-top: 24px;
-
-    color: #ff8a8a;
-
+    margin-top: 20px;
+    max-width: 80vw;
+    color: #ff7777;
     font-size: 10px;
-
-    line-height: 1.7;
-
-    letter-spacing: .08em;
+    line-height: 1.6;
+    text-align: center;
+    letter-spacing: 1px;
 }
 
+@media(max-width:700px) {
+    #brand {
+        top: 24px;
+        left: 18px;
+    }
 
-/* ==================================================
-   CREDIT
-================================================== */
+    #assets {
+        top: 24px;
+        right: 18px;
+    }
 
-.credit {
+    #phase {
+        left: 18px;
+        bottom: 18px;
+    }
 
-    position: fixed;
-
-    z-index: 6;
-
-    right: 12px;
-    top: 12px;
-
-    font-size: 8px;
-
-    opacity: .25;
-
-    pointer-events: none;
+    #scroll {
+        right: 18px;
+        bottom: 18px;
+    }
 }
-
-
-@media (max-width: 650px) {
-
-    .credit {
-        display: none;
-    }
-
-    .kicker {
-        font-size: 10px;
-    }
-
-    .live {
-        font-size: 9px;
-    }
-
-}
-
 </style>
 
-
-<!-- =================================================
-     THREE.JS IMPORT MAP
-================================================== -->
-
 <script type="importmap">
-
 {
     "imports": {
-
-        "three":
-        "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
-
-        "three/addons/":
-        "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
+        "three": "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"
     }
 }
-
 </script>
-
 </head>
-
 
 <body>
 
-
-<div id="stage"></div>
-
-<div id="bar"></div>
-
+<div id="loader">
+    BUILDING FOREST
+    <div id="loadbar">
+        <div id="loadprogress"></div>
+    </div>
+    <div id="error"></div>
+</div>
 
 <div id="ui">
+    <div id="topline"></div>
 
-    <div class="kicker">
-        JOBOSU // EXP 001
+    <div id="brand">
+        JOBOSU // EXP 001<br>
+        <span class="live">● REALTIME WEBGL ENVIRONMENT</span>
     </div>
 
-    <div class="live">
-        ● REALTIME WEBGL ENVIRONMENT
+    <div id="assets">
+        3D ASSETS: QUATERNIUS · CC0
     </div>
 
-    <div
-        class="phase"
-        id="phase"
-    >
+    <div id="phase">
         FOREST // ENTRY
     </div>
 
-    <div class="hint">
+    <div id="scroll">
         SCROLL ↓
     </div>
-
-</div>
-
-
-<div id="loader">
-
-    <div class="loadbox">
-
-        <div
-            class="loadtitle"
-            id="loadtitle"
-        >
-            LOADING FOREST
-        </div>
-
-        <div class="track">
-
-            <div
-                class="fill"
-                id="fill"
-            ></div>
-
-        </div>
-
-        <div
-            class="loadpct"
-            id="loadpct"
-        >
-            INITIALIZING...
-        </div>
-
-        <div id="error"></div>
-
-    </div>
-
-</div>
-
-
-<div class="credit">
-    3D ASSETS: QUATERNIUS · CC0
 </div>
 
 
 <script type="module">
 
+import * as THREE from "three";
+import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
-/* ==================================================
-   IMPORTS
-================================================== */
-
-import * as THREE
-from "three";
-
-import {
-    GLTFLoader
-}
-from "three/addons/loaders/GLTFLoader.js";
-
-
-/* ==================================================
-   ERROR HANDLER
-================================================== */
-
-const loaderScreen =
-    document.querySelector("#loader");
-
-const loadTitle =
-    document.querySelector("#loadtitle");
-
-const fill =
-    document.querySelector("#fill");
-
-const pct =
-    document.querySelector("#loadpct");
-
-const errorBox =
-    document.querySelector("#error");
-
-
-function showError(error) {
-
-    console.error(error);
-
-    loadTitle.textContent =
-        "FOREST LOAD ERROR";
-
-    pct.textContent =
-        "A RESOURCE COULD NOT BE LOADED";
-
-    errorBox.style.display =
-        "block";
-
-    errorBox.textContent =
-        error?.message ||
-        String(error);
-
-}
-
-
-/* ==================================================
-   DEVICE QUALITY
-================================================== */
+/* ============================================================
+   BASIC CONFIG
+============================================================ */
 
 const mobile =
-    matchMedia(
-        "(max-width:700px)"
-    ).matches;
+    window.innerWidth < 800 ||
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
-const reduced =
-    matchMedia(
-        "(prefers-reduced-motion:reduce)"
-    ).matches;
+const scene = new THREE.Scene();
 
+scene.background = new THREE.Color(0x111914);
 
-/* ==================================================
-   SCENE
-================================================== */
-
-const scene =
-    new THREE.Scene();
-
-const cold =
-    new THREE.Color(
-        0x07100d
-    );
-
-const warm =
-    new THREE.Color(
-        0x2b1b11
-    );
-
-scene.background =
-    cold.clone();
-
-scene.fog =
-    new THREE.FogExp2(
-        cold.clone(),
-        mobile
-            ? 0.032
-            : 0.027
-    );
-
-
-/* ==================================================
-   CAMERA
-================================================== */
-
-const camera =
-    new THREE.PerspectiveCamera(
-
-        mobile
-            ? 66
-            : 61,
-
-        innerWidth /
-        innerHeight,
-
-        0.1,
-
-        260
-    );
-
-camera.position.set(
-    0,
-    3.2,
-    16
+/*
+    REAL atmospheric depth.
+    Objects progressively disappear into the forest.
+*/
+scene.fog = new THREE.FogExp2(
+    0x718078,
+    mobile ? 0.018 : 0.014
 );
 
+const camera = new THREE.PerspectiveCamera(
+    mobile ? 67 : 60,
+    window.innerWidth / window.innerHeight,
+    0.1,
+    360
+);
 
-/* ==================================================
+camera.position.set(0, 4.2, 18);
+
+
+/* ============================================================
    RENDERER
-================================================== */
+============================================================ */
 
-const renderer =
-    new THREE.WebGLRenderer({
-
-        antialias:
-            !mobile,
-
-        powerPreference:
-            "high-performance"
-
-    });
+const renderer = new THREE.WebGLRenderer({
+    antialias: !mobile,
+    powerPreference: "high-performance"
+});
 
 renderer.setSize(
-    innerWidth,
-    innerHeight
+    window.innerWidth,
+    window.innerHeight
 );
 
 renderer.setPixelRatio(
-
     Math.min(
-
-        devicePixelRatio,
-
-        mobile
-            ? 1.25
-            : 1.6
-
+        window.devicePixelRatio,
+        mobile ? 1.25 : 1.7
     )
-
 );
 
 renderer.outputColorSpace =
@@ -524,520 +251,494 @@ renderer.outputColorSpace =
 renderer.toneMapping =
     THREE.ACESFilmicToneMapping;
 
-renderer.toneMappingExposure =
-    0.72;
+renderer.toneMappingExposure = 0.78;
 
-renderer.shadowMap.enabled =
-    !mobile;
+renderer.shadowMap.enabled = !mobile;
 
-renderer.shadowMap.type =
-    THREE.PCFSoftShadowMap;
+if (!mobile) {
+    renderer.shadowMap.type =
+        THREE.PCFSoftShadowMap;
+}
 
-document
-    .querySelector("#stage")
-    .appendChild(
-        renderer.domElement
-    );
-
-
-/* ==================================================
-   LIGHTING
-================================================== */
-
-scene.add(
-
-    new THREE.HemisphereLight(
-
-        0x8aa49a,
-
-        0x101008,
-
-        1.15
-
-    )
-
+document.body.prepend(
+    renderer.domElement
 );
 
 
-const sun =
+/* ============================================================
+   LIGHT
+============================================================ */
+
+/*
+    Cool ambient forest light.
+*/
+const hemi = new THREE.HemisphereLight(
+    0xa9b9ad,
+    0x10140d,
+    0.72
+);
+
+scene.add(hemi);
+
+
+/*
+    Warm low sun from the side.
+*/
+const sunLight =
     new THREE.DirectionalLight(
-
-        0xffc07a,
-
-        2.0
-
+        0xffc47c,
+        mobile ? 2.0 : 2.8
     );
 
-sun.position.set(
-    -18,
-    24,
-    -35
+sunLight.position.set(
+    38,
+    34,
+    -95
 );
+
+sunLight.target.position.set(
+    0,
+    3,
+    -120
+);
+
+scene.add(sunLight);
+scene.add(sunLight.target);
 
 
 if (!mobile) {
 
-    sun.castShadow =
-        true;
+    sunLight.castShadow = true;
 
-    sun.shadow.mapSize.set(
+    sunLight.shadow.mapSize.set(
         1024,
         1024
     );
 
-    sun.shadow.camera.left =
-        -18;
+    sunLight.shadow.camera.left = -35;
+    sunLight.shadow.camera.right = 35;
+    sunLight.shadow.camera.top = 35;
+    sunLight.shadow.camera.bottom = -35;
 
-    sun.shadow.camera.right =
-        18;
-
-    sun.shadow.camera.top =
-        22;
-
-    sun.shadow.camera.bottom =
-        -10;
-
+    sunLight.shadow.camera.near = 1;
+    sunLight.shadow.camera.far = 150;
 }
 
-scene.add(sun);
 
-
-/* ==================================================
+/* ============================================================
    TERRAIN
-================================================== */
+============================================================ */
 
-function terrainHeight(
-    x,
-    z
-) {
+function terrainHeight(x, z) {
 
     return (
-
-        Math.sin(
-            x * 0.12
-        ) * 0.32
-
-        +
-
-        Math.sin(
-            z * 0.055
-        ) * 0.48
-
-        +
-
-        Math.sin(
-            (x + z) *
-            0.038
-        ) * 0.25
-
+        Math.sin(x * 0.095) * 0.75 +
+        Math.cos(z * 0.055) * 0.8 +
+        Math.sin((x + z) * 0.035) * 0.6
     );
-
 }
 
 
-const terrainGeometry =
+const terrainGeo =
     new THREE.PlaneGeometry(
-
-        72,
-        230,
-        34,
-        110
-
+        105,
+        265,
+        75,
+        150
     );
 
-terrainGeometry.rotateX(
+terrainGeo.rotateX(
     -Math.PI / 2
 );
 
-
-const terrainPosition =
-    terrainGeometry
-        .attributes
-        .position;
-
+const terrainPos =
+    terrainGeo.attributes.position;
 
 for (
     let i = 0;
-    i <
-    terrainPosition.count;
+    i < terrainPos.count;
     i++
 ) {
 
-    const x =
-        terrainPosition
-            .getX(i);
+    const x = terrainPos.getX(i);
+    const z = terrainPos.getZ(i);
 
-    const z =
-        terrainPosition
-            .getZ(i);
+    /*
+        Create a subtle valley/path
+        through the middle.
+    */
 
-    terrainPosition.setY(
+    const valley =
+        Math.exp(
+            -(x * x) / 48
+        ) * -0.8;
 
-        i,
+    const y =
+        terrainHeight(x, z) +
+        valley;
 
-        terrainHeight(
-            x,
-            z
-        )
-
-    );
-
+    terrainPos.setY(i, y);
 }
 
-terrainGeometry
-    .computeVertexNormals();
+terrainGeo.computeVertexNormals();
+
+
+const terrainMat =
+    new THREE.MeshStandardMaterial({
+        color: 0x263023,
+        roughness: 1,
+        metalness: 0
+    });
 
 
 const terrain =
     new THREE.Mesh(
-
-        terrainGeometry,
-
-        new THREE.MeshStandardMaterial({
-
-            color:
-                0x10160e,
-
-            roughness:
-                1
-
-        })
-
+        terrainGeo,
+        terrainMat
     );
 
-terrain.position.z =
-    -94;
+terrain.position.z = -105;
 
-terrain.receiveShadow =
-    !mobile;
+terrain.receiveShadow = true;
 
-scene.add(
-    terrain
+scene.add(terrain);
+
+
+/* ============================================================
+   PATH
+============================================================ */
+
+const pathGeo =
+    new THREE.PlaneGeometry(
+        5.5,
+        230,
+        1,
+        80
+    );
+
+pathGeo.rotateX(-Math.PI / 2);
+
+const pathMat =
+    new THREE.MeshStandardMaterial({
+        color: 0x342d22,
+        roughness: 1
+    });
+
+const path =
+    new THREE.Mesh(
+        pathGeo,
+        pathMat
+    );
+
+path.position.set(
+    0,
+    -0.42,
+    -102
 );
 
-
-/* ==================================================
-   ASSET LOADING
-================================================== */
-
-const manager =
-    new THREE.LoadingManager();
+scene.add(path);
 
 
-manager.onStart =
-function () {
+/* ============================================================
+   SUN DISC
+============================================================ */
 
-    pct.textContent =
-        "LOADING ASSETS...";
+const sunMat =
+    new THREE.SpriteMaterial({
+        color: 0xffd59b,
+        transparent: true,
+        opacity: .82,
+        depthWrite: false
+    });
 
-};
-
-
-manager.onProgress =
-function (
-    url,
-    loaded,
-    total
-) {
-
-    const progress =
-        total > 0
-            ? Math.round(
-                loaded /
-                total *
-                100
-            )
-            : 0;
-
-    fill.style.width =
-        progress + "%";
-
-    pct.textContent =
-        progress + "%";
-
-};
-
-
-manager.onError =
-function (url) {
-
-    console.error(
-        "Failed:",
-        url
+const sun =
+    new THREE.Sprite(
+        sunMat
     );
 
+sun.position.set(
+    28,
+    29,
+    -150
+);
+
+sun.scale.set(
+    12,
+    12,
+    1
+);
+
+scene.add(sun);
+
+
+/* ============================================================
+   LOADING
+============================================================ */
+
+const loadingManager =
+    new THREE.LoadingManager();
+
+const loadProgress =
+    document.getElementById(
+        "loadprogress"
+    );
+
+loadingManager.onProgress =
+(url, loaded, total) => {
+
+    loadProgress.style.width =
+        `${(loaded / total) * 100}%`;
 };
 
 
 const gltfLoader =
     new GLTFLoader(
-        manager
+        loadingManager
     );
 
 
-function loadModel(url) {
+function loadGLTF(url) {
 
     return new Promise(
-        (
-            resolve,
-            reject
-        ) => {
+        (resolve, reject) => {
 
             gltfLoader.load(
-
                 url,
-
-                gltf => {
-
-                    resolve(
-                        gltf.scene
-                    );
-
-                },
-
+                gltf => resolve(
+                    gltf.scene
+                ),
                 undefined,
-
-                error => {
-
-                    reject(
-                        new Error(
-                            "Could not load " +
-                            url +
-                            " — " +
-                            (
-                                error?.message ||
-                                "unknown error"
-                            )
-                        )
-                    );
-
-                }
-
+                reject
             );
 
         }
     );
-
 }
 
 
-/* ==================================================
-   LOAD FOREST ASSETS
-================================================== */
+/* ============================================================
+   SEEDED RANDOM
+============================================================ */
 
-const ASSETS =
-    "./assets/";
+let seed = 918273;
+
+function random() {
+
+    seed =
+        (seed * 16807) %
+        2147483647;
+
+    return (
+        seed - 1
+    ) / 2147483646;
+}
 
 
-let pine1;
-let pine3;
-let pine5;
+function rand(min, max) {
 
-let fern;
-let grass;
+    return (
+        min +
+        random() *
+        (max - min)
+    );
+}
 
-let rock1;
-let rock2;
 
+/* ============================================================
+   MODEL HELPERS
+============================================================ */
+
+function prepareModel(
+    model,
+    shadows = false
+) {
+
+    model.traverse(
+        child => {
+
+            if (child.isMesh) {
+
+                child.castShadow =
+                    shadows &&
+                    !mobile;
+
+                child.receiveShadow =
+                    shadows &&
+                    !mobile;
+
+                /*
+                    Avoid overly shiny
+                    stylized materials.
+                */
+
+                if (child.material) {
+
+                    child.material =
+                        child.material.clone();
+
+                    child.material.roughness =
+                        1;
+
+                    child.material.metalness =
+                        0;
+                }
+            }
+        }
+    );
+
+    return model;
+}
+
+
+function cloneModel(model) {
+
+    return model.clone(true);
+}
+
+
+/* ============================================================
+   FOREST
+============================================================ */
+
+async function buildForest() {
 
 try {
 
-    [
+const [
 
-        pine1,
-        pine3,
-        pine5,
-
-        fern,
-        grass,
-
-        rock1,
-        rock2
-
-    ] = await Promise.all([
-
-        "Pine_1.gltf",
-
-        "Pine_3.gltf",
-
-        "Pine_5.gltf",
-
-        "Fern_1.gltf",
-
-        "Grass_Common_Short.gltf",
-
-        "Rock_Medium_1.gltf",
-
-        "Rock_Medium_2.gltf"
-
-    ].map(
-
-        file =>
-            loadModel(
-                ASSETS +
-                file
-            )
-
-    ));
-
-}
-catch (error) {
-
-    showError(error);
-
-    throw error;
-
-}
-
-
-/* ==================================================
-   MATERIAL PREPARATION
-================================================== */
-
-[
     pine1,
     pine3,
-    pine5
-
-].forEach(root => {
-
-    root.traverse(
-        object => {
-
-            if (
-                object.isMesh
-            ) {
-
-                object.castShadow =
-                    !mobile;
-
-                object.receiveShadow =
-                    !mobile;
-
-                if (
-                    object.material
-                ) {
-
-                    object.material.alphaTest =
-                        0.35;
-
-                    object.material.side =
-                        THREE.DoubleSide;
-
-                }
-
-            }
-
-        }
-    );
-
-});
-
-
-[
+    pine5,
     fern,
-    grass
-
-].forEach(root => {
-
-    root.traverse(
-        object => {
-
-            if (
-                object.isMesh
-            ) {
-
-                object.castShadow =
-                    false;
-
-                object.receiveShadow =
-                    false;
-
-                if (
-                    object.material
-                ) {
-
-                    object.material.alphaTest =
-                        0.4;
-
-                    object.material.side =
-                        THREE.DoubleSide;
-
-                }
-
-            }
-
-        }
-    );
-
-});
-
-
-[
+    grass,
     rock1,
     rock2
 
-].forEach(root => {
+] = await Promise.all([
 
-    root.traverse(
-        object => {
+    loadGLTF(
+        "./assets/Pine_1.gltf"
+    ),
 
-            if (
-                object.isMesh
-            ) {
+    loadGLTF(
+        "./assets/Pine_3.gltf"
+    ),
 
-                object.castShadow =
-                    !mobile;
+    loadGLTF(
+        "./assets/Pine_5.gltf"
+    ),
 
-                object.receiveShadow =
-                    !mobile;
+    loadGLTF(
+        "./assets/Fern_1.gltf"
+    ),
 
-            }
+    loadGLTF(
+        "./assets/Grass_Common_Short.gltf"
+    ),
 
-        }
-    );
+    loadGLTF(
+        "./assets/Rock_Medium_1.gltf"
+    ),
 
-});
+    loadGLTF(
+        "./assets/Rock_Medium_2.gltf"
+    )
+
+]);
 
 
-/* ==================================================
-   DETERMINISTIC RANDOM
-================================================== */
+const trees = [
+    prepareModel(pine1, true),
+    prepareModel(pine3, true),
+    prepareModel(pine5, true)
+];
 
-function seeded(n) {
+prepareModel(fern);
+prepareModel(grass);
+
+prepareModel(rock1, true);
+prepareModel(rock2, true);
+
+
+/* ============================================================
+   FOREGROUND TREES
+============================================================ */
+
+/*
+    Large trees close to camera.
+    These are extremely important:
+    they frame the image and create scale.
+*/
+
+const foregroundTrees =
+mobile ? 6 : 10;
+
+for (
+    let i = 0;
+    i < foregroundTrees;
+    i++
+) {
+
+    const side =
+        i % 2 === 0
+            ? -1
+            : 1;
+
+    const tree =
+        cloneModel(
+            trees[
+                Math.floor(
+                    random() *
+                    trees.length
+                )
+            ]
+        );
 
     const x =
-        Math.sin(
-            n * 9283.17
-        ) *
-        43758.5453;
+        side *
+        rand(8, 18);
 
-    return (
-        x -
-        Math.floor(x)
+    const z =
+        rand(
+            -10,
+            -48
+        );
+
+    tree.position.set(
+        x,
+        terrainHeight(
+            x,
+            z + 105
+        ),
+        z
     );
 
+    const scale =
+        rand(
+            2.8,
+            4.8
+        );
+
+    tree.scale.setScalar(
+        scale
+    );
+
+    tree.rotation.y =
+        rand(
+            0,
+            Math.PI * 2
+        );
+
+    scene.add(tree);
 }
 
 
-/* ==================================================
-   TREES
-================================================== */
-
-const treeModels = [
-
-    pine1,
-    pine3,
-    pine5
-
-];
-
+/* ============================================================
+   MAIN FOREST
+============================================================ */
 
 const treeCount =
-    mobile
-        ? 62
-        : 92;
-
+    mobile ? 115 : 210;
 
 for (
     let i = 0;
@@ -1045,225 +746,306 @@ for (
     i++
 ) {
 
-    const r1 =
-        seeded(
-            i + 1
+    const tree =
+        cloneModel(
+            trees[
+                Math.floor(
+                    random() *
+                    trees.length
+                )
+            ]
         );
-
-    const r2 =
-        seeded(
-            i + 101
-        );
-
-    const r3 =
-        seeded(
-            i + 301
-        );
-
-
-    const side =
-        r1 > 0.5
-            ? 1
-            : -1;
-
-
-    let x =
-        side *
-        (
-            4.3 +
-            r2 * 24
-        );
-
 
     const z =
-        10 -
-        r3 * 205;
-
+        rand(
+            -25,
+            -225
+        );
 
     /*
-       Clearings reserved
-       for 3D text.
+        Keep central path
+        partially clear.
     */
 
+    let x;
+
     if (
-        (
-            z < -47 &&
-            z > -72
-        )
-        ||
-        (
-            z < -120 &&
-            z > -143
-        )
+        random() < .68
     ) {
 
-        x *= 1.28;
+        const side =
+            random() < .5
+                ? -1
+                : 1;
 
+        x =
+            side *
+            rand(
+                5,
+                36
+            );
+
+    } else {
+
+        x =
+            rand(
+                -42,
+                42
+            );
     }
 
 
-    const tree =
-        treeModels[
-            i % 3
-        ].clone(true);
+    const distance =
+        Math.abs(z);
 
 
-    const scale =
-        0.72 +
-        seeded(
-            i + 501
-        ) *
-        1.15;
+    let scale;
 
+    if (distance < 70) {
+
+        scale =
+            rand(
+                1.45,
+                2.7
+            );
+
+    } else {
+
+        scale =
+            rand(
+                1.1,
+                2.3
+            );
+    }
+
+
+    tree.position.set(
+        x,
+        terrainHeight(
+            x,
+            z + 105
+        ),
+        z
+    );
 
     tree.scale.setScalar(
         scale
     );
 
-
     tree.rotation.y =
-        seeded(
-            i + 701
-        ) *
-        Math.PI *
-        2;
+        rand(
+            0,
+            Math.PI * 2
+        );
 
-
-    tree.rotation.z =
-        (
-            seeded(
-                i + 801
-            ) -
-            0.5
-        ) *
-        0.035;
-
-
-    tree.position.set(
-
-        x,
-
-        terrainHeight(
-            x,
-            z + 94
-        ),
-
-        z
-
-    );
-
-
-    scene.add(
-        tree
-    );
-
+    scene.add(tree);
 }
 
 
-/* ==================================================
-   UNDERGROWTH
-================================================== */
+/* ============================================================
+   DISTANT FOREST
+============================================================ */
 
-const plantCount =
-    mobile
-        ? 45
-        : 90;
+/*
+    Smaller models in background.
+    Fog hides detail and creates
+    apparent density.
+*/
 
+const distantCount =
+    mobile ? 70 : 150;
 
 for (
     let i = 0;
-    i < plantCount;
+    i < distantCount;
     i++
 ) {
 
-    const z =
-        8 -
-        seeded(
-            i + 900
-        ) *
-        205;
-
+    const tree =
+        cloneModel(
+            trees[
+                Math.floor(
+                    random() *
+                    trees.length
+                )
+            ]
+        );
 
     const x =
-        (
-            seeded(
-                i + 1000
-            ) -
-            0.5
-        ) *
-        32;
+        rand(
+            -65,
+            65
+        );
 
+    const z =
+        rand(
+            -165,
+            -270
+        );
 
-    if (
-        Math.abs(x) <
-        2.2
-    ) {
-
-        continue;
-
-    }
-
-
-    const plant =
-        (
-            i % 3 === 0
-                ? fern
-                : grass
-        ).clone(true);
-
-
-    const scale =
-        0.45 +
-        seeded(
-            i + 1100
-        ) *
-        0.75;
-
-
-    plant.scale.setScalar(
-        scale
-    );
-
-
-    plant.rotation.y =
-        seeded(
-            i + 1200
-        ) *
-        Math.PI *
-        2;
-
-
-    plant.position.set(
-
+    tree.position.set(
         x,
-
         terrainHeight(
             x,
-            z + 94
-        ) +
-        0.03,
-
+            z + 105
+        ),
         z
-
     );
 
-
-    scene.add(
-        plant
+    tree.scale.setScalar(
+        rand(
+            .7,
+            1.7
+        )
     );
 
+    tree.rotation.y =
+        rand(
+            0,
+            Math.PI * 2
+        );
+
+    scene.add(tree);
 }
 
 
-/* ==================================================
+/* ============================================================
+   FERNS
+============================================================ */
+
+const fernCount =
+    mobile ? 100 : 240;
+
+for (
+    let i = 0;
+    i < fernCount;
+    i++
+) {
+
+    const f =
+        cloneModel(
+            fern
+        );
+
+    const z =
+        rand(
+            -8,
+            -215
+        );
+
+    let x =
+        rand(
+            -32,
+            32
+        );
+
+    /*
+        More vegetation near
+        the edges of the path.
+    */
+
+    if (
+        Math.abs(x) < 3
+    ) {
+
+        x +=
+            x < 0
+                ? -3
+                : 3;
+    }
+
+    f.position.set(
+        x,
+        terrainHeight(
+            x,
+            z + 105
+        ) + .02,
+        z
+    );
+
+    const s =
+        rand(
+            .55,
+            1.7
+        );
+
+    f.scale.setScalar(s);
+
+    f.rotation.y =
+        rand(
+            0,
+            Math.PI * 2
+        );
+
+    scene.add(f);
+}
+
+
+/* ============================================================
+   GRASS
+============================================================ */
+
+const grassCount =
+    mobile ? 100 : 260;
+
+for (
+    let i = 0;
+    i < grassCount;
+    i++
+) {
+
+    const g =
+        cloneModel(
+            grass
+        );
+
+    const x =
+        rand(
+            -35,
+            35
+        );
+
+    const z =
+        rand(
+            -8,
+            -220
+        );
+
+    g.position.set(
+        x,
+        terrainHeight(
+            x,
+            z + 105
+        ),
+        z
+    );
+
+    g.scale.setScalar(
+        rand(
+            .5,
+            1.5
+        )
+    );
+
+    g.rotation.y =
+        rand(
+            0,
+            Math.PI * 2
+        );
+
+    scene.add(g);
+}
+
+
+/* ============================================================
    ROCKS
-================================================== */
+============================================================ */
+
+const rocks =
+    [rock1, rock2];
 
 const rockCount =
-    mobile
-        ? 14
-        : 24;
-
+    mobile ? 28 : 55;
 
 for (
     let i = 0;
@@ -1271,92 +1053,461 @@ for (
     i++
 ) {
 
+    const rock =
+        cloneModel(
+            rocks[
+                Math.floor(
+                    random() *
+                    rocks.length
+                )
+            ]
+        );
+
+    let x =
+        rand(
+            -30,
+            30
+        );
+
     const z =
-        4 -
-        seeded(
-            i + 1300
-        ) *
-        200;
-
-
-    const x =
-        (
-            seeded(
-                i + 1400
-            ) -
-            0.5
-        ) *
-        28;
-
+        rand(
+            -5,
+            -210
+        );
 
     if (
-        Math.abs(x) <
-        2.8
+        Math.abs(x) < 2.8
     ) {
 
-        continue;
-
+        x +=
+            x < 0
+                ? -3
+                : 3;
     }
 
-
-    const rock =
-        (
-            i % 2
-                ? rock1
-                : rock2
-        ).clone(true);
-
-
-    const scale =
-        0.5 +
-        seeded(
-            i + 1500
-        ) *
-        1.4;
-
-
-    rock.scale.setScalar(
-        scale
-    );
-
-
-    rock.rotation.y =
-        seeded(
-            i + 1600
-        ) *
-        Math.PI *
-        2;
-
-
     rock.position.set(
-
         x,
-
         terrainHeight(
             x,
-            z + 94
-        ),
-
+            z + 105
+        ) - .1,
         z
-
     );
 
-
-    scene.add(
-        rock
+    rock.scale.setScalar(
+        rand(
+            .7,
+            2.4
+        )
     );
+
+    rock.rotation.y =
+        rand(
+            0,
+            Math.PI * 2
+        );
+
+    scene.add(rock);
+}
+
+
+/* ============================================================
+   LOADER FINISHED
+============================================================ */
+
+document
+    .getElementById("loader")
+    .style
+    .display = "none";
+
+
+} catch(error) {
+
+    console.error(error);
+
+    document
+        .getElementById("error")
+        .textContent =
+        "FOREST LOAD ERROR — " +
+        error.message;
+}
 
 }
 
 
-/* ==================================================
-   3D TEXT
-================================================== */
+/* ============================================================
+   FOG BANKS
+============================================================ */
 
-function createTextSprite(
+/*
+    These are transparent vertical planes,
+    not expensive true volumetric fog.
+
+    Several overlapping layers create
+    visible moving mist.
+*/
+
+const fogTexture =
+    createFogTexture();
+
+function createFogTexture() {
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+    canvas.width = 512;
+    canvas.height = 256;
+
+    const ctx =
+        canvas.getContext(
+            "2d"
+        );
+
+    const gradient =
+        ctx.createRadialGradient(
+            256,
+            128,
+            10,
+            256,
+            128,
+            245
+        );
+
+    gradient.addColorStop(
+        0,
+        "rgba(255,255,255,.58)"
+    );
+
+    gradient.addColorStop(
+        .35,
+        "rgba(235,245,240,.32)"
+    );
+
+    gradient.addColorStop(
+        1,
+        "rgba(255,255,255,0)"
+    );
+
+    ctx.fillStyle =
+        gradient;
+
+    ctx.fillRect(
+        0,
+        0,
+        512,
+        256
+    );
+
+    const texture =
+        new THREE.CanvasTexture(
+            canvas
+        );
+
+    return texture;
+}
+
+
+const fogBanks = [];
+
+const fogCount =
+    mobile ? 14 : 28;
+
+for (
+    let i = 0;
+    i < fogCount;
+    i++
+) {
+
+    const material =
+        new THREE.MeshBasicMaterial({
+
+            map: fogTexture,
+
+            transparent: true,
+
+            opacity:
+                rand(
+                    .045,
+                    .13
+                ),
+
+            depthWrite: false,
+
+            blending:
+                THREE.NormalBlending,
+
+            side:
+                THREE.DoubleSide
+        });
+
+
+    const plane =
+        new THREE.Mesh(
+
+            new THREE.PlaneGeometry(
+                rand(28, 55),
+                rand(8, 18)
+            ),
+
+            material
+        );
+
+
+    plane.position.set(
+
+        rand(
+            -25,
+            25
+        ),
+
+        rand(
+            2,
+            8
+        ),
+
+        rand(
+            -25,
+            -220
+        )
+
+    );
+
+
+    plane.rotation.y =
+        rand(
+            -.2,
+            .2
+        );
+
+
+    plane.userData.speed =
+        rand(
+            .03,
+            .09
+        );
+
+
+    plane.userData.baseX =
+        plane.position.x;
+
+
+    plane.userData.offset =
+        rand(
+            0,
+            Math.PI * 2
+        );
+
+
+    fogBanks.push(
+        plane
+    );
+
+    scene.add(
+        plane
+    );
+}
+
+
+/* ============================================================
+   LIGHT SHAFTS
+============================================================ */
+
+function createLightShaft(
+    x,
+    y,
+    z,
+    rotation
+) {
+
+    const geometry =
+        new THREE.ConeGeometry(
+            9,
+            65,
+            24,
+            1,
+            true
+        );
+
+
+    const material =
+        new THREE.MeshBasicMaterial({
+
+            color:
+                0xffd6a0,
+
+            transparent:
+                true,
+
+            opacity:
+                mobile
+                    ? .018
+                    : .028,
+
+            depthWrite:
+                false,
+
+            side:
+                THREE.DoubleSide,
+
+            blending:
+                THREE.AdditiveBlending
+        });
+
+
+    const shaft =
+        new THREE.Mesh(
+            geometry,
+            material
+        );
+
+
+    shaft.position.set(
+        x,
+        y,
+        z
+    );
+
+
+    shaft.rotation.z =
+        rotation;
+
+
+    scene.add(
+        shaft
+    );
+
+
+    return shaft;
+}
+
+
+const shafts = [
+
+    createLightShaft(
+        23,
+        24,
+        -105,
+        -.36
+    ),
+
+    createLightShaft(
+        29,
+        22,
+        -135,
+        -.42
+    ),
+
+    createLightShaft(
+        19,
+        20,
+        -165,
+        -.32
+    )
+
+];
+
+
+/* ============================================================
+   PARTICLES
+============================================================ */
+
+const particleCount =
+    mobile ? 220 : 600;
+
+const particleGeo =
+    new THREE.BufferGeometry();
+
+const particlePositions =
+    new Float32Array(
+        particleCount * 3
+    );
+
+
+for (
+    let i = 0;
+    i < particleCount;
+    i++
+) {
+
+    particlePositions[
+        i * 3
+    ] =
+        rand(
+            -35,
+            35
+        );
+
+    particlePositions[
+        i * 3 + 1
+    ] =
+        rand(
+            .5,
+            16
+        );
+
+    particlePositions[
+        i * 3 + 2
+    ] =
+        rand(
+            -10,
+            -210
+        );
+}
+
+
+particleGeo.setAttribute(
+    "position",
+    new THREE.BufferAttribute(
+        particlePositions,
+        3
+    )
+);
+
+
+const particleMat =
+    new THREE.PointsMaterial({
+
+        color:
+            0xffe6ba,
+
+        size:
+            mobile
+                ? .055
+                : .075,
+
+        transparent:
+            true,
+
+        opacity:
+            .3,
+
+        depthWrite:
+            false
+    });
+
+
+const particles =
+    new THREE.Points(
+        particleGeo,
+        particleMat
+    );
+
+
+scene.add(
+    particles
+);
+
+
+/* ============================================================
+   TEXT INSIDE WORLD
+============================================================ */
+
+function createWorldText(
     lines,
     z,
-    y = 5.2,
+    y,
     scale = 1
 ) {
 
@@ -1365,56 +1516,46 @@ function createTextSprite(
             "canvas"
         );
 
-    canvas.width =
-        1400;
+    canvas.width = 1024;
+    canvas.height = 300;
 
-    canvas.height =
-        420;
-
-
-    const context =
+    const ctx =
         canvas.getContext(
             "2d"
         );
 
-
-    context.clearRect(
+    ctx.clearRect(
         0,
         0,
         canvas.width,
         canvas.height
     );
 
-
-    context.textAlign =
+    ctx.textAlign =
         "center";
 
-    context.textBaseline =
+    ctx.textBaseline =
         "middle";
 
-    context.font =
-        "600 68px monospace";
+    ctx.font =
+        "bold 56px monospace";
 
-    context.fillStyle =
-        "rgba(235,244,238,.96)";
+    ctx.fillStyle =
+        "rgba(235,240,235,.76)";
 
 
-    lines.forEach(
-        (
-            line,
-            index
-        ) => {
+    const lineArray =
+        lines.split("\n");
 
-            context.fillText(
 
+    lineArray.forEach(
+        (line, index) => {
+
+            ctx.fillText(
                 line,
-
-                700,
-
-                155 +
-                index *
-                92
-
+                512,
+                105 +
+                index * 72
             );
 
         }
@@ -1425,6 +1566,7 @@ function createTextSprite(
         new THREE.CanvasTexture(
             canvas
         );
+
 
     texture.colorSpace =
         THREE.SRGBColorSpace;
@@ -1446,8 +1588,7 @@ function createTextSprite(
                 false,
 
             opacity:
-                0
-
+                .82
         });
 
 
@@ -1465,13 +1606,9 @@ function createTextSprite(
 
 
     sprite.scale.set(
-
-        16 * scale,
-
-        4.8 * scale,
-
+        17 * scale,
+        5 * scale,
         1
-
     );
 
 
@@ -1481,666 +1618,401 @@ function createTextSprite(
 
 
     return sprite;
-
 }
 
 
-const texts = [
-
-    createTextSprite(
-        [
-            "THE WEB",
-            "IS NOT FLAT."
-        ],
-        -58,
-        5,
-        0.85
-    ),
-
-    createTextSprite(
-        [
-            "CODE CAN CREATE",
-            "WORLDS."
-        ],
-        -130,
-        5.4,
-        0.9
-    ),
-
-    createTextSprite(
-        [
-            "JOBOSU",
-            "DIGITAL TECHNOLOGY LAB"
-        ],
-        -184,
-        5.7,
-        0.95
-    )
-
-];
-
-
-/* ==================================================
-   ATMOSPHERIC PARTICLES
-================================================== */
-
-const particleCount =
-    mobile
-        ? 300
-        : 650;
-
-
-const particlePositions =
-    new Float32Array(
-        particleCount * 3
+const text1 =
+    createWorldText(
+        "THE WEB\nIS NOT FLAT.",
+        -62,
+        6.5,
+        1
     );
 
 
-for (
-    let i = 0;
-    i < particleCount;
-    i++
-) {
-
-    particlePositions[
-        i * 3
-    ] =
-        (
-            seeded(
-                i + 1700
-            ) -
-            0.5
-        ) *
-        42;
-
-
-    particlePositions[
-        i * 3 + 1
-    ] =
-        seeded(
-            i + 1800
-        ) *
-        9;
-
-
-    particlePositions[
-        i * 3 + 2
-    ] =
-        12 -
-        seeded(
-            i + 1900
-        ) *
-        215;
-
-}
-
-
-const particleGeometry =
-    new THREE.BufferGeometry();
-
-
-particleGeometry.setAttribute(
-
-    "position",
-
-    new THREE.BufferAttribute(
-
-        particlePositions,
-
-        3
-
-    )
-
-);
-
-
-const dust =
-    new THREE.Points(
-
-        particleGeometry,
-
-        new THREE.PointsMaterial({
-
-            color:
-                0xd9e4d7,
-
-            size:
-                mobile
-                    ? 0.035
-                    : 0.045,
-
-            transparent:
-                true,
-
-            opacity:
-                0.28,
-
-            depthWrite:
-                false
-
-        })
-
+const text2 =
+    createWorldText(
+        "CODE CAN CREATE\nWORLDS.",
+        -126,
+        7,
+        1
     );
 
 
-scene.add(
-    dust
-);
-
-
-/* ==================================================
-   SUN DISC
-================================================== */
-
-const sunDisc =
-    new THREE.Mesh(
-
-        new THREE.CircleGeometry(
-            3.1,
-            32
-        ),
-
-        new THREE.MeshBasicMaterial({
-
-            color:
-                0xffd29a,
-
-            transparent:
-                true,
-
-            opacity:
-                0,
-
-            depthWrite:
-                false
-
-        })
-
+const text3 =
+    createWorldText(
+        "JOBOSU\nDIGITAL TECHNOLOGY LAB",
+        -190,
+        7,
+        1.05
     );
 
 
-sunDisc.position.set(
-    -8,
-    15,
-    -196
-);
-
-
-scene.add(
-    sunDisc
-);
-
-
-/* ==================================================
+/* ============================================================
    SCROLL
-================================================== */
+============================================================ */
 
-let progress =
-    0;
-
-let pointerX =
-    0;
-
-let pointerY =
-    0;
+let scrollTarget = 0;
+let scrollCurrent = 0;
 
 
-addEventListener(
-
-    "pointermove",
-
+window.addEventListener(
+    "wheel",
     event => {
 
-        pointerX =
-            event.clientX /
-            innerWidth -
-            0.5;
+        scrollTarget +=
+            event.deltaY *
+            .00065;
 
-        pointerY =
-            event.clientY /
-            innerHeight -
-            0.5;
+        scrollTarget =
+            THREE.MathUtils.clamp(
+                scrollTarget,
+                0,
+                1
+            );
 
     },
-
     {
         passive: true
     }
-
 );
 
 
-function updateScroll() {
+/*
+    Mobile touch navigation
+*/
 
-    const maximum =
-        document.documentElement
-            .scrollHeight -
-        innerHeight;
+let touchY = null;
 
+window.addEventListener(
+    "touchstart",
+    event => {
 
-    progress =
-        maximum
-            ? scrollY /
-              maximum
-            : 0;
+        touchY =
+            event.touches[0].clientY;
 
-
-    document
-        .querySelector("#bar")
-        .style.width =
-            progress *
-            100 +
-            "%";
+    },
+    {
+        passive: true
+    }
+);
 
 
-    const phase =
-        document.querySelector(
-            "#phase"
-        );
+window.addEventListener(
+    "touchmove",
+    event => {
+
+        if (
+            touchY === null
+        ) return;
 
 
-    if (
-        progress <
-        0.28
-    ) {
+        const y =
+            event.touches[0].clientY;
 
-        phase.textContent =
+
+        const delta =
+            touchY - y;
+
+
+        scrollTarget +=
+            delta * .002;
+
+
+        scrollTarget =
+            THREE.MathUtils.clamp(
+                scrollTarget,
+                0,
+                1
+            );
+
+
+        touchY = y;
+
+    },
+    {
+        passive: true
+    }
+);
+
+
+/* ============================================================
+   POINTER PARALLAX
+============================================================ */
+
+let mouseX = 0;
+let mouseY = 0;
+
+
+window.addEventListener(
+    "pointermove",
+    event => {
+
+        mouseX =
+            (
+                event.clientX /
+                window.innerWidth
+                -
+                .5
+            );
+
+        mouseY =
+            (
+                event.clientY /
+                window.innerHeight
+                -
+                .5
+            );
+
+    }
+);
+
+
+/* ============================================================
+   PHASE UI
+============================================================ */
+
+const phaseLabel =
+    document.getElementById(
+        "phase"
+    );
+
+
+function updatePhase(t) {
+
+    if (t < .23) {
+
+        phaseLabel.textContent =
             "FOREST // ENTRY";
 
-    }
+    } else if (t < .52) {
 
-    else if (
-        progress <
-        0.62
-    ) {
-
-        phase.textContent =
+        phaseLabel.textContent =
             "FOREST // MIST";
 
-    }
+    } else if (t < .78) {
 
-    else if (
-        progress <
-        0.86
-    ) {
-
-        phase.textContent =
+        phaseLabel.textContent =
             "FOREST // LIGHT";
 
-    }
+    } else {
 
-    else {
-
-        phase.textContent =
+        phaseLabel.textContent =
             "FOREST // EXIT";
 
     }
-
 }
 
 
-addEventListener(
-
-    "scroll",
-
-    updateScroll,
-
-    {
-        passive: true
-    }
-
-);
-
-
-updateScroll();
-
-
-/* ==================================================
-   HELPERS
-================================================== */
-
-function fadeAt(
-    value,
-    center,
-    width
-) {
-
-    return THREE.MathUtils.clamp(
-
-        1 -
-        Math.abs(
-            value -
-            center
-        ) /
-        width,
-
-        0,
-
-        1
-
-    );
-
-}
-
-
-/* ==================================================
+/* ============================================================
    ANIMATION
-================================================== */
+============================================================ */
 
 const clock =
     new THREE.Clock();
 
 
-function frame() {
+function animate() {
 
     requestAnimationFrame(
-        frame
+        animate
     );
 
 
-    const time =
+    const elapsed =
         clock.getElapsedTime();
 
 
-    const targetZ =
-        16 -
-        progress *
-        202;
+    /*
+        Smooth scroll.
+    */
 
-
-    const targetX =
-        reduced
-            ? 0
-            : pointerX *
-              1.35;
-
-
-    camera.position.x +=
-
+    scrollCurrent +=
         (
-            targetX -
-            camera.position.x
-        ) *
-        0.025;
+            scrollTarget -
+            scrollCurrent
+        ) * .045;
 
 
-    camera.position.z +=
-
-        (
-            targetZ -
-            camera.position.z
-        ) *
-        0.035;
+    const t =
+        scrollCurrent;
 
 
-    const ground =
-        terrainHeight(
+    /*
+        Camera travels almost 200m
+        through the forest.
+    */
 
-            camera.position.x,
-
-            camera.position.z +
-            94
-
+    camera.position.z =
+        THREE.MathUtils.lerp(
+            18,
+            -198,
+            t
         );
 
 
-    camera.position.y +=
+    /*
+        Subtle side movement.
+    */
 
-        (
-            ground +
-            3.15 -
-            pointerY *
-            0.35 -
-            camera.position.y
+    camera.position.x =
+        Math.sin(
+            t *
+            Math.PI *
+            4
         ) *
-        0.04;
+        1.15
+        +
+        mouseX *
+        .65;
 
 
-    camera.lookAt(
-
-        camera.position.x *
-        0.08,
-
-        camera.position.y -
-        0.18,
-
-        camera.position.z -
-        18
-
-    );
-
-
-    /* LIGHT TRANSITION */
-
-    const warmth =
-        THREE.MathUtils
-            .smoothstep(
-                progress,
-                0.48,
-                0.96
-            );
-
-
-    scene.background
-        .lerpColors(
-            cold,
-            warm,
-            warmth
-        );
-
-
-    scene.fog.color
-        .lerpColors(
-            cold,
-            warm,
-            warmth
-        );
-
-
-    scene.fog.density =
-
-        (
-            mobile
-                ? 0.032
-                : 0.027
-        )
-
+    camera.position.y =
+        4.1
+        +
+        Math.sin(
+            t *
+            Math.PI *
+            6
+        ) *
+        .28
         -
-
-        fadeAt(
-            progress,
-            0.58,
-            0.28
-        ) *
-        0.006;
+        mouseY *
+        .18;
 
 
-    sun.intensity =
-        1.6 +
-        warmth *
-        3.1;
+    camera.rotation.y =
+        mouseX *
+        -.025;
 
 
-    sun.color.setRGB(
+    camera.rotation.x =
+        mouseY *
+        -.012;
 
-        1,
 
-        0.66 +
-        0.18 *
-        warmth,
+    /*
+        Moving mist.
+    */
 
-        0.42 +
-        0.18 *
-        warmth
+    fogBanks.forEach(
+        (fog, index) => {
 
+            fog.position.x =
+                fog.userData.baseX +
+                Math.sin(
+                    elapsed *
+                    fog.userData.speed +
+                    fog.userData.offset
+                ) *
+                5;
+
+
+            fog.material.opacity =
+                (
+                    .055 +
+                    Math.sin(
+                        elapsed *
+                        .12 +
+                        index
+                    ) *
+                    .025
+                );
+
+        }
     );
+
+
+    /*
+        Dust movement.
+    */
+
+    particles.rotation.y =
+        Math.sin(
+            elapsed *
+            .025
+        ) *
+        .025;
+
+
+    /*
+        Sun becomes warmer
+        deeper in scene.
+    */
+
+    sunLight.intensity =
+        THREE.MathUtils.lerp(
+            mobile
+                ? 1.8
+                : 2.3,
+
+            mobile
+                ? 2.7
+                : 3.6,
+
+            t
+        );
 
 
     renderer.toneMappingExposure =
-        0.7 +
-        warmth *
-        0.34;
+        THREE.MathUtils.lerp(
+            .68,
+            .9,
+            t
+        );
 
 
-    /* SUN */
+    /*
+        Fog evolves through journey.
+    */
 
-    sunDisc.material.opacity =
-
-        THREE.MathUtils
-            .smoothstep(
-                progress,
-                0.70,
-                0.96
-            ) *
-        0.68;
-
-
-    sunDisc.lookAt(
-        camera.position
-    );
-
-
-    /* TEXT */
-
-    texts[0]
-        .material
-        .opacity =
-            fadeAt(
-                progress,
-                0.31,
-                0.13
-            );
-
-
-    texts[1]
-        .material
-        .opacity =
-            fadeAt(
-                progress,
-                0.67,
-                0.13
-            );
-
-
-    texts[2]
-        .material
-        .opacity =
-            fadeAt(
-                progress,
-                0.93,
-                0.10
-            );
-
-
-    /* PARTICLES */
-
-    dust.position.x =
+    scene.fog.density =
+        .014 +
         Math.sin(
-            time *
-            0.08
+            t *
+            Math.PI
         ) *
-        1.4;
+        .008;
 
 
-    dust.position.y =
-        Math.sin(
-            time *
-            0.11
-        ) *
-        0.12;
+    updatePhase(t);
 
 
     renderer.render(
         scene,
         camera
     );
-
 }
 
 
-/* ==================================================
-   START
-================================================== */
+buildForest();
 
-fill.style.width =
-    "100%";
-
-pct.textContent =
-    "FOREST READY";
+animate();
 
 
-setTimeout(
-    () => {
-
-        loaderScreen
-            .style.opacity =
-            "0";
-
-
-        setTimeout(
-            () => {
-
-                loaderScreen
-                    .remove();
-
-            },
-            850
-        );
-
-    },
-    350
-);
-
-
-frame();
-
-
-/* ==================================================
+/* ============================================================
    RESIZE
-================================================== */
+============================================================ */
 
-addEventListener(
-
+window.addEventListener(
     "resize",
-
     () => {
 
         camera.aspect =
-            innerWidth /
-            innerHeight;
+            window.innerWidth /
+            window.innerHeight;
 
-
-        camera
-            .updateProjectionMatrix();
-
+        camera.updateProjectionMatrix();
 
         renderer.setSize(
-            innerWidth,
-            innerHeight
-        );
-
-
-        renderer.setPixelRatio(
-
-            Math.min(
-
-                devicePixelRatio,
-
-                mobile
-                    ? 1.25
-                    : 1.6
-
-            )
-
+            window.innerWidth,
+            window.innerHeight
         );
 
     }
-
 );
-
 
 </script>
 
 </body>
-
 </html>
