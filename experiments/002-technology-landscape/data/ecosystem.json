@@ -1,0 +1,581 @@
+{
+  "name": "JOBOSU Technology Landscape",
+  "version": "v0.3",
+  "updated": "2026-10-02",
+  "description": "Structural prototype of the global technology ecosystem.",
+  "nodes": [
+    {
+      "id": "capital",
+      "name": "CAPITAL",
+      "category": "capital",
+      "type": "system",
+      "description": "Capital allocation into technology companies, infrastructure and research.",
+      "domains": ["venture capital", "public markets", "infrastructure", "R&D"],
+      "x": 220,
+      "y": 330,
+      "radius": 46
+    },
+    {
+      "id": "venture-capital",
+      "name": "VENTURE CAPITAL",
+      "category": "capital",
+      "type": "capital",
+      "description": "Private investment financing emerging technology companies.",
+      "domains": ["startups", "AI", "robotics", "biotech", "frontier"],
+      "x": 90,
+      "y": 430,
+      "radius": 27
+    },
+    {
+      "id": "public-markets",
+      "name": "PUBLIC MARKETS",
+      "category": "capital",
+      "type": "capital",
+      "description": "Public equity markets providing capital and liquidity for listed companies.",
+      "domains": ["equities", "technology", "infrastructure"],
+      "x": 250,
+      "y": 500,
+      "radius": 28
+    },
+    {
+      "id": "hyperscaler-capex",
+      "name": "AI CAPEX",
+      "category": "capital",
+      "type": "capital",
+      "description": "Capital expenditure directed toward datacenters, accelerators, networking and AI infrastructure.",
+      "domains": ["datacenters", "compute", "energy", "AI"],
+      "x": 330,
+      "y": 205,
+      "radius": 29
+    },
+
+    {
+      "id": "energy",
+      "name": "ENERGY",
+      "category": "energy",
+      "type": "system",
+      "description": "Energy generation, storage and delivery supporting digital and industrial infrastructure.",
+      "domains": ["electricity", "grid", "datacenters", "industry"],
+      "x": 430,
+      "y": 465,
+      "radius": 45
+    },
+    {
+      "id": "nuclear",
+      "name": "NUCLEAR FISSION",
+      "category": "energy",
+      "type": "technology",
+      "description": "Commercial nuclear fission and advanced reactor technologies.",
+      "domains": ["fission", "electricity", "advanced nuclear"],
+      "x": 400,
+      "y": 610,
+      "radius": 29
+    },
+    {
+      "id": "smr",
+      "name": "SMR",
+      "category": "energy",
+      "type": "emerging",
+      "description": "Small modular reactor concepts intended to reduce plant size and enable modular deployment.",
+      "domains": ["nuclear", "SMR", "energy"],
+      "x": 300,
+      "y": 690,
+      "radius": 24
+    },
+    {
+      "id": "solar",
+      "name": "SOLAR",
+      "category": "energy",
+      "type": "technology",
+      "description": "Photovoltaic technologies converting sunlight into electricity.",
+      "domains": ["photovoltaics", "electricity"],
+      "x": 510,
+      "y": 590,
+      "radius": 25
+    },
+    {
+      "id": "storage",
+      "name": "ENERGY STORAGE",
+      "category": "energy",
+      "type": "technology",
+      "description": "Battery and long-duration storage technologies for balancing energy supply and demand.",
+      "domains": ["batteries", "grid", "storage"],
+      "x": 545,
+      "y": 680,
+      "radius": 27
+    },
+
+    {
+      "id": "compute",
+      "name": "COMPUTE",
+      "category": "compute",
+      "type": "system",
+      "description": "Semiconductors, accelerators, datacenters and networking providing computational capacity.",
+      "domains": ["semiconductors", "GPU", "datacenters", "networking"],
+      "x": 600,
+      "y": 330,
+      "radius": 48
+    },
+    {
+      "id": "tsmc",
+      "name": "TSMC",
+      "category": "compute",
+      "type": "company",
+      "country": "Taiwan",
+      "ticker": "NYSE: TSM",
+      "description": "Semiconductor foundry manufacturing advanced chips for technology companies.",
+      "domains": ["semiconductors", "foundry", "advanced nodes"],
+      "x": 530,
+      "y": 175,
+      "radius": 28
+    },
+    {
+      "id": "nvidia",
+      "name": "NVIDIA",
+      "category": "compute",
+      "type": "company",
+      "country": "United States",
+      "ticker": "NASDAQ: NVDA",
+      "description": "Accelerated-computing company developing GPUs, networking and AI infrastructure platforms.",
+      "domains": ["GPU", "AI", "datacenter", "robotics", "automotive"],
+      "x": 680,
+      "y": 180,
+      "radius": 32
+    },
+    {
+      "id": "amd",
+      "name": "AMD",
+      "category": "compute",
+      "type": "company",
+      "country": "United States",
+      "ticker": "NASDAQ: AMD",
+      "description": "Semiconductor company developing CPUs, GPUs and datacenter accelerators.",
+      "domains": ["CPU", "GPU", "datacenter"],
+      "x": 765,
+      "y": 250,
+      "radius": 27
+    },
+    {
+      "id": "datacenters",
+      "name": "DATACENTERS",
+      "category": "compute",
+      "type": "infrastructure",
+      "description": "Physical infrastructure integrating compute, networking, storage, cooling and power.",
+      "domains": ["compute", "networking", "energy", "cooling"],
+      "x": 690,
+      "y": 440,
+      "radius": 34
+    },
+
+    {
+      "id": "ai",
+      "name": "AI / MODELS",
+      "category": "ai",
+      "type": "system",
+      "description": "Artificial intelligence models and the organizations developing them.",
+      "domains": ["foundation models", "multimodal", "reasoning", "agents"],
+      "x": 860,
+      "y": 350,
+      "radius": 48
+    },
+    {
+      "id": "openai",
+      "name": "OPENAI",
+      "category": "ai",
+      "type": "company",
+      "country": "United States",
+      "description": "Artificial intelligence company developing foundation models and AI products.",
+      "domains": ["language", "multimodal", "reasoning", "agents"],
+      "x": 875,
+      "y": 170,
+      "radius": 30
+    },
+    {
+      "id": "anthropic",
+      "name": "ANTHROPIC",
+      "category": "ai",
+      "type": "company",
+      "country": "United States",
+      "description": "Artificial intelligence company developing the Claude family of models.",
+      "domains": ["language", "reasoning", "agents"],
+      "x": 1000,
+      "y": 260,
+      "radius": 29
+    },
+    {
+      "id": "google-deepmind",
+      "name": "GOOGLE DEEPMIND",
+      "category": "ai",
+      "type": "organization",
+      "country": "United Kingdom / United States",
+      "description": "Google AI research organization working across foundation models, science and general-purpose AI.",
+      "domains": ["Gemini", "science", "multimodal", "agents"],
+      "x": 990,
+      "y": 420,
+      "radius": 30
+    },
+    {
+      "id": "meta-ai",
+      "name": "META AI",
+      "category": "ai",
+      "type": "organization",
+      "country": "United States",
+      "description": "Artificial intelligence research and product development within Meta.",
+      "domains": ["Llama", "open models", "multimodal"],
+      "x": 875,
+      "y": 520,
+      "radius": 28
+    },
+    {
+      "id": "xai",
+      "name": "xAI",
+      "category": "ai",
+      "type": "company",
+      "country": "United States",
+      "description": "Artificial intelligence company developing the Grok family and large-scale AI infrastructure.",
+      "domains": ["foundation models", "compute", "agents"],
+      "x": 1080,
+      "y": 350,
+      "radius": 27
+    },
+    {
+      "id": "mistral",
+      "name": "MISTRAL AI",
+      "category": "ai",
+      "type": "company",
+      "country": "France",
+      "description": "European artificial intelligence company developing language and multimodal models.",
+      "domains": ["language", "open models", "multimodal"],
+      "x": 950,
+      "y": 590,
+      "radius": 27
+    },
+    {
+      "id": "deepseek",
+      "name": "DEEPSEEK",
+      "category": "ai",
+      "type": "company",
+      "country": "China",
+      "description": "Chinese artificial intelligence organization developing foundation and reasoning models.",
+      "domains": ["language", "reasoning", "open models"],
+      "x": 1090,
+      "y": 515,
+      "radius": 27
+    },
+
+    {
+      "id": "robotics",
+      "name": "ROBOTICS",
+      "category": "robotics",
+      "type": "system",
+      "description": "Physical machines combining perception, intelligence, actuation and autonomy.",
+      "domains": ["industrial", "humanoid", "autonomous systems", "embodied AI"],
+      "x": 1210,
+      "y": 520,
+      "radius": 42
+    },
+    {
+      "id": "humanoids",
+      "name": "HUMANOIDS",
+      "category": "robotics",
+      "type": "emerging",
+      "description": "Human-form robots designed for increasingly general physical tasks.",
+      "domains": ["embodied AI", "manipulation", "automation"],
+      "x": 1320,
+      "y": 620,
+      "radius": 28
+    },
+
+    {
+      "id": "biomed",
+      "name": "BIOMED",
+      "category": "biomed",
+      "type": "system",
+      "description": "Technology applied to biology, medicine, diagnostics and drug discovery.",
+      "domains": ["biology", "medicine", "drug discovery", "AI"],
+      "x": 1190,
+      "y": 170,
+      "radius": 38
+    },
+
+    {
+      "id": "mobility",
+      "name": "MOBILITY",
+      "category": "mobility",
+      "type": "system",
+      "description": "Electric, autonomous and software-defined transportation technologies.",
+      "domains": ["EV", "autonomy", "automotive", "transport"],
+      "x": 1310,
+      "y": 330,
+      "radius": 38
+    },
+
+    {
+      "id": "finance",
+      "name": "FINANCE",
+      "category": "finance",
+      "type": "system",
+      "description": "Digital financial infrastructure, automation and computational finance.",
+      "domains": ["markets", "fintech", "crypto", "automation"],
+      "x": 790,
+      "y": 660,
+      "radius": 36
+    },
+
+    {
+      "id": "frontier",
+      "name": "FRONTIER",
+      "category": "frontier",
+      "type": "system",
+      "description": "Technologies with potentially significant impact but substantial scientific, engineering or commercialization uncertainty.",
+      "domains": ["fusion", "quantum", "photonics", "advanced systems"],
+      "x": 650,
+      "y": 790,
+      "radius": 40
+    },
+    {
+      "id": "fusion",
+      "name": "FUSION",
+      "category": "frontier",
+      "type": "research",
+      "description": "Fusion-energy approaches pursuing controlled fusion for eventual energy generation.",
+      "domains": ["energy", "plasma", "fusion"],
+      "x": 455,
+      "y": 790,
+      "radius": 29
+    },
+    {
+      "id": "quantum",
+      "name": "QUANTUM",
+      "category": "frontier",
+      "type": "emerging",
+      "description": "Quantum computing technologies using quantum-mechanical systems for computation.",
+      "domains": ["quantum computing", "hardware", "algorithms"],
+      "x": 790,
+      "y": 805,
+      "radius": 29
+    },
+    {
+      "id": "photonics",
+      "name": "PHOTONICS",
+      "category": "frontier",
+      "type": "emerging",
+      "description": "Optical technologies with potential applications in communication and computation.",
+      "domains": ["optics", "compute", "networking"],
+      "x": 920,
+      "y": 760,
+      "radius": 28
+    }
+  ],
+
+  "links": [
+    {
+      "source": "venture-capital",
+      "target": "capital",
+      "type": "capital"
+    },
+    {
+      "source": "public-markets",
+      "target": "capital",
+      "type": "capital"
+    },
+    {
+      "source": "hyperscaler-capex",
+      "target": "capital",
+      "type": "capital"
+    },
+
+    {
+      "source": "capital",
+      "target": "energy",
+      "type": "investment"
+    },
+    {
+      "source": "capital",
+      "target": "compute",
+      "type": "investment"
+    },
+    {
+      "source": "capital",
+      "target": "ai",
+      "type": "investment"
+    },
+
+    {
+      "source": "energy",
+      "target": "nuclear",
+      "type": "technology"
+    },
+    {
+      "source": "energy",
+      "target": "solar",
+      "type": "technology"
+    },
+    {
+      "source": "energy",
+      "target": "storage",
+      "type": "technology"
+    },
+    {
+      "source": "nuclear",
+      "target": "smr",
+      "type": "technology"
+    },
+
+    {
+      "source": "energy",
+      "target": "datacenters",
+      "type": "power"
+    },
+
+    {
+      "source": "hyperscaler-capex",
+      "target": "datacenters",
+      "type": "investment"
+    },
+
+    {
+      "source": "tsmc",
+      "target": "nvidia",
+      "type": "manufacturing"
+    },
+    {
+      "source": "tsmc",
+      "target": "amd",
+      "type": "manufacturing"
+    },
+
+    {
+      "source": "nvidia",
+      "target": "compute",
+      "type": "infrastructure"
+    },
+    {
+      "source": "amd",
+      "target": "compute",
+      "type": "infrastructure"
+    },
+
+    {
+      "source": "compute",
+      "target": "datacenters",
+      "type": "infrastructure"
+    },
+    {
+      "source": "compute",
+      "target": "ai",
+      "type": "compute"
+    },
+    {
+      "source": "datacenters",
+      "target": "ai",
+      "type": "compute"
+    },
+
+    {
+      "source": "ai",
+      "target": "openai",
+      "type": "organization"
+    },
+    {
+      "source": "ai",
+      "target": "anthropic",
+      "type": "organization"
+    },
+    {
+      "source": "ai",
+      "target": "google-deepmind",
+      "type": "organization"
+    },
+    {
+      "source": "ai",
+      "target": "meta-ai",
+      "type": "organization"
+    },
+    {
+      "source": "ai",
+      "target": "xai",
+      "type": "organization"
+    },
+    {
+      "source": "ai",
+      "target": "mistral",
+      "type": "organization"
+    },
+    {
+      "source": "ai",
+      "target": "deepseek",
+      "type": "organization"
+    },
+
+    {
+      "source": "ai",
+      "target": "robotics",
+      "type": "application"
+    },
+    {
+      "source": "ai",
+      "target": "biomed",
+      "type": "application"
+    },
+    {
+      "source": "ai",
+      "target": "mobility",
+      "type": "application"
+    },
+    {
+      "source": "ai",
+      "target": "finance",
+      "type": "application"
+    },
+
+    {
+      "source": "nvidia",
+      "target": "robotics",
+      "type": "compute"
+    },
+    {
+      "source": "nvidia",
+      "target": "mobility",
+      "type": "compute"
+    },
+
+    {
+      "source": "robotics",
+      "target": "humanoids",
+      "type": "technology"
+    },
+
+    {
+      "source": "frontier",
+      "target": "fusion",
+      "type": "technology"
+    },
+    {
+      "source": "frontier",
+      "target": "quantum",
+      "type": "technology"
+    },
+    {
+      "source": "frontier",
+      "target": "photonics",
+      "type": "technology"
+    },
+
+    {
+      "source": "nuclear",
+      "target": "fusion",
+      "type": "energy-research"
+    },
+    {
+      "source": "compute",
+      "target": "quantum",
+      "type": "future-compute"
+    },
+    {
+      "source": "compute",
+      "target": "photonics",
+      "type": "future-compute"
+    }
+  ]
+}
