@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>EXP 002 — Technology Landscape | JOBOSU // LAB</title>
+
+  <meta
+    name="description"
+    content="An executable map of the technologies, infrastructure, capital and energy shaping the future."
+  >
+
+  <style>
+    :root {
+      --bg: #050706;
+      --panel: rgba(12, 16, 14, 0.72);
+      --line: rgba(151, 255, 188, 0.12);
+      --line-strong: rgba(151, 255, 188, 0.28);
+
+      --text: #e7eee9;
+      --muted: #77817b;
+      --green: #91ffb5;
+      --green-soft: rgba(145, 255, 181, 0.12);
+
+      --font:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        Menlo,
+        monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      min-height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    /* -------------------------------------------------------
+       BACKGROUND
+    ------------------------------------------------------- */
+
+    .background-grid {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+
+      background-image:
+        linear-gradient(
+          rgba(255,255,255,0.018) 1px,
+          transparent 1px
+        ),
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,0.018) 1px,
+          transparent 1px
+        );
+
+      background-size: 64px 64px;
+
+      mask-image:
+        radial-gradient(
+          circle at center,
+          black 0%,
+          rgba(0,0,0,.6) 45%,
+          transparent 85%
+        );
+    }
+
+    .ambient {
+      position: fixed;
+      width: 700px;
+      height: 700px;
+      left: 50%;
+      top: 45%;
+
+      transform: translate(-50%, -50%);
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(70,255,130,.035),
+          transparent 65%
+        );
+
+      pointer-events: none;
+    }
+
+    /* -------------------------------------------------------
+       APPLICATION
+    ------------------------------------------------------- */
+
+    .app {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: grid;
+
+      grid-template-rows:
+        72px
+        1fr
+        56px;
+    }
+
+    /* -------------------------------------------------------
+       HEADER
+    ------------------------------------------------------- */
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      padding: 0 32px;
+
+      border-bottom: 1px solid var(--line);
+      background: rgba(5,7,6,.72);
+
+      backdrop-filter: blur(12px);
+
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .brand-name {
+      color: var(--green);
+      font-size: 14px;
+      letter-spacing: .12em;
+    }
+
+    .experiment {
+      color: var(--muted);
+      font-size: 11px;
+      letter-spacing: .14em;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .12em;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+
+      background: var(--green);
+
+      box-shadow:
+        0 0 10px rgba(145,255,181,.8);
+    }
+
+    /* -------------------------------------------------------
+       MAIN
+    ------------------------------------------------------- */
+
+    main {
+      position: relative;
+      display: grid;
+
+      grid-template-columns:
+        220px
+        1fr
+        260px;
+
+      min-height: 0;
+    }
+
+    /* -------------------------------------------------------
+       LEFT NAV
+    ------------------------------------------------------- */
+
+    .layers {
+      padding: 34px 24px;
+
+      border-right: 1px solid var(--line);
+
+      background:
+        linear-gradient(
+          90deg,
+          rgba(255,255,255,.012),
+          transparent
+        );
+    }
+
+    .section-label {
+      margin-bottom: 22px;
+
+      color: #515b55;
+
+      font-size: 9px;
+      letter-spacing: .18em;
+    }
+
+    .layer {
+      position: relative;
+
+      padding: 10px 0 10px 18px;
+
+      color: #69736d;
+
+      font-size: 11px;
+      letter-spacing: .08em;
+
+      cursor: pointer;
+
+      transition:
+        color .25s ease,
+        transform .25s ease;
+    }
+
+    .layer::before {
+      content: "";
+
+      position: absolute;
+
+      left: 0;
+      top: 50%;
+
+      width: 4px;
+      height: 4px;
+
+      border-radius: 50%;
+
+      background: #364039;
+
+      transform: translateY(-50%);
+
+      transition: .25s ease;
+    }
+
+    .layer:hover {
+      color: var(--text);
+      transform: translateX(3px);
+    }
+
+    .layer:hover::before {
+      background: var(--green);
+
+      box-shadow:
+        0 0 8px rgba(145,255,181,.7);
+    }
+
+    .layer.active {
+      color: var(--green);
+    }
+
+    .layer.active::before {
+      background: var(--green);
+
+      box-shadow:
+        0 0 8px rgba(145,255,181,.8);
+    }
+
+    /* -------------------------------------------------------
+       LANDSCAPE
+    ------------------------------------------------------- */
+
+    .landscape {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .intro {
+      position: absolute;
+
+      left: 7%;
+      top: 9%;
+
+      max-width: 560px;
+
+      z-index: 3;
+    }
+
+    .eyebrow {
+      margin-bottom: 14px;
+
+      color: var(--green);
+
+      font-size: 9px;
+      letter-spacing: .22em;
+    }
+
+    h1 {
+      margin: 0 0 14px;
+
+      font-size: clamp(30px, 4vw, 58px);
+      font-weight: 400;
+
+      letter-spacing: -.04em;
+    }
+
+    .intro p {
+      margin: 0;
+
+      max-width: 520px;
+
+      color: #68736c;
+
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    /* -------------------------------------------------------
+       NETWORK
+    ------------------------------------------------------- */
+
+    .network {
+      position: absolute;
+      inset: 0;
+
+      transform-style: preserve-3d;
+
+      transition: transform .15s ease-out;
+    }
+
+    .node {
+      position: absolute;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      width: 108px;
+      height: 108px;
+
+      border: 1px solid var(--line);
+
+      border-radius: 50%;
+
+      color: #768079;
+
+      font-size: 9px;
+      letter-spacing: .12em;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(145,255,181,.035),
+          rgba(5,7,6,.8) 65%
+        );
+
+      transition:
+        border-color .4s ease,
+        color .4s ease,
+        box-shadow .4s ease,
+        transform .4s ease;
+
+      cursor: pointer;
+    }
+
+    .node::after {
+      content: "";
+
+      position: absolute;
+
+      width: 5px;
+      height: 5px;
+
+      border-radius: 50%;
+
+      background: #455048;
+    }
+
+    .node:hover {
+      color: var(--green);
+
+      border-color: var(--line-strong);
+
+      box-shadow:
+        0 0 35px rgba(145,255,181,.06),
+        inset 0 0 28px rgba(145,255,181,.025);
+
+      transform: scale(1.05);
+    }
+
+    .node:hover::after {
+      background: var(--green);
+
+      box-shadow:
+        0 0 12px rgba(145,255,181,.8);
+    }
+
+    .capital {
+      left: 18%;
+      top: 56%;
+    }
+
+    .energy {
+      left: 38%;
+      top: 68%;
+    }
+
+    .compute {
+      left: 47%;
+      top: 43%;
+    }
+
+    .models {
+      left: 65%;
+      top: 55%;
+    }
+
+    .products {
+      left: 78%;
+      top: 31%;
+    }
+
+    .frontier {
+      left: 67%;
+      top: 77%;
+    }
+
+    /* -------------------------------------------------------
+       CONNECTIONS
+    ------------------------------------------------------- */
+
+    svg.connections {
+      position: absolute;
+      inset: 0;
+
+      width: 100%;
+      height: 100%;
+
+      pointer-events: none;
+    }
+
+    .connection {
+      stroke: rgba(145,255,181,.12);
+      stroke-width: 1;
+
+      stroke-dasharray: 3 8;
+
+      animation:
+        flow 12s linear infinite;
+    }
+
+    @keyframes flow {
+      to {
+        stroke-dashoffset: -100;
+      }
+    }
+
+    /* -------------------------------------------------------
+       RIGHT PANEL
+    ------------------------------------------------------- */
+
+    .info {
+      padding: 34px 24px;
+
+      border-left: 1px solid var(--line);
+
+      background:
+        linear-gradient(
+          270deg,
+          rgba(255,255,255,.012),
+          transparent
+        );
+    }
+
+    .metric {
+      padding: 16px 0;
+
+      border-bottom: 1px solid rgba(255,255,255,.04);
+    }
+
+    .metric-label {
+      margin-bottom: 7px;
+
+      color: #4f5953;
+
+      font-size: 8px;
+      letter-spacing: .16em;
+    }
+
+    .metric-value {
+      color: #aab4ae;
+
+      font-size: 12px;
+    }
+
+    /* -------------------------------------------------------
+       TIMELINE
+    ------------------------------------------------------- */
+
+    footer {
+      display: flex;
+      align-items: center;
+
+      padding: 0 32px;
+
+      border-top: 1px solid var(--line);
+
+      background: rgba(5,7,6,.82);
+
+      z-index: 10;
+    }
+
+    .timeline {
+      width: 100%;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      color: #4d5751;
+
+      font-size: 9px;
+    }
+
+    .timeline span {
+      position: relative;
+    }
+
+    .timeline .now {
+      color: var(--green);
+    }
+
+    .timeline .now::before {
+      content: "";
+
+      position: absolute;
+
+      left: 50%;
+      top: -16px;
+
+      width: 5px;
+      height: 5px;
+
+      border-radius: 50%;
+
+      background: var(--green);
+
+      transform: translateX(-50%);
+
+      box-shadow:
+        0 0 10px rgba(145,255,181,.8);
+    }
+
+    /* -------------------------------------------------------
+       RESPONSIVE
+    ------------------------------------------------------- */
+
+    @media (max-width: 900px) {
+
+      main {
+        grid-template-columns:
+          150px
+          1fr;
+      }
+
+      .info {
+        display: none;
+      }
+
+      .node {
+        width: 82px;
+        height: 82px;
+      }
+
+    }
+
+    @media (max-width: 640px) {
+
+      header {
+        padding: 0 18px;
+      }
+
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .layers {
+        display: none;
+      }
+
+      .intro {
+        left: 24px;
+        right: 24px;
+        top: 36px;
+      }
+
+      .node {
+        width: 70px;
+        height: 70px;
+
+        font-size: 7px;
+      }
+
+      footer {
+        padding: 0 18px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="background-grid"></div>
+  <div class="ambient"></div>
+
+  <div class="app">
+
+    <header>
+
+      <div class="brand">
+        <div class="brand-name">JOBOSU // LAB</div>
+        <div class="experiment">EXP 002</div>
+      </div>
+
+      <div class="status">
+        <span class="status-dot"></span>
+        SYSTEM ONLINE
+      </div>
+
+    </header>
+
+    <main>
+
+      <aside class="layers">
+
+        <div class="section-label">
+          LANDSCAPE
+        </div>
+
+        <div class="layer active">ALL SYSTEMS</div>
+        <div class="layer">CAPITAL</div>
+        <div class="layer">ENERGY</div>
+        <div class="layer">COMPUTE</div>
+        <div class="layer">AI / MODELS</div>
+        <div class="layer">ROBOTICS</div>
+        <div class="layer">BIOMED</div>
+        <div class="layer">MOBILITY</div>
+        <div class="layer">FINANCE</div>
+        <div class="layer">FRONTIER</div>
+
+      </aside>
+
+      <section class="landscape">
+
+        <div class="intro">
+
+          <div class="eyebrow">
+            TECHNOLOGY LANDSCAPE / 2026
+          </div>
+
+          <h1>
+            Mapping the systems<br>
+            building the future.
+          </h1>
+
+          <p>
+            An executable map of capital, energy, compute,
+            artificial intelligence and the technologies
+            emerging from their convergence.
+          </p>
+
+        </div>
+
+        <div class="network" id="network">
+
+          <svg
+            class="connections"
+            viewBox="0 0 1000 700"
+            preserveAspectRatio="none"
+          >
+
+            <line class="connection"
+              x1="230" y1="445"
+              x2="430" y2="520"
+            />
+
+            <line class="connection"
+              x1="430" y1="520"
+              x2="520" y2="345"
+            />
+
+            <line class="connection"
+              x1="520" y1="345"
+              x2="700" y2="430"
+            />
+
+            <line class="connection"
+              x1="700" y1="430"
+              x2="830" y2="260"
+            />
+
+            <line class="connection"
+              x1="700" y1="430"
+              x2="720" y2="590"
+            />
+
+          </svg>
+
+          <div class="node capital">CAPITAL</div>
+          <div class="node energy">ENERGY</div>
+          <div class="node compute">COMPUTE</div>
+          <div class="node models">AI / MODELS</div>
+          <div class="node products">PRODUCTS</div>
+          <div class="node frontier">FRONTIER</div>
+
+        </div>
+
+      </section>
+
+      <aside class="info">
+
+        <div class="section-label">
+          SYSTEM STATUS
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">VIEW</div>
+          <div class="metric-value">GLOBAL</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">ENTITIES</div>
+          <div class="metric-value">INITIALIZING</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">DATA</div>
+          <div class="metric-value">v0.1</div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-label">TIME</div>
+          <div class="metric-value">2026 → FRONTIER</div>
+        </div>
+
+      </aside>
+
+    </main>
+
+    <footer>
+
+      <div class="timeline">
+        <span>2020</span>
+        <span>2022</span>
+        <span>2024</span>
+        <span class="now">2026 / NOW</span>
+        <span>2028</span>
+        <span>2030</span>
+        <span>2035</span>
+      </div>
+
+    </footer>
+
+  </div>
+
+  <script>
+
+    /*
+      JOBOSU // LAB
+      EXP 002 — TECHNOLOGY LANDSCAPE
+      Prototype v0.1
+    */
+
+    const network = document.getElementById("network");
+
+    let targetX = 0;
+    let targetY = 0;
+
+    let currentX = 0;
+    let currentY = 0;
+
+    window.addEventListener("mousemove", (event) => {
+
+      const x =
+        (event.clientX / window.innerWidth - 0.5);
+
+      const y =
+        (event.clientY / window.innerHeight - 0.5);
+
+      targetX = x * 8;
+      targetY = y * 6;
+
+    });
+
+    function animate() {
+
+      currentX +=
+        (targetX - currentX) * 0.035;
+
+      currentY +=
+        (targetY - currentY) * 0.035;
+
+      network.style.transform =
+        `translate3d(${currentX}px, ${currentY}px, 0)`;
+
+      requestAnimationFrame(animate);
+
+    }
+
+    animate();
+
+  </script>
+
+</body>
+</html>
