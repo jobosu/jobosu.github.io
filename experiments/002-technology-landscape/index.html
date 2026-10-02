@@ -1,826 +1,1307 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>EXP 002 — Technology Landscape | JOBOSU // LAB</title>
-
-  <meta
-    name="description"
-    content="An executable map of the technologies, infrastructure, capital and energy shaping the future."
-  >
-
-  <style>
-    :root {
-      --bg: #050706;
-      --panel: rgba(12, 16, 14, 0.72);
-      --line: rgba(151, 255, 188, 0.12);
-      --line-strong: rgba(151, 255, 188, 0.28);
-
-      --text: #e7eee9;
-      --muted: #77817b;
-      --green: #91ffb5;
-      --green-soft: rgba(145, 255, 181, 0.12);
-
-      --font:
-        "SFMono-Regular",
-        Consolas,
-        "Liberation Mono",
-        Menlo,
-        monospace;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      margin: 0;
-      width: 100%;
-      min-height: 100%;
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font);
-    }
-
-    body {
-      overflow: hidden;
-    }
-
-    /* -------------------------------------------------------
-       BACKGROUND
-    ------------------------------------------------------- */
-
-    .background-grid {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-
-      background-image:
-        linear-gradient(
-          rgba(255,255,255,0.018) 1px,
-          transparent 1px
-        ),
-        linear-gradient(
-          90deg,
-          rgba(255,255,255,0.018) 1px,
-          transparent 1px
-        );
-
-      background-size: 64px 64px;
-
-      mask-image:
-        radial-gradient(
-          circle at center,
-          black 0%,
-          rgba(0,0,0,.6) 45%,
-          transparent 85%
-        );
-    }
-
-    .ambient {
-      position: fixed;
-      width: 700px;
-      height: 700px;
-      left: 50%;
-      top: 45%;
-
-      transform: translate(-50%, -50%);
-
-      background:
-        radial-gradient(
-          circle,
-          rgba(70,255,130,.035),
-          transparent 65%
-        );
-
-      pointer-events: none;
-    }
-
-    /* -------------------------------------------------------
-       APPLICATION
-    ------------------------------------------------------- */
-
-    .app {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      display: grid;
-
-      grid-template-rows:
-        72px
-        1fr
-        56px;
-    }
-
-    /* -------------------------------------------------------
-       HEADER
-    ------------------------------------------------------- */
-
-    header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      padding: 0 32px;
-
-      border-bottom: 1px solid var(--line);
-      background: rgba(5,7,6,.72);
-
-      backdrop-filter: blur(12px);
-
-      z-index: 10;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .brand-name {
-      color: var(--green);
-      font-size: 14px;
-      letter-spacing: .12em;
-    }
-
-    .experiment {
-      color: var(--muted);
-      font-size: 11px;
-      letter-spacing: .14em;
-    }
-
-    .status {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-
-      color: var(--muted);
-      font-size: 10px;
-      letter-spacing: .12em;
-    }
-
-    .status-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-
-      background: var(--green);
-
-      box-shadow:
-        0 0 10px rgba(145,255,181,.8);
-    }
-
-    /* -------------------------------------------------------
-       MAIN
-    ------------------------------------------------------- */
-
-    main {
-      position: relative;
-      display: grid;
-
-      grid-template-columns:
-        220px
-        1fr
-        260px;
-
-      min-height: 0;
-    }
-
-    /* -------------------------------------------------------
-       LEFT NAV
-    ------------------------------------------------------- */
-
-    .layers {
-      padding: 34px 24px;
-
-      border-right: 1px solid var(--line);
-
-      background:
-        linear-gradient(
-          90deg,
-          rgba(255,255,255,.012),
-          transparent
-        );
-    }
-
-    .section-label {
-      margin-bottom: 22px;
-
-      color: #515b55;
-
-      font-size: 9px;
-      letter-spacing: .18em;
-    }
-
-    .layer {
-      position: relative;
-
-      padding: 10px 0 10px 18px;
-
-      color: #69736d;
-
-      font-size: 11px;
-      letter-spacing: .08em;
-
-      cursor: pointer;
-
-      transition:
-        color .25s ease,
-        transform .25s ease;
-    }
-
-    .layer::before {
-      content: "";
-
-      position: absolute;
-
-      left: 0;
-      top: 50%;
-
-      width: 4px;
-      height: 4px;
-
-      border-radius: 50%;
-
-      background: #364039;
-
-      transform: translateY(-50%);
-
-      transition: .25s ease;
-    }
-
-    .layer:hover {
-      color: var(--text);
-      transform: translateX(3px);
-    }
-
-    .layer:hover::before {
-      background: var(--green);
-
-      box-shadow:
-        0 0 8px rgba(145,255,181,.7);
-    }
-
-    .layer.active {
-      color: var(--green);
-    }
-
-    .layer.active::before {
-      background: var(--green);
-
-      box-shadow:
-        0 0 8px rgba(145,255,181,.8);
-    }
-
-    /* -------------------------------------------------------
-       LANDSCAPE
-    ------------------------------------------------------- */
-
-    .landscape {
-      position: relative;
-      overflow: hidden;
-    }
-
-    .intro {
-      position: absolute;
-
-      left: 7%;
-      top: 9%;
-
-      max-width: 560px;
-
-      z-index: 3;
-    }
-
-    .eyebrow {
-      margin-bottom: 14px;
-
-      color: var(--green);
-
-      font-size: 9px;
-      letter-spacing: .22em;
-    }
-
-    h1 {
-      margin: 0 0 14px;
-
-      font-size: clamp(30px, 4vw, 58px);
-      font-weight: 400;
-
-      letter-spacing: -.04em;
-    }
-
-    .intro p {
-      margin: 0;
-
-      max-width: 520px;
-
-      color: #68736c;
-
-      font-size: 12px;
-      line-height: 1.7;
-    }
-
-    /* -------------------------------------------------------
-       NETWORK
-    ------------------------------------------------------- */
-
-    .network {
-      position: absolute;
-      inset: 0;
-
-      transform-style: preserve-3d;
-
-      transition: transform .15s ease-out;
-    }
-
-    .node {
-      position: absolute;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      width: 108px;
-      height: 108px;
-
-      border: 1px solid var(--line);
-
-      border-radius: 50%;
-
-      color: #768079;
-
-      font-size: 9px;
-      letter-spacing: .12em;
-
-      background:
-        radial-gradient(
-          circle,
-          rgba(145,255,181,.035),
-          rgba(5,7,6,.8) 65%
-        );
-
-      transition:
-        border-color .4s ease,
-        color .4s ease,
-        box-shadow .4s ease,
-        transform .4s ease;
-
-      cursor: pointer;
-    }
-
-    .node::after {
-      content: "";
-
-      position: absolute;
-
-      width: 5px;
-      height: 5px;
-
-      border-radius: 50%;
-
-      background: #455048;
-    }
-
-    .node:hover {
-      color: var(--green);
-
-      border-color: var(--line-strong);
-
-      box-shadow:
-        0 0 35px rgba(145,255,181,.06),
-        inset 0 0 28px rgba(145,255,181,.025);
-
-      transform: scale(1.05);
-    }
-
-    .node:hover::after {
-      background: var(--green);
-
-      box-shadow:
-        0 0 12px rgba(145,255,181,.8);
-    }
-
-    .capital {
-      left: 18%;
-      top: 56%;
-    }
-
-    .energy {
-      left: 38%;
-      top: 68%;
-    }
-
-    .compute {
-      left: 47%;
-      top: 43%;
-    }
-
-    .models {
-      left: 65%;
-      top: 55%;
-    }
-
-    .products {
-      left: 78%;
-      top: 31%;
-    }
-
-    .frontier {
-      left: 67%;
-      top: 77%;
-    }
-
-    /* -------------------------------------------------------
-       CONNECTIONS
-    ------------------------------------------------------- */
-
-    svg.connections {
-      position: absolute;
-      inset: 0;
-
-      width: 100%;
-      height: 100%;
-
-      pointer-events: none;
-    }
-
-    .connection {
-      stroke: rgba(145,255,181,.12);
-      stroke-width: 1;
-
-      stroke-dasharray: 3 8;
-
-      animation:
-        flow 12s linear infinite;
-    }
-
-    @keyframes flow {
-      to {
-        stroke-dashoffset: -100;
-      }
-    }
-
-    /* -------------------------------------------------------
-       RIGHT PANEL
-    ------------------------------------------------------- */
-
-    .info {
-      padding: 34px 24px;
-
-      border-left: 1px solid var(--line);
-
-      background:
-        linear-gradient(
-          270deg,
-          rgba(255,255,255,.012),
-          transparent
-        );
-    }
-
-    .metric {
-      padding: 16px 0;
-
-      border-bottom: 1px solid rgba(255,255,255,.04);
-    }
-
-    .metric-label {
-      margin-bottom: 7px;
-
-      color: #4f5953;
-
-      font-size: 8px;
-      letter-spacing: .16em;
-    }
-
-    .metric-value {
-      color: #aab4ae;
-
-      font-size: 12px;
-    }
-
-    /* -------------------------------------------------------
-       TIMELINE
-    ------------------------------------------------------- */
-
-    footer {
-      display: flex;
-      align-items: center;
-
-      padding: 0 32px;
-
-      border-top: 1px solid var(--line);
-
-      background: rgba(5,7,6,.82);
-
-      z-index: 10;
-    }
-
-    .timeline {
-      width: 100%;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-
-      color: #4d5751;
-
-      font-size: 9px;
-    }
-
-    .timeline span {
-      position: relative;
-    }
-
-    .timeline .now {
-      color: var(--green);
-    }
-
-    .timeline .now::before {
-      content: "";
-
-      position: absolute;
-
-      left: 50%;
-      top: -16px;
-
-      width: 5px;
-      height: 5px;
-
-      border-radius: 50%;
-
-      background: var(--green);
-
-      transform: translateX(-50%);
-
-      box-shadow:
-        0 0 10px rgba(145,255,181,.8);
-    }
-
-    /* -------------------------------------------------------
-       RESPONSIVE
-    ------------------------------------------------------- */
-
-    @media (max-width: 900px) {
-
-      main {
-        grid-template-columns:
-          150px
-          1fr;
-      }
-
-      .info {
-        display: none;
-      }
-
-      .node {
-        width: 82px;
-        height: 82px;
-      }
-
-    }
-
-    @media (max-width: 640px) {
-
-      header {
-        padding: 0 18px;
-      }
-
-      main {
-        grid-template-columns: 1fr;
-      }
-
-      .layers {
-        display: none;
-      }
-
-      .intro {
-        left: 24px;
-        right: 24px;
-        top: 36px;
-      }
-
-      .node {
-        width: 70px;
-        height: 70px;
-
-        font-size: 7px;
-      }
-
-      footer {
-        padding: 0 18px;
-      }
-
-    }
-
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EXP 002 — Technology Landscape | JOBOSU // LAB</title>
+
+<style>
+:root{
+  --bg:#040605;
+  --panel:rgba(7,10,8,.82);
+  --line:rgba(132,255,173,.11);
+  --line2:rgba(132,255,173,.22);
+  --green:#87ffad;
+  --text:#e6ece8;
+  --muted:#667069;
+  --dim:#343c37;
+  --font:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  overflow:hidden;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  background:
+    linear-gradient(rgba(255,255,255,.012) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,.012) 1px,transparent 1px);
+  background-size:64px 64px;
+}
+
+.app{
+  height:100vh;
+  display:grid;
+  grid-template-rows:68px 1fr 54px;
+}
+
+/* HEADER */
+
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+  border-bottom:1px solid var(--line);
+  background:rgba(4,6,5,.9);
+  z-index:20;
+}
+
+.brand{
+  display:flex;
+  align-items:center;
+  gap:20px;
+}
+
+.logo{
+  color:var(--green);
+  font-size:13px;
+  letter-spacing:.15em;
+}
+
+.exp{
+  color:#6e7871;
+  font-size:10px;
+  letter-spacing:.16em;
+}
+
+.status{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  color:#737d76;
+  font-size:9px;
+  letter-spacing:.15em;
+}
+
+.status-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 12px rgba(135,255,173,.8);
+}
+
+/* MAIN */
+
+main{
+  min-height:0;
+  display:grid;
+  grid-template-columns:210px 1fr 280px;
+}
+
+/* SIDEBAR */
+
+.sidebar{
+  padding:30px 22px;
+  border-right:1px solid var(--line);
+  background:linear-gradient(90deg,rgba(255,255,255,.012),transparent);
+  z-index:10;
+}
+
+.label{
+  margin-bottom:20px;
+  color:#465049;
+  font-size:8px;
+  letter-spacing:.2em;
+}
+
+.filter{
+  position:relative;
+  padding:9px 0 9px 18px;
+  color:#657069;
+  font-size:10px;
+  letter-spacing:.09em;
+  cursor:pointer;
+  transition:.25s;
+  user-select:none;
+}
+
+.filter::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:50%;
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:#303832;
+  transform:translateY(-50%);
+}
+
+.filter:hover{
+  color:#cdd6d0;
+  transform:translateX(2px);
+}
+
+.filter.active{
+  color:var(--green);
+}
+
+.filter.active::before{
+  background:var(--green);
+  box-shadow:0 0 8px rgba(135,255,173,.8);
+}
+
+/* VIEW */
+
+.viewport{
+  position:relative;
+  overflow:hidden;
+}
+
+.viewport::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  box-shadow:inset 0 0 120px rgba(0,0,0,.45);
+}
+
+.view-header{
+  position:absolute;
+  top:26px;
+  left:30px;
+  z-index:8;
+  pointer-events:none;
+}
+
+.view-kicker{
+  color:var(--green);
+  font-size:8px;
+  letter-spacing:.2em;
+  margin-bottom:8px;
+}
+
+.view-title{
+  color:#aab3ad;
+  font-size:11px;
+  letter-spacing:.08em;
+}
+
+.hint{
+  position:absolute;
+  left:30px;
+  bottom:24px;
+  z-index:8;
+  color:#3f4842;
+  font-size:8px;
+  letter-spacing:.1em;
+  pointer-events:none;
+}
+
+/* SVG GRAPH */
+
+#graph{
+  position:absolute;
+  width:100%;
+  height:100%;
+  inset:0;
+  cursor:grab;
+}
+
+#graph.dragging{
+  cursor:grabbing;
+}
+
+.link{
+  stroke:rgba(126,255,169,.11);
+  stroke-width:1;
+  transition:.3s;
+}
+
+.link.active{
+  stroke:rgba(126,255,169,.48);
+  stroke-width:1.3;
+}
+
+.link.dim{
+  opacity:.08;
+}
+
+.node{
+  cursor:pointer;
+}
+
+.node-circle{
+  fill:#050806;
+  stroke:rgba(126,255,169,.2);
+  stroke-width:1;
+  transition:.25s;
+}
+
+.node-core{
+  fill:#405047;
+  transition:.25s;
+}
+
+.node-label{
+  fill:#747f78;
+  font-family:var(--font);
+  font-size:8px;
+  letter-spacing:1px;
+  text-anchor:middle;
+  pointer-events:none;
+  transition:.25s;
+}
+
+.node:hover .node-circle{
+  stroke:rgba(135,255,173,.75);
+  filter:url(#glow);
+}
+
+.node:hover .node-core{
+  fill:var(--green);
+}
+
+.node:hover .node-label{
+  fill:#dce5df;
+}
+
+.node.selected .node-circle{
+  stroke:var(--green);
+  filter:url(#glowStrong);
+}
+
+.node.selected .node-core{
+  fill:var(--green);
+}
+
+.node.selected .node-label{
+  fill:var(--green);
+}
+
+.node.dim{
+  opacity:.12;
+}
+
+.node.hidden{
+  display:none;
+}
+
+/* CATEGORY MARKERS */
+
+.category-capital .node-circle{
+  stroke:rgba(126,255,169,.32);
+}
+
+.category-energy .node-circle{
+  stroke:rgba(183,255,126,.27);
+}
+
+.category-compute .node-circle{
+  stroke:rgba(126,226,255,.27);
+}
+
+.category-ai .node-circle{
+  stroke:rgba(160,126,255,.28);
+}
+
+.category-product .node-circle{
+  stroke:rgba(255,210,126,.25);
+}
+
+.category-frontier .node-circle{
+  stroke:rgba(255,126,176,.24);
+}
+
+/* PANEL */
+
+.panel{
+  padding:30px 22px;
+  border-left:1px solid var(--line);
+  background:linear-gradient(270deg,rgba(255,255,255,.012),transparent);
+  overflow:auto;
+  z-index:10;
+}
+
+.panel-id{
+  color:var(--green);
+  font-size:8px;
+  letter-spacing:.2em;
+  margin-bottom:14px;
+}
+
+.panel h2{
+  margin:0 0 8px;
+  font-size:20px;
+  font-weight:400;
+  letter-spacing:-.03em;
+}
+
+.panel-type{
+  color:#68736c;
+  font-size:9px;
+  letter-spacing:.12em;
+  margin-bottom:28px;
+}
+
+.field{
+  padding:14px 0;
+  border-top:1px solid rgba(255,255,255,.04);
+}
+
+.field-name{
+  color:#424b45;
+  font-size:7px;
+  letter-spacing:.18em;
+  margin-bottom:7px;
+}
+
+.field-value{
+  color:#939e97;
+  font-size:10px;
+  line-height:1.6;
+}
+
+.connections-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:8px;
+}
+
+.connection-tag{
+  border:1px solid rgba(135,255,173,.12);
+  padding:5px 7px;
+  color:#6e7871;
+  font-size:7px;
+}
+
+/* TIMELINE */
+
+footer{
+  display:flex;
+  align-items:center;
+  padding:0 30px;
+  border-top:1px solid var(--line);
+  background:rgba(4,6,5,.94);
+  z-index:20;
+}
+
+.timeline{
+  width:100%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  color:#424b45;
+  font-size:8px;
+}
+
+.timeline span{
+  position:relative;
+}
+
+.timeline .now{
+  color:var(--green);
+}
+
+.timeline .now::before{
+  content:"";
+  position:absolute;
+  width:5px;
+  height:5px;
+  left:50%;
+  top:-16px;
+  transform:translateX(-50%);
+  border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 10px rgba(135,255,173,.8);
+}
+
+/* INTRO */
+
+.intro{
+  position:absolute;
+  inset:0;
+  z-index:30;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+  background:#040605;
+  animation:introOut 2.8s forwards;
+}
+
+.intro-inner{
+  text-align:center;
+  animation:introMove 2.5s ease forwards;
+}
+
+.intro-small{
+  color:var(--green);
+  font-size:9px;
+  letter-spacing:.25em;
+  margin-bottom:18px;
+}
+
+.intro-title{
+  font-size:clamp(26px,4vw,52px);
+  font-weight:400;
+  letter-spacing:-.04em;
+}
+
+@keyframes introOut{
+  0%,55%{opacity:1}
+  100%{opacity:0;visibility:hidden}
+}
+
+@keyframes introMove{
+  0%{transform:translateY(8px);opacity:0}
+  25%,60%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-8px);opacity:0}
+}
+
+/* MOBILE */
+
+@media(max-width:900px){
+  main{
+    grid-template-columns:150px 1fr;
+  }
+
+  .panel{
+    display:none;
+  }
+}
+
+@media(max-width:650px){
+  main{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    display:none;
+  }
+
+  header{
+    padding:0 18px;
+  }
+
+  footer{
+    padding:0 18px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .intro{
+    animation:none;
+    display:none;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="background-grid"></div>
-  <div class="ambient"></div>
+<div class="app">
 
-  <div class="app">
-
-    <header>
-
-      <div class="brand">
-        <div class="brand-name">JOBOSU // LAB</div>
-        <div class="experiment">EXP 002</div>
-      </div>
-
-      <div class="status">
-        <span class="status-dot"></span>
-        SYSTEM ONLINE
-      </div>
-
-    </header>
-
-    <main>
-
-      <aside class="layers">
-
-        <div class="section-label">
-          LANDSCAPE
-        </div>
-
-        <div class="layer active">ALL SYSTEMS</div>
-        <div class="layer">CAPITAL</div>
-        <div class="layer">ENERGY</div>
-        <div class="layer">COMPUTE</div>
-        <div class="layer">AI / MODELS</div>
-        <div class="layer">ROBOTICS</div>
-        <div class="layer">BIOMED</div>
-        <div class="layer">MOBILITY</div>
-        <div class="layer">FINANCE</div>
-        <div class="layer">FRONTIER</div>
-
-      </aside>
-
-      <section class="landscape">
-
-        <div class="intro">
-
-          <div class="eyebrow">
-            TECHNOLOGY LANDSCAPE / 2026
-          </div>
-
-          <h1>
-            Mapping the systems<br>
-            building the future.
-          </h1>
-
-          <p>
-            An executable map of capital, energy, compute,
-            artificial intelligence and the technologies
-            emerging from their convergence.
-          </p>
-
-        </div>
-
-        <div class="network" id="network">
-
-          <svg
-            class="connections"
-            viewBox="0 0 1000 700"
-            preserveAspectRatio="none"
-          >
-
-            <line class="connection"
-              x1="230" y1="445"
-              x2="430" y2="520"
-            />
-
-            <line class="connection"
-              x1="430" y1="520"
-              x2="520" y2="345"
-            />
-
-            <line class="connection"
-              x1="520" y1="345"
-              x2="700" y2="430"
-            />
-
-            <line class="connection"
-              x1="700" y1="430"
-              x2="830" y2="260"
-            />
-
-            <line class="connection"
-              x1="700" y1="430"
-              x2="720" y2="590"
-            />
-
-          </svg>
-
-          <div class="node capital">CAPITAL</div>
-          <div class="node energy">ENERGY</div>
-          <div class="node compute">COMPUTE</div>
-          <div class="node models">AI / MODELS</div>
-          <div class="node products">PRODUCTS</div>
-          <div class="node frontier">FRONTIER</div>
-
-        </div>
-
-      </section>
-
-      <aside class="info">
-
-        <div class="section-label">
-          SYSTEM STATUS
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">VIEW</div>
-          <div class="metric-value">GLOBAL</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">ENTITIES</div>
-          <div class="metric-value">INITIALIZING</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">DATA</div>
-          <div class="metric-value">v0.1</div>
-        </div>
-
-        <div class="metric">
-          <div class="metric-label">TIME</div>
-          <div class="metric-value">2026 → FRONTIER</div>
-        </div>
-
-      </aside>
-
-    </main>
-
-    <footer>
-
-      <div class="timeline">
-        <span>2020</span>
-        <span>2022</span>
-        <span>2024</span>
-        <span class="now">2026 / NOW</span>
-        <span>2028</span>
-        <span>2030</span>
-        <span>2035</span>
-      </div>
-
-    </footer>
-
+<header>
+  <div class="brand">
+    <div class="logo">JOBOSU // LAB</div>
+    <div class="exp">EXP 002</div>
   </div>
 
-  <script>
+  <div class="status">
+    <span class="status-dot"></span>
+    SYSTEM ONLINE
+  </div>
+</header>
 
-    /*
-      JOBOSU // LAB
-      EXP 002 — TECHNOLOGY LANDSCAPE
-      Prototype v0.1
-    */
+<main>
 
-    const network = document.getElementById("network");
+<aside class="sidebar">
 
-    let targetX = 0;
-    let targetY = 0;
+  <div class="label">LANDSCAPE</div>
 
-    let currentX = 0;
-    let currentY = 0;
+  <div class="filter active" data-filter="all">ALL SYSTEMS</div>
+  <div class="filter" data-filter="capital">CAPITAL</div>
+  <div class="filter" data-filter="energy">ENERGY</div>
+  <div class="filter" data-filter="compute">COMPUTE</div>
+  <div class="filter" data-filter="ai">AI / MODELS</div>
+  <div class="filter" data-filter="robotics">ROBOTICS</div>
+  <div class="filter" data-filter="biomed">BIOMED</div>
+  <div class="filter" data-filter="mobility">MOBILITY</div>
+  <div class="filter" data-filter="finance">FINANCE</div>
+  <div class="filter" data-filter="frontier">FRONTIER</div>
 
-    window.addEventListener("mousemove", (event) => {
+</aside>
 
-      const x =
-        (event.clientX / window.innerWidth - 0.5);
+<section class="viewport">
 
-      const y =
-        (event.clientY / window.innerHeight - 0.5);
+  <div class="view-header">
+    <div class="view-kicker">TECHNOLOGY LANDSCAPE / 2026</div>
+    <div class="view-title">GLOBAL SYSTEM MAP</div>
+  </div>
 
-      targetX = x * 8;
-      targetY = y * 6;
+  <div class="hint">
+    DRAG TO EXPLORE · CLICK A NODE · SCROLL TO ZOOM
+  </div>
 
-    });
+  <svg id="graph">
 
-    function animate() {
+    <defs>
 
-      currentX +=
-        (targetX - currentX) * 0.035;
+      <filter id="glow">
+        <feGaussianBlur stdDeviation="3" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
 
-      currentY +=
-        (targetY - currentY) * 0.035;
+      <filter id="glowStrong">
+        <feGaussianBlur stdDeviation="5" result="blur"/>
+        <feMerge>
+          <feMergeNode in="blur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
 
-      network.style.transform =
-        `translate3d(${currentX}px, ${currentY}px, 0)`;
+    </defs>
 
-      requestAnimationFrame(animate);
+    <g id="world"></g>
 
+  </svg>
+
+</section>
+
+<aside class="panel">
+
+  <div class="label">SELECTION</div>
+
+  <div id="panelContent">
+    <div class="panel-id">SYSTEM</div>
+    <h2>Technology Landscape</h2>
+    <div class="panel-type">GLOBAL VIEW</div>
+
+    <div class="field">
+      <div class="field-name">STATUS</div>
+      <div class="field-value">Select a node to inspect the system.</div>
+    </div>
+
+    <div class="field">
+      <div class="field-name">DATASET</div>
+      <div class="field-value">Prototype v0.2 · 2026</div>
+    </div>
+  </div>
+
+</aside>
+
+<div class="intro">
+  <div class="intro-inner">
+    <div class="intro-small">JOBOSU // EXP 002</div>
+    <div class="intro-title">Mapping the systems building the future.</div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <div class="timeline">
+    <span>2020</span>
+    <span>2022</span>
+    <span>2024</span>
+    <span class="now">2026 / NOW</span>
+    <span>2028</span>
+    <span>2030</span>
+    <span>2035</span>
+  </div>
+</footer>
+
+</div>
+
+<script>
+
+/* =========================================================
+   JOBOSU // LAB
+   EXP 002 — TECHNOLOGY LANDSCAPE
+   PROTOTYPE v0.2
+
+   Dataset is intentionally small.
+   Entities are illustrative structural anchors for the graph.
+========================================================= */
+
+const nodes = [
+
+  {
+    id:"capital",
+    name:"CAPITAL",
+    category:"capital",
+    type:"SYSTEM",
+    description:"Capital allocation into technology infrastructure and companies.",
+    x:220,y:330,r:42
+  },
+
+  {
+    id:"vc",
+    name:"VENTURE CAPITAL",
+    category:"capital",
+    type:"CAPITAL",
+    description:"Private capital financing emerging technology companies.",
+    x:120,y:440,r:28
+  },
+
+  {
+    id:"public-markets",
+    name:"PUBLIC MARKETS",
+    category:"capital",
+    type:"CAPITAL",
+    description:"Public equity markets providing access to listed technology companies.",
+    x:270,y:485,r:29
+  },
+
+  {
+    id:"energy",
+    name:"ENERGY",
+    category:"energy",
+    type:"SYSTEM",
+    description:"Energy infrastructure powering computation, manufacturing and industry.",
+    x:420,y:470,r:40
+  },
+
+  {
+    id:"nuclear",
+    name:"NUCLEAR",
+    category:"energy",
+    type:"TECHNOLOGY",
+    description:"Nuclear fission generation and emerging advanced reactor systems.",
+    x:420,y:600,r:29
+  },
+
+  {
+    id:"renewables",
+    name:"RENEWABLES",
+    category:"energy",
+    type:"TECHNOLOGY",
+    description:"Solar, wind, hydro and associated storage technologies.",
+    x:540,y:555,r:29
+  },
+
+  {
+    id:"compute",
+    name:"COMPUTE",
+    category:"compute",
+    type:"SYSTEM",
+    description:"The computational infrastructure required to train and operate modern AI.",
+    x:570,y:330,r:43
+  },
+
+  {
+    id:"nvidia",
+    name:"NVIDIA",
+    category:"compute",
+    type:"COMPANY",
+    description:"Semiconductor and accelerated-computing company central to modern AI infrastructure.",
+    x:660,y:220,r:32
+  },
+
+  {
+    id:"tsmc",
+    name:"TSMC",
+    category:"compute",
+    type:"COMPANY",
+    description:"Advanced semiconductor foundry manufacturing leading-edge chips.",
+    x:535,y:190,r:29
+  },
+
+  {
+    id:"datacenters",
+    name:"DATACENTERS",
+    category:"compute",
+    type:"INFRASTRUCTURE",
+    description:"Physical infrastructure housing compute, networking and storage.",
+    x:700,y:410,r:32
+  },
+
+  {
+    id:"ai",
+    name:"AI / MODELS",
+    category:"ai",
+    type:"SYSTEM",
+    description:"Foundation models and machine intelligence.",
+    x:820,y:330,r:43
+  },
+
+  {
+    id:"openai",
+    name:"OPENAI",
+    category:"ai",
+    type:"COMPANY",
+    description:"Artificial intelligence research and product company.",
+    x:900,y:205,r:30
+  },
+
+  {
+    id:"anthropic",
+    name:"ANTHROPIC",
+    category:"ai",
+    type:"COMPANY",
+    description:"Artificial intelligence company developing foundation models.",
+    x:965,y:330,r:30
+  },
+
+  {
+    id:"deepmind",
+    name:"GOOGLE DEEPMIND",
+    category:"ai",
+    type:"COMPANY",
+    description:"Google's artificial intelligence research organization.",
+    x:900,y:455,r:31
+  },
+
+  {
+    id:"robotics",
+    name:"ROBOTICS",
+    category:"robotics",
+    type:"APPLICATION",
+    description:"Embodied AI, industrial automation and autonomous machines.",
+    x:1050,y:520,r:37
+  },
+
+  {
+    id:"humanoids",
+    name:"HUMANOIDS",
+    category:"robotics",
+    type:"EMERGING",
+    description:"General-purpose human-form robots integrating AI with physical actuation.",
+    x:1160,y:600,r:29
+  },
+
+  {
+    id:"biomed",
+    name:"BIOMED",
+    category:"biomed",
+    type:"APPLICATION",
+    description:"AI applied to biology, medicine, drug discovery and healthcare.",
+    x:1060,y:180,r:36
+  },
+
+  {
+    id:"mobility",
+    name:"MOBILITY",
+    category:"mobility",
+    type:"APPLICATION",
+    description:"Autonomous vehicles, transport systems and intelligent mobility.",
+    x:1180,y:310,r:34
+  },
+
+  {
+    id:"finance",
+    name:"FINANCE",
+    category:"finance",
+    type:"APPLICATION",
+    description:"AI, computation and automation applied to financial systems.",
+    x:790,y:590,r:34
+  },
+
+  {
+    id:"fusion",
+    name:"FUSION",
+    category:"frontier",
+    type:"FRONTIER",
+    description:"Experimental fusion-energy technologies pursuing commercial power generation.",
+    x:560,y:680,r:29
+  },
+
+  {
+    id:"quantum",
+    name:"QUANTUM",
+    category:"frontier",
+    type:"FRONTIER",
+    description:"Emerging quantum computing technologies.",
+    x:760,y:700,r:29
+  }
+
+];
+
+
+const links = [
+
+  ["vc","capital"],
+  ["public-markets","capital"],
+
+  ["capital","energy"],
+  ["capital","compute"],
+  ["capital","ai"],
+
+  ["energy","datacenters"],
+  ["energy","nuclear"],
+  ["energy","renewables"],
+
+  ["nuclear","fusion"],
+
+  ["tsmc","nvidia"],
+  ["nvidia","compute"],
+  ["compute","datacenters"],
+  ["datacenters","ai"],
+
+  ["compute","ai"],
+
+  ["ai","openai"],
+  ["ai","anthropic"],
+  ["ai","deepmind"],
+
+  ["ai","robotics"],
+  ["ai","biomed"],
+  ["ai","mobility"],
+  ["ai","finance"],
+
+  ["compute","quantum"],
+
+  ["robotics","humanoids"]
+
+];
+
+
+/* =========================================================
+   GRAPH
+========================================================= */
+
+const svg = document.getElementById("graph");
+const world = document.getElementById("world");
+
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+let scale = 1;
+let offsetX = 0;
+let offsetY = 0;
+
+let dragging = false;
+let lastX = 0;
+let lastY = 0;
+
+let selected = null;
+let activeFilter = "all";
+
+
+function nodeById(id){
+  return nodes.find(n => n.id === id);
+}
+
+
+/* LINKS */
+
+links.forEach(pair => {
+
+  const a = nodeById(pair[0]);
+  const b = nodeById(pair[1]);
+
+  const line = document.createElementNS(SVG_NS,"line");
+
+  line.setAttribute("x1",a.x);
+  line.setAttribute("y1",a.y);
+  line.setAttribute("x2",b.x);
+  line.setAttribute("y2",b.y);
+
+  line.classList.add("link");
+
+  line.dataset.a = a.id;
+  line.dataset.b = b.id;
+
+  world.appendChild(line);
+
+});
+
+
+/* NODES */
+
+nodes.forEach(node => {
+
+  const group = document.createElementNS(SVG_NS,"g");
+
+  group.classList.add(
+    "node",
+    "category-" + node.category
+  );
+
+  group.dataset.id = node.id;
+  group.dataset.category = node.category;
+
+  group.setAttribute(
+    "transform",
+    `translate(${node.x},${node.y})`
+  );
+
+
+  const circle =
+    document.createElementNS(SVG_NS,"circle");
+
+  circle.setAttribute("r",node.r);
+  circle.classList.add("node-circle");
+
+
+  const core =
+    document.createElementNS(SVG_NS,"circle");
+
+  core.setAttribute("r",2.3);
+  core.classList.add("node-core");
+
+
+  const label =
+    document.createElementNS(SVG_NS,"text");
+
+  label.setAttribute("y",node.r + 17);
+  label.classList.add("node-label");
+  label.textContent = node.name;
+
+
+  group.appendChild(circle);
+  group.appendChild(core);
+  group.appendChild(label);
+
+  group.addEventListener("click",e => {
+
+    e.stopPropagation();
+
+    selectNode(node.id);
+
+  });
+
+  world.appendChild(group);
+
+});
+
+
+/* =========================================================
+   SELECTION
+========================================================= */
+
+function selectNode(id){
+
+  selected = id;
+
+  const selectedNode = nodeById(id);
+
+  const connected = new Set([id]);
+
+  links.forEach(pair => {
+
+    if(pair[0] === id)
+      connected.add(pair[1]);
+
+    if(pair[1] === id)
+      connected.add(pair[0]);
+
+  });
+
+
+  document.querySelectorAll(".node").forEach(el => {
+
+    el.classList.remove("selected","dim");
+
+    if(el.dataset.id === id)
+      el.classList.add("selected");
+
+    else if(!connected.has(el.dataset.id))
+      el.classList.add("dim");
+
+  });
+
+
+  document.querySelectorAll(".link").forEach(line => {
+
+    line.classList.remove("active","dim");
+
+    if(
+      line.dataset.a === id ||
+      line.dataset.b === id
+    ){
+      line.classList.add("active");
+    }
+    else{
+      line.classList.add("dim");
     }
 
-    animate();
+  });
 
-  </script>
+
+  updatePanel(selectedNode,connected);
+
+}
+
+
+/* PANEL */
+
+function updatePanel(node,connected){
+
+  const names =
+    [...connected]
+      .filter(id => id !== node.id)
+      .map(id => nodeById(id)?.name)
+      .filter(Boolean);
+
+
+  document.getElementById("panelContent").innerHTML = `
+
+    <div class="panel-id">
+      ${node.id.toUpperCase()}
+    </div>
+
+    <h2>${node.name}</h2>
+
+    <div class="panel-type">
+      ${node.type} / ${node.category.toUpperCase()}
+    </div>
+
+    <div class="field">
+
+      <div class="field-name">
+        ROLE
+      </div>
+
+      <div class="field-value">
+        ${node.description}
+      </div>
+
+    </div>
+
+    <div class="field">
+
+      <div class="field-name">
+        CONNECTIONS
+      </div>
+
+      <div class="connections-list">
+
+        ${
+          names.map(name =>
+            `<span class="connection-tag">${name}</span>`
+          ).join("")
+        }
+
+      </div>
+
+    </div>
+
+    <div class="field">
+
+      <div class="field-name">
+        DATA STATUS
+      </div>
+
+      <div class="field-value">
+        STRUCTURAL PROTOTYPE
+      </div>
+
+    </div>
+
+  `;
+
+}
+
+
+/* CLEAR */
+
+svg.addEventListener("click",()=>{
+
+  selected = null;
+
+  document.querySelectorAll(".node")
+    .forEach(el =>
+      el.classList.remove("selected","dim")
+    );
+
+  document.querySelectorAll(".link")
+    .forEach(el =>
+      el.classList.remove("active","dim")
+    );
+
+});
+
+
+/* =========================================================
+   FILTERING
+========================================================= */
+
+document.querySelectorAll(".filter")
+.forEach(filter => {
+
+  filter.addEventListener("click",()=>{
+
+    activeFilter =
+      filter.dataset.filter;
+
+    document.querySelectorAll(".filter")
+      .forEach(f =>
+        f.classList.remove("active")
+      );
+
+    filter.classList.add("active");
+
+
+    document.querySelectorAll(".node")
+      .forEach(el => {
+
+        const category =
+          el.dataset.category;
+
+        if(
+          activeFilter === "all" ||
+          category === activeFilter
+        ){
+          el.classList.remove("hidden");
+        }
+        else{
+          el.classList.add("hidden");
+        }
+
+      });
+
+
+    document.querySelectorAll(".link")
+      .forEach(line => {
+
+        if(activeFilter === "all"){
+          line.style.display = "";
+          return;
+        }
+
+        const a = nodeById(line.dataset.a);
+        const b = nodeById(line.dataset.b);
+
+        if(
+          a.category === activeFilter &&
+          b.category === activeFilter
+        ){
+          line.style.display = "";
+        }
+        else{
+          line.style.display = "none";
+        }
+
+      });
+
+  });
+
+});
+
+
+/* =========================================================
+   PAN + ZOOM
+========================================================= */
+
+function renderTransform(){
+
+  world.setAttribute(
+    "transform",
+    `translate(${offsetX} ${offsetY}) scale(${scale})`
+  );
+
+}
+
+
+svg.addEventListener("wheel",e => {
+
+  e.preventDefault();
+
+  const direction =
+    e.deltaY > 0 ? .9 : 1.1;
+
+  scale *= direction;
+
+  scale =
+    Math.min(
+      2.4,
+      Math.max(.55,scale)
+    );
+
+  renderTransform();
+
+},{passive:false});
+
+
+svg.addEventListener("mousedown",e => {
+
+  dragging = true;
+
+  svg.classList.add("dragging");
+
+  lastX = e.clientX;
+  lastY = e.clientY;
+
+});
+
+
+window.addEventListener("mousemove",e => {
+
+  if(!dragging)
+    return;
+
+  offsetX += e.clientX-lastX;
+  offsetY += e.clientY-lastY;
+
+  lastX = e.clientX;
+  lastY = e.clientY;
+
+  renderTransform();
+
+});
+
+
+window.addEventListener("mouseup",()=>{
+
+  dragging = false;
+
+  svg.classList.remove("dragging");
+
+});
+
+
+/* =========================================================
+   INITIAL POSITION
+========================================================= */
+
+function centerGraph(){
+
+  const box =
+    svg.getBoundingClientRect();
+
+  const graphWidth = 1300;
+  const graphHeight = 800;
+
+  scale =
+    Math.min(
+      box.width / graphWidth,
+      box.height / graphHeight
+    ) * .92;
+
+  scale =
+    Math.max(scale,.55);
+
+  offsetX =
+    (box.width - graphWidth*scale)/2;
+
+  offsetY =
+    (box.height - graphHeight*scale)/2 + 15;
+
+  renderTransform();
+
+}
+
+window.addEventListener(
+  "resize",
+  centerGraph
+);
+
+setTimeout(
+  centerGraph,
+  50
+);
+
+</script>
 
 </body>
 </html>
