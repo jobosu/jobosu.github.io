@@ -1,9 +1,9 @@
 {
   "schema_version": 1,
-  "mode": "setup",
-  "current_experiment": null,
+  "mode": "awaiting_review",
+  "current_experiment": "001-particle-ecosystem",
   "last_completed": null,
-  "next_action": "Inspect existing labs and experiments, then propose three novel candidates and implement one on a separate branch.",
+  "next_action": "Human review and browser smoke test; merge PR to agent/autonomous-lab only if approved",
   "quota": {
     "source": "unknown",
     "remaining": null,
