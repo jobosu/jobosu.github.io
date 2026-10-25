@@ -16,8 +16,8 @@ Mission: independently invent, implement, test, and document small, original dig
 3. Select one that can be completed in a short bounded session; avoid duplicating prior experiments.
 4. Create an isolated experiment folder and write code, README, and reproducible tests where possible.
 5. Run available tests and check accessibility, performance, security, and mobile behavior.
-6. Record outcomes and next steps in EXPERIMENTS.md and LAB_STATE.json.
-7. Prepare a pull request against agent/autonomous-lab and stop. Do not self-merge.
+6. Add or update a navigable entry for the experiment in `labs/index.html`, with its title, unique identifier, short description, status, and a working relative link to its `index.html`. Keep it marked as pending review until publication is explicitly approved. Do not remove existing entries. Check for identifier collisions with existing public experiments.\n7. Record outcomes and next steps in EXPERIMENTS.md and LAB_STATE.json.
+8. Prepare a pull request against agent/autonomous-lab and stop. The experiment and its menu entry must be reviewed and published together; do not self-merge or deploy. Do not self-merge.
 
 ## Resource policy
 - Prefer existing tools and subscription allowances. No paid API usage without approval.
