@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "mode": "setup",
+  "current_experiment": null,
+  "last_completed": null,
+  "next_action": "Inspect existing labs and experiments, then propose three novel candidates and implement one on a separate branch.",
+  "quota": {
+    "source": "unknown",
+    "remaining": null,
+    "reset_at": null
+  },
+  "automation": {
+    "enabled": false,
+    "scheduler": null
+  },
+  "safety": {
+    "paid_api_allowed": false,
+    "auto_merge": false,
+    "production_deploy": false
+  }
+}
