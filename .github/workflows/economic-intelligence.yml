@@ -1,0 +1,25 @@
+name: Economic Intelligence — synthetic research checks
+on:
+  push:
+    branches: [agent/economic-intelligence]
+    paths:
+      - 'experiments/economic-intelligence/**'
+      - '.github/workflows/economic-intelligence.yml'
+  pull_request:
+    paths:
+      - 'experiments/economic-intelligence/**'
+      - '.github/workflows/economic-intelligence.yml'
+permissions:
+  contents: read
+jobs:
+  research-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Run dependency-free Node tests
+        working-directory: experiments/economic-intelligence
+        run: |
+          node --version
+          npm test
