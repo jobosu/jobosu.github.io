@@ -1,0 +1,1 @@
+{"name":"@jobosu/economic-intelligence","version":"0.1.0","private":true,"type":"module","description":"Synthetic-only research prototype; no trading.","scripts":{"test":"node --test engine.test.mjs"}}
