@@ -36,3 +36,34 @@ Provider adapters may target DeepSeek, Qwen, Kimi, GLM, MiniMax or others, **onl
 3. Scheduled research runs with source verification.
 4. Paper-trading evaluation and monitoring.
 5. Separate explicit authorization before any real-money pilot.
+
+
+## Verified development checkpoint — 2026-10-26
+
+**Implemented on `agent/economic-intelligence` (not yet merged to `master`):**
+- Browser-based simulation desk with three selectable synthetic market scenarios and reproducible seed.
+- Dependency-free `engine.mjs`: fixed EMA 12/26, previous-bar signal, next-bar execution, 240/120 chronological split, 10 bps fee and 5 bps slippage, long-only, end-of-test liquidation.
+- `orchestrator.mjs`: sequential Researcher → Quant → Skeptic → Editor protocol with explicit mock adapters, required source references and limitations. All transcripts are tagged mock.
+- Node tests for deterministic inputs, causal EMAs, transaction costs, no-lookahead, validation, and refusal of uncited claims/live mode.
+- Read-only GitHub Actions workflow for tests, subject to GitHub workflow execution and checks.
+
+**Local verification:** six engine tests passed in a local Node 22 environment using the same algorithm; the committed engine also passed ten direct invariant/integration checks. The committed mock orchestrator passed direct role-order and fail-closed checks. Browser screenshots and GitHub Actions results are **not yet verified**.
+
+**Not implemented:** external model APIs, news feeds, real financial datasets, live agent debates, brokerage connections, any real-money operation. Synthetic returns displayed in the UI are illustrative and must not be used to assess expected profit.
+
+### Run locally
+```sh
+cd experiments/economic-intelligence
+npm test
+python3 -m http.server 8000
+# open /experiments/economic-intelligence/ through the repository-root server
+```
+No npm dependencies, provider credentials, or paid APIs are required for this phase.
+
+### Integration gates
+1. Add provider adapters server-side, never expose keys in GitHub Pages/browser JS.
+2. Store secrets in protected infrastructure, not repository files or chat.
+3. Enforce explicit monthly spend caps, request timeouts, rate limits and a kill switch before paid calls.
+4. Preserve original source URLs, retrieval dates, licenses and audit logs; label generated claims separately from verified data.
+5. Keep simulation and live trading infrastructure physically and logically separate. Real-money actions require a separate explicit approval.
+6. Do not merge/publish as production-ready until browser and accessibility checks and CI have passed.
