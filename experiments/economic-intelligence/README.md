@@ -55,8 +55,8 @@ Provider adapters may target DeepSeek, Qwen, Kimi, GLM, MiniMax or others, **onl
 ```sh
 cd experiments/economic-intelligence
 npm test
-python3 -m http.server 8000
-# open /experiments/economic-intelligence/ through the repository-root server
+(cd ../.. && python3 -m http.server 8000)
+# open http://localhost:8000/experiments/economic-intelligence/
 ```
 No npm dependencies, provider credentials, or paid APIs are required for this phase.
 
