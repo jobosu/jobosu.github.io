@@ -63,6 +63,22 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 @media(max-width:440px){.grid{grid-template-columns:1fr}.ei-protocol{grid-template-columns:1fr}.ei-terminal-top b{display:none}.ei-metrics>div{padding:17px}.ei-metrics strong{font-size:1.1rem}}
 @media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
+
+<style>
+.ei-audit{border:1px solid var(--edge);background:#0a151c;margin-top:30px;box-shadow:0 32px 65px #0005}
+.ei-table-scroll{overflow-x:auto}
+.ei-audit-table{width:100%;min-width:770px;border-collapse:collapse;font:12px/1.6 ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.ei-audit-table caption{text-align:left;padding:16px 22px;color:var(--muted);font-size:11px}
+.ei-audit-table th,.ei-audit-table td{text-align:left;padding:16px 18px;border-top:1px solid var(--edge)}
+.ei-audit-table thead th{color:var(--accent);font-size:10px;letter-spacing:.06em;font-weight:500}
+.ei-audit-table tbody th{color:var(--ink);font-weight:500}
+.ei-audit-table tbody tr:hover{background:#18312b66}
+.ei-audit-foot{padding:18px 22px;border-top:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ei-audit-foot p{color:var(--muted);font:11px/1.6 ui-monospace,monospace;margin:0}
+.ei-audit-foot button{border:1px solid var(--accent);color:var(--accent);background:transparent;padding:12px 15px;cursor:pointer;font:11px ui-monospace,monospace}
+.ei-audit-foot button:hover{background:var(--accent);color:#05211a}
+.ei-audit-foot button:focus-visible{outline:2px solid white;outline-offset:3px}
+</style>
 </head><body><main>
 <nav><a href="../../labs/">← JOBOSU // LAB</a><span>ECONOMIC INTELLIGENCE / EXPERIMENT</span></nav>
 <p class="eyebrow">RESEARCH SYSTEM / DEVELOPMENT TRACKER</p>
@@ -96,7 +112,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <label for="ei-seed">Llavor reproduïble</label><input id="ei-seed" type="number" value="20261026" min="1" max="4294967295" step="1">
 <button type="button" id="ei-run">EXECUTAR SIMULACIÓ ↗</button>
 <p id="ei-run-status" role="status" aria-live="polite">Preparat per executar.</p>
-<div class="ei-assumptions">Capital: 10.000 unitats<br>Comissió: 10 bps · Lliscament: 5 bps<br>Train/Test: 240 / 120 barres<br>Long-only · Sense apalancament</div>
+<div class="ei-assumptions">Capital: 10.000 unitats<br>Comissió: 10 bps · Lliscament: 5 bps<br>Warm-up/Test: 240 / 120 barres<br>Long-only · Sense apalancament</div>
 </div></div>
 <div class="ei-metrics">
 <div><small>RETORN ESTRATÈGIA</small><strong id="ei-strategy">—</strong></div>
@@ -115,6 +131,23 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <div class="ei-role"><span>ROLE 04 / PLANNED</span><h3>Skeptic</h3><p>Auditoria independent i biaixos.</p></div>
 <div class="ei-role"><span>ROLE 05 / PLANNED</span><h3>Editor</h3><p>Publicació amb fonts i limitacions.</p></div>
 </div>
+</section>
+
+<section class="ei-section" aria-labelledby="ei-robustness-title">
+<div class="ei-kicker">03 / ROBUSTNESS AUDIT / SYNTHETIC ONLY</div>
+<h2 id="ei-robustness-title">One chart is not evidence.</h2>
+<p>Auditoria reproduïble de 96 execucions sintètiques (32 llavors × 3 escenaris). Compara l'estratègia EMA 12/26 amb comprar i mantenir, amb comissions i lliscament. No és una prova de rendibilitat futura: cap d'aquestes trajectòries prové del mercat.</p>
+<div class="ei-audit">
+<div class="ei-terminal-top"><span>SEED SWEEP / 20261027–20261058</span><b>NO MARKET DATA · NO API</b></div>
+<div class="ei-table-scroll">
+<table class="ei-audit-table">
+<caption>Resultats agregats sobre trajectòries sintètiques. Diferència de rendibilitat expressada en punts percentuals (pp).</caption>
+<thead><tr><th scope="col">ESCENARI</th><th scope="col">PROVES</th><th scope="col">EXCÉS MEDIÀ</th><th scope="col">SUPERA REFERÈNCIA</th><th scope="col">PITJOR EXCÉS</th><th scope="col">PITJOR DRAWDOWN</th></tr></thead>
+<tbody id="ei-robustness-body"></tbody>
+</table></div>
+<div class="ei-audit-foot"><p id="ei-audit-status" role="status" aria-live="polite">Calculant proves sintètiques...</p><button type="button" id="ei-audit-export">EXPORTAR RESULTATS JSON ↓</button></div>
+</div>
+<p class="ei-caption">La primera part de cada sèrie (240 barres) només inicialitza les mitjanes mòbils: no hi ha entrenament ni optimització de paràmetres. Els resultats no representen observacions independents de mercat, no inclouen impacte real d'execució ni impostos, i no justifiquen invertir.</p>
 </section>
 <section><h2>Full de ruta</h2><ol><li>Interfície visual de seguiment i registre de sessions.</li><li>Integració segura d'APIs, control de costos i traçabilitat.</li><li>Debats reals amb fonts internacionals contrastables.</li><li>Backtesting i paper trading amb auditoria independent.</li><li>Valoració posterior d'una prova real, només amb autorització específica.</li></ol></section>
 <section><h2>Traçabilitat pública</h2><p class="lead">Consulta el codi i les decisions de desenvolupament a <a href="https://github.com/jobosu/jobosu.github.io/tree/agent/economic-intelligence">la branca del projecte</a>, <a href="https://github.com/jobosu/jobosu.github.io/pull/3">la proposta de publicació (PR #3, esborrany)</a> i <a href="https://github.com/jobosu/jobosu.github.io/blob/agent/economic-intelligence/experiments/economic-intelligence/README.md">l'especificació inicial</a>.</p></section>
