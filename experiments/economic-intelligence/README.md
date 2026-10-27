@@ -42,12 +42,12 @@ Provider adapters may target DeepSeek, Qwen, Kimi, GLM, MiniMax or others, **onl
 
 **Implemented on `agent/economic-intelligence` (not yet merged to `master`):**
 - Browser-based simulation desk with three selectable synthetic market scenarios and reproducible seed.
-- Dependency-free `engine.mjs`: fixed EMA 12/26, previous-bar signal, next-bar execution, 240/120 chronological split, 10 bps fee and 5 bps slippage, long-only, end-of-test liquidation.
+- Dependency-free `engine.mjs`: fixed EMA 12/26, previous-bar signal, next-bar execution, 240-bar EMA warm-up / 120-bar chronological test window, 10 bps fee and 5 bps slippage, long-only, end-of-test liquidation.
 - `orchestrator.mjs`: sequential Researcher → Quant → Skeptic → Editor protocol with explicit mock adapters, required source references and limitations. All transcripts are tagged mock.
 - Node tests for deterministic inputs, causal EMAs, transaction costs, no-lookahead, validation, and refusal of uncited claims/live mode.
 - Read-only GitHub Actions workflow for tests, subject to GitHub workflow execution and checks.
 
-**Local verification:** six engine tests passed in a local Node 22 environment using the same algorithm; the committed engine also passed ten direct invariant/integration checks. The committed mock orchestrator passed direct role-order and fail-closed checks. Browser screenshots and GitHub Actions results are **not yet verified**.
+**Local verification:** six engine tests passed in a local Node 22 environment using the same algorithm; the committed engine also passed ten direct invariant/integration checks. The committed mock orchestrator passed direct role-order and fail-closed checks. Browser screenshots are **not yet verified**. The initial GitHub Actions checks were later confirmed successful on 2026-10-26.
 
 **Not implemented:** external model APIs, news feeds, real financial datasets, live agent debates, brokerage connections, any real-money operation. Synthetic returns displayed in the UI are illustrative and must not be used to assess expected profit.
 
@@ -67,3 +67,19 @@ No npm dependencies, provider credentials, or paid APIs are required for this ph
 4. Preserve original source URLs, retrieval dates, licenses and audit logs; label generated claims separately from verified data.
 5. Keep simulation and live trading infrastructure physically and logically separate. Real-money actions require a separate explicit approval.
 6. Do not merge/publish as production-ready until browser and accessibility checks and CI have passed.
+
+## Development checkpoint — 2026-10-27
+
+- Added `robustness.mjs`: deterministic 32-seed sweeps across three synthetic regimes (96 local simulations), reporting median excess return, share outperforming a benchmark, worst excess return and worst drawdown. All per-seed observations can be exported as JSON from the dashboard.
+- Added `robustness.test.mjs` to verify reproducibility, aggregation, configuration validation and explicit synthetic-only labeling.
+- Corrected a benchmark timing mismatch: buy-and-hold now enters on the same first executable bar as the EMA strategy. This avoids giving the benchmark one bar of advance exposure.
+- Clarified that the first 240 bars are **EMA warm-up**, not model training. There is no parameter fitting, optimization, independent financial sample or evidence of investment edge.
+- Confirmed the previous GitHub Actions checks on commit `e290d328a0afca886d116a9404488ca5e30306d6` succeeded on 2026-10-26. Checks on today's commits must be verified separately.
+- **Publication gate remains closed:** browser visual/accessibility QA and the current CI run are required before merging PR #3. No external APIs or real-money access are configured.
+
+### Audit command
+```sh
+cd experiments/economic-intelligence
+npm test
+node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; console.log(JSON.stringify(robustnessAudit({seeds:32}),null,2))"
+```
