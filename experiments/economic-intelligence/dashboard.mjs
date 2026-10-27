@@ -30,3 +30,28 @@ function render(){
 }
 $('ei-run').addEventListener('click',render);
 render();
+
+/* A reproducible multi-seed audit, deliberately separate from the single-path demo. */
+import {robustnessAudit} from './robustness.mjs';
+const audit=robustnessAudit({seeds:32,startSeed:20261027});
+const scenarioNames={regimes:'Canvis de règim',trend:'Tendència',chop:'Lateral volàtil'};
+const tbody=$('ei-robustness-body');
+for(const group of audit.groups){
+ const tr=document.createElement('tr');
+ const values=[scenarioNames[group.scenario],String(group.runs),format(group.medianExcessPct)+' pp',format(group.outperformPct)+'%',format(group.worstExcessPct)+' pp',format(group.worstDrawdownPct)+'%'];
+ for(let i=0;i<values.length;i++){
+  const cell=document.createElement(i===0?'th':'td');
+  if(i===0)cell.scope='row';
+  cell.textContent=values[i];
+  tr.append(cell);
+ }
+ tbody.append(tr);
+}
+$('ei-audit-status').textContent=audit.totalRuns+' execucions reproduïbles · '+audit.seedsPerScenario+' llavors per escenari · només dades sintètiques.';
+$('ei-audit-export').addEventListener('click',()=>{
+ const blob=new Blob([JSON.stringify(audit,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='jobosu-synthetic-robustness-audit.json';
+ document.body.append(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
