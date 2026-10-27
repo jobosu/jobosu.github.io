@@ -20,7 +20,7 @@ test('every dashboard and audit element has a unique HTML id',()=>{
 });
 test('static UI is honest about simulation and does not load third-party scripts',()=>{
  assert.match(page,/SENSE OPERACIONS REALS/);
- assert.match(page,/només dades sintètiques/);
+ assert.match(page,/trajectòries sintètiques/);
  assert.match(page,/No hi ha debats reals executats/);
  assert.doesNotMatch(page,/<script[^>]+src=["']https?:/i);
  assert.doesNotMatch(dashboard,/fetch\s*\(|XMLHttpRequest|WebSocket/);
