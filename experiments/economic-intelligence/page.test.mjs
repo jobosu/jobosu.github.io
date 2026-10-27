@@ -1,0 +1,27 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+
+const page=readFileSync(new URL('./index.html',import.meta.url),'utf8');
+const menu=readFileSync(new URL('../../labs/index.html',import.meta.url),'utf8');
+const dashboard=readFileSync(new URL('./dashboard.mjs',import.meta.url),'utf8');
+
+test('menu links to the research tracker and the module exists',()=>{
+ assert.match(menu,/href="\.\.\/experiments\/economic-intelligence\/"/);
+ assert.match(page,/<script type="module" src="\.\/dashboard\.mjs"><\/script>/);
+});
+test('every dashboard and audit element has a unique HTML id',()=>{
+ const ids=['ei-chart','ei-scenario','ei-seed','ei-run','ei-run-status','ei-strategy','ei-benchmark','ei-drawdown','ei-trades','ei-fees','ei-robustness-body','ei-audit-status','ei-audit-export'];
+ for(const id of ids){
+  const occurrences=page.match(new RegExp('id="'+id+'"','g'))||[];
+  assert.equal(occurrences.length,1,'missing or duplicate '+id);
+  assert.ok(dashboard.includes("'"+id+"'"),'unused element '+id);
+ }
+});
+test('static UI is honest about simulation and does not load third-party scripts',()=>{
+ assert.match(page,/SENSE OPERACIONS REALS/);
+ assert.match(page,/només dades sintètiques/);
+ assert.match(page,/No hi ha debats reals executats/);
+ assert.doesNotMatch(page,/<script[^>]+src=["']https?:/i);
+ assert.doesNotMatch(dashboard,/fetch\s*\(|XMLHttpRequest|WebSocket/);
+});
