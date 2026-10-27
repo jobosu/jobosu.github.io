@@ -40,9 +40,11 @@ export function backtest(prices,options={}){
   if(i===prices.length-1&&units>0)sell(i);
   equity.push(cash+units*prices[i]);
  }
- const start=prices[c.splitIndex],end=prices.at(-1),benchmarkUnits=(c.initialCash/(1+feeRate))/(start*(1+slip));
+ // Match the benchmark entry to the strategy's first executable bar, not the warm-up boundary.
+ const entryIndex=c.splitIndex+1,end=prices.at(-1);
+ const benchmarkUnits=(c.initialCash/(1+feeRate))/(prices[entryIndex]*(1+slip));
  const benchmarkEnd=benchmarkUnits*end*(1-slip)*(1-feeRate);
- const benchmarkEquity=prices.slice(c.splitIndex).map((p,j,a)=>j===a.length-1?benchmarkEnd:benchmarkUnits*p);
+ const benchmarkEquity=prices.slice(c.splitIndex).map((p,j,a)=>j===0?c.initialCash:j===a.length-1?benchmarkEnd:benchmarkUnits*p);
  return {config:c,sample:{trainBars:c.splitIndex,testBars:prices.length-c.splitIndex},equity,benchmarkEquity,trades,
  metrics:{strategyReturnPct:pct(equity.at(-1),c.initialCash),benchmarkReturnPct:pct(benchmarkEnd,c.initialCash),
  maxDrawdownPct:maxDrawdown([c.initialCash,...equity]),trades:trades.length,feesPaid,endingEquity:equity.at(-1)}};
