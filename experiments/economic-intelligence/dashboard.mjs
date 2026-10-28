@@ -1,4 +1,5 @@
 import {syntheticPrices,backtest,ENGINE_VERSION} from './engine.mjs';
+import {mockAdapters,runProtocol} from './orchestrator.mjs';
 const $=id=>document.getElementById(id);
 const format=(v,d=2)=>new Intl.NumberFormat('ca-ES',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v);
 const pct=v=>(v>0?'+':'')+format(v)+'%';
@@ -54,4 +55,29 @@ $('ei-audit-export').addEventListener('click',()=>{
  link.href=url;link.download='jobosu-synthetic-robustness-audit.json';
  document.body.append(link);link.click();link.remove();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+
+/* A click-to-run, explicitly fictional protocol demonstration. No API calls. */
+const mockRoleNames={researcher:'01 / RESEARCHER',quant:'02 / QUANT',skeptic:'03 / SKEPTIC',editor:'04 / EDITOR'};
+$('ei-debate-run').addEventListener('click',async()=>{
+ const button=$('ei-debate-run'),status=$('ei-debate-status'),list=$('ei-debate-transcript');
+ button.disabled=true;
+ status.textContent='Executant únicament adaptadors locals simulats...';
+ try{
+  const session=await runProtocol({adapters:mockAdapters(),mode:'mock'});
+  if(session.mode!=='mock'||session.connectedProviders!==0||session.liveTrades!==0||session.transcript.some(m=>m.mock!==true))throw new Error('Protocol de simulació no verificat');
+  list.replaceChildren();
+  for(const message of session.transcript){
+   const item=document.createElement('li'),heading=document.createElement('h4'),summary=document.createElement('p'),sources=document.createElement('small'),limits=document.createElement('small');
+   heading.textContent=mockRoleNames[message.role]||message.role.toUpperCase();
+   summary.textContent=message.summary;
+   sources.textContent='FONT SIMULADA: '+message.sources.join(' · ');
+   limits.textContent='LIMITACIONS: '+message.limitations.join(' · ');
+   item.append(heading,summary,sources,limits);list.append(item);
+  }
+  status.textContent=session.transcript.length+' rols simulats · 0 proveïdors connectats · 0 operacions · 0 afirmacions de mercat verificades.';
+ }catch(error){
+  list.replaceChildren();
+  status.textContent='Demostració no completada: '+(error instanceof Error?error.message:'error desconegut');
+ }finally{button.disabled=false;}
 });
