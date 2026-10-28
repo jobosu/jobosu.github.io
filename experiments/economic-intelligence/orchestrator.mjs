@@ -1,14 +1,15 @@
 /** Deterministic orchestration contract. MOCK ONLY: no external model is called. */
 export const ROLES=Object.freeze(['researcher','quant','skeptic','editor']);
 const fixtures=Object.freeze({
- researcher:{summary:'Synthetic prices alone cannot establish a real market opportunity.',sources:['synthetic://prices/seed-20261026'],limitations:['No market data or external news.']},
- quant:{summary:'EMA 12/26 can be evaluated on a fixed out-of-sample synthetic window.',sources:['synthetic://prices/seed-20261026'],limitations:['A single scenario is not statistically meaningful.']},
- skeptic:{summary:'Reject profitability claims: synthetic returns are not evidence of an edge.',sources:['synthetic://prices/seed-20261026'],limitations:['No independent data or execution model validation.']},
- editor:{summary:'Publish the methodology, not a claim of financial performance.',sources:['synthetic://prices/seed-20261026'],limitations:['Research-only demonstration; no investment recommendation.']}
+ researcher:{summary:'Les trajectòries sintètiques no permeten identificar oportunitats reals de mercat.',sources:['synthetic://prices/seed-20261026'],limitations:['No hi ha dades de mercat ni notícies externes.']},
+ quant:{summary:'Podem avaluar EMA 12/26 en una finestra sintètica reproduïble, sense optimitzar-la.',sources:['synthetic://prices/seed-20261026'],limitations:['Un únic escenari no té significació estadística per als mercats reals.']},
+ skeptic:{summary:'Rebutgem afirmacions de rendibilitat: els resultats sintètics no demostren cap avantatge inversor.',sources:['synthetic://prices/seed-20261026'],limitations:['No hi ha validació amb dades independents ni execució real.']},
+ editor:{summary:'Publiquem el mètode i les limitacions, mai una promesa de rendibilitat.',sources:['synthetic://prices/seed-20261026'],limitations:['Demostració de recerca; no constitueix una recomanació financera.']}
 });
 function validate(role,message){
  if(!message||typeof message!=='object'||typeof message.summary!=='string'||!message.summary.trim()||message.summary.length>1000)throw new TypeError('invalid summary from '+role);
  if(!Array.isArray(message.sources)||!message.sources.length||message.sources.some(s=>typeof s!=='string'||s.length>300))throw new TypeError('sources required for '+role);
+ if(message.sources.some(s=>!/^synthetic:\/\/[a-z0-9/_-]+$/i.test(s)))throw new TypeError('mock sources must use synthetic:// for '+role);
  if(!Array.isArray(message.limitations)||!message.limitations.length||message.limitations.some(s=>typeof s!=='string'||!s.trim()))throw new TypeError('limitations required for '+role);
  return {role,summary:message.summary.trim(),sources:[...message.sources],limitations:[...message.limitations]};
 }
