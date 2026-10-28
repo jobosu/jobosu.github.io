@@ -11,7 +11,7 @@ test('menu links to the research tracker and the module exists',()=>{
  assert.match(page,/<script type="module" src="\.\/dashboard\.mjs"><\/script>/);
 });
 test('every dashboard and audit element has a unique HTML id',()=>{
- const ids=['ei-chart','ei-scenario','ei-seed','ei-run','ei-run-status','ei-strategy','ei-benchmark','ei-drawdown','ei-trades','ei-fees','ei-robustness-body','ei-audit-status','ei-audit-export'];
+ const ids=['ei-chart','ei-scenario','ei-seed','ei-run','ei-run-status','ei-strategy','ei-benchmark','ei-drawdown','ei-trades','ei-fees','ei-robustness-body','ei-audit-status','ei-audit-export','ei-debate-run','ei-debate-status','ei-debate-transcript'];
  for(const id of ids){
   const occurrences=page.match(new RegExp('id="'+id+'"','g'))||[];
   assert.equal(occurrences.length,1,'missing or duplicate '+id);
@@ -24,4 +24,12 @@ test('static UI is honest about simulation and does not load third-party scripts
  assert.match(page,/No hi ha debats reals executats/);
  assert.doesNotMatch(page,/<script[^>]+src=["']https?:/i);
  assert.doesNotMatch(dashboard,/fetch\s*\(|XMLHttpRequest|WebSocket/);
+});
+
+test('mock debate is clearly disclosed and renders external-shaped content as text',()=>{
+ assert.match(page,/MOCK ONLY · 0 APIs · 0 TRADES/);
+ assert.match(page,/No són converses entre IA reals/);
+ assert.match(dashboard,/runProtocol\(\{adapters:mockAdapters\(\),mode:'mock'\}\)/);
+ assert.match(dashboard,/summary\.textContent=message\.summary/);
+ assert.doesNotMatch(dashboard,/\.innerHTML\s*=/);
 });
