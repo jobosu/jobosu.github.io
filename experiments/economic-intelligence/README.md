@@ -83,3 +83,14 @@ cd experiments/economic-intelligence
 npm test
 node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; console.log(JSON.stringify(robustnessAudit({seeds:32}),null,2))"
 ```
+
+
+## Development checkpoint — 2026-10-28
+
+- Investigated the 2026-10-27 GitHub Actions failure on commit `ca840a6` by reading the **actual failed job logs**: 17 of 18 tests passed, and one UI copy assertion looked for a phrase that the page did not contain. Commit `4d7a682` corrected the test to match the real disclosure. Its GitHub Actions run **#24 passed**. This was a test-copy mismatch, not a trading or API incident.
+- Added a click-to-run **mock research debate** to the interactive dashboard. The local, deterministic Researcher → Quant → Skeptic → Editor transcript is displayed with simulated source references and limitations. The page clearly labels it **MOCK ONLY / 0 APIs / 0 TRADES**. No external model is called.
+- Localized the mock agent statements into Catalan, added an explicit `synthetic://` provenance guard and rejected malformed/external references in mock mode. All transcript text is rendered via `textContent`, never as injected HTML.
+- Extended tests for UI bindings, honest disclosures, safe rendering, synthetic-only provenance and mock session invariants.
+- **GitHub Actions verified on commit `37eb35702f26131ad76eb862343fcb19f90209ee`: run #34 completed successfully on 2026-10-28 with 21 tests passed, 0 failed.** This is automated code verification, **not** a browser visual, mobile-device or accessibility audit.
+- No secrets, paid provider calls, real-money trading, brokerage connections or public production deployment. The changes remain in branch `agent/economic-intelligence` and PR #3; the publication gate remains closed pending visual/accessibility review.
+
