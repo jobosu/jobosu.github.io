@@ -1,3 +1,4 @@
+import {buildProvenanceLedger} from './provenance.mjs';
 /** Deterministic orchestration contract. MOCK ONLY: no external model is called. */
 export const ROLES=Object.freeze(['researcher','quant','skeptic','editor']);
 const fixtures=Object.freeze({
@@ -24,5 +25,6 @@ export async function runProtocol({adapters,scenario='synthetic',mode='mock'}={}
   const response=await adapters[role]({role,scenario,history:structuredClone(transcript)});
   transcript.push({...validate(role,response),mock:true});
  }
- return {mode:'mock',connectedProviders:0,liveTrades:0,transcript,verifiedMarketClaims:0};
+ const session={mode:'mock',connectedProviders:0,liveTrades:0,transcript,verifiedMarketClaims:0};
+ return {...session,provenance:buildProvenanceLedger(session)};
 }
