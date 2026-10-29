@@ -94,3 +94,11 @@ node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; c
 - **GitHub Actions verified on commit `37eb35702f26131ad76eb862343fcb19f90209ee`: run #34 completed successfully on 2026-10-28 with 21 tests passed, 0 failed.** This is automated code verification, **not** a browser visual, mobile-device or accessibility audit.
 - No secrets, paid provider calls, real-money trading, brokerage connections or public production deployment. The changes remain in branch `agent/economic-intelligence` and PR #3; the publication gate remains closed pending visual/accessibility review.
 
+
+## Development checkpoint — 2026-10-29
+
+- Added `provenance.mjs`, an independent, fail-closed **synthetic evidence ledger** for the four-role mock transcript. Every record includes the role, claim, explicit `UNVERIFIED_SYNTHETIC` status, `synthetic://` source references, and limitations.
+- The ledger rejects incomplete transcripts, forged roles, non-synthetic URLs, absent limitations, any connected provider, any verified-market claim, and any real-money trade.
+- Mock protocol results now include the provenance ledger. The dashboard exposes a JSON export **only after** the local mock run passes the provenance gate. The UI heading was corrected to avoid implying there are no mock conversations.
+- Added automated tests for ledger determinism, tampering, source provenance, immutability of the input transcript, and the export gate. No external dependencies or credentials.
+- **Publication gate remains closed** until current GitHub Actions checks, browser rendering/mobile layout, and accessibility review are verified. This is not a real multi-model conversation or independent financial evidence. No paid APIs or trading have been enabled.
