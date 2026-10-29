@@ -82,7 +82,12 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .ei-debate-head{display:flex;align-items:center;justify-content:space-between;gap:25px;padding:26px}
 .ei-debate-head h3{font-size:clamp(1.25rem,2.8vw,1.8rem);margin:12px 0}
 .ei-debate-head p{max-width:620px;color:var(--muted);line-height:1.7;font-size:.86rem}
-#ei-debate-run{flex-shrink:0;max-width:230px;background:transparent;color:var(--accent);border:1px solid var(--accent);padding:14px 17px;cursor:pointer;font:700 11px ui-monospace,monospace;letter-spacing:.04em}
+#ei-debate-run{flex-shrink:0;background:transparent;color:var(--accent);border:1px solid var(--accent);padding:14px 17px;cursor:pointer;font:700 11px ui-monospace,monospace;letter-spacing:.04em}
+.ei-debate-actions{display:flex;flex-direction:column;gap:10px;min-width:230px}
+#ei-debate-export{border:1px solid var(--edge);color:var(--muted);background:#10252a;padding:12px;cursor:pointer;font:11px ui-monospace,monospace}
+#ei-debate-export:not(:disabled):hover{color:var(--ink);border-color:var(--accent)}
+#ei-debate-export:disabled{opacity:.45;cursor:not-allowed}
+#ei-debate-export:focus-visible{outline:2px solid white;outline-offset:3px}
 #ei-debate-run:hover{background:#143c34}#ei-debate-run:focus-visible{outline:2px solid white;outline-offset:3px}
 #ei-debate-run:disabled{opacity:.55;cursor:wait}
 #ei-debate-status{padding:0 26px;color:var(--muted);font:11px/1.7 ui-monospace,monospace}
@@ -92,7 +97,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .ei-debate-transcript h4{font:700 11px ui-monospace,monospace;letter-spacing:.12em;color:var(--accent);margin:0 0 12px}
 .ei-debate-transcript p{color:var(--ink);font-size:.88rem;line-height:1.7;margin:0 0 12px}
 .ei-debate-transcript small{display:block;color:var(--muted);font:11px/1.7 ui-monospace,monospace;overflow-wrap:anywhere}
-@media(max-width:720px){.ei-debate-head{flex-direction:column;align-items:stretch}.ei-debate-head button{max-width:none}.ei-debate-transcript{grid-template-columns:1fr}.ei-debate-transcript li:nth-child(odd){border-right:0}}
+@media(max-width:720px){.ei-debate-head{flex-direction:column;align-items:stretch}.ei-debate-actions{min-width:0}.ei-debate-transcript{grid-template-columns:1fr}.ei-debate-transcript li:nth-child(odd){border-right:0}}
 </style>
 </head><body><main>
 <nav><a href="../../labs/">← JOBOSU // LAB</a><span>ECONOMIC INTELLIGENCE / EXPERIMENT</span></nav>
@@ -137,7 +142,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 </div></div>
 </section>
 <section class="ei-section" aria-labelledby="ei-agents-title">
-<div class="ei-kicker">02 / MULTI-AGENT ARCHITECTURE</div><h2 id="ei-agents-title">Five roles. Zero fictional conversations.</h2>
+<div class="ei-kicker">02 / MULTI-AGENT ARCHITECTURE</div><h2 id="ei-agents-title">Five roles. A transparent mock protocol.</h2>
 <p>Aquests són rols de disseny, no models connectats. Les APIs de DeepSeek, Qwen, Kimi, GLM i altres proveïdors encara estan pendents.</p>
 <div class="ei-protocol">
 <div class="ei-role"><span>ROLE 01 / PLANNED</span><h3>Researcher</h3><p>Fonts datades i evidència verificable.</p></div>
@@ -153,7 +158,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
       <h3 id="ei-debate-title">A debate you can inspect.</h3>
       <p>Executa quatre rols simulats amb respostes predefinides. No són converses entre IA reals, ni fonts de mercat: només una demostració verificable del protocol de recerca.</p>
     </div>
-    <button type="button" id="ei-debate-run">EXECUTAR DEBAT SIMULAT ↗</button>
+    <div class="ei-debate-actions"><button type="button" id="ei-debate-run">EXECUTAR DEBAT SIMULAT ↗</button><button type="button" id="ei-debate-export" disabled>EXPORTAR PROCEDÈNCIA JSON ↓</button></div>
   </div>
   <p id="ei-debate-status" role="status" aria-live="polite">Preparat · cap execució en aquesta sessió.</p>
   <ol id="ei-debate-transcript" class="ei-debate-transcript" aria-label="Transcripció simulada del protocol"></ol>
