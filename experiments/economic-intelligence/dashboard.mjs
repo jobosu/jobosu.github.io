@@ -59,13 +59,19 @@ $('ei-audit-export').addEventListener('click',()=>{
 
 /* A click-to-run, explicitly fictional protocol demonstration. No API calls. */
 const mockRoleNames={researcher:'01 / RESEARCHER',quant:'02 / QUANT',skeptic:'03 / SKEPTIC',editor:'04 / EDITOR'};
+let lastMockProvenance=null;
+const provenanceExport=$('ei-debate-export');
 $('ei-debate-run').addEventListener('click',async()=>{
  const button=$('ei-debate-run'),status=$('ei-debate-status'),list=$('ei-debate-transcript');
  button.disabled=true;
+ provenanceExport.disabled=true;
+ lastMockProvenance=null;
  status.textContent='Executant únicament adaptadors locals simulats...';
  try{
   const session=await runProtocol({adapters:mockAdapters(),mode:'mock'});
-  if(session.mode!=='mock'||session.connectedProviders!==0||session.liveTrades!==0||session.transcript.some(m=>m.mock!==true))throw new Error('Protocol de simulació no verificat');
+  if(session.mode!=='mock'||session.connectedProviders!==0||session.liveTrades!==0||session.transcript.some(m=>m.mock!==true)||session.provenance?.kind!=='MOCK_EVIDENCE_LEDGER'||session.provenance.entries.length!==session.transcript.length)throw new Error('Protocol de simulació no verificat');
+  lastMockProvenance=session.provenance;
+  provenanceExport.disabled=false;
   list.replaceChildren();
   for(const message of session.transcript){
    const item=document.createElement('li'),heading=document.createElement('h4'),summary=document.createElement('p'),sources=document.createElement('small'),limits=document.createElement('small');
@@ -75,9 +81,17 @@ $('ei-debate-run').addEventListener('click',async()=>{
    limits.textContent='LIMITACIONS: '+message.limitations.join(' · ');
    item.append(heading,summary,sources,limits);list.append(item);
   }
-  status.textContent=session.transcript.length+' rols simulats · 0 proveïdors connectats · 0 operacions · 0 afirmacions de mercat verificades.';
+  status.textContent=session.transcript.length+' rols simulats · procedència sintètica auditada · 0 proveïdors connectats · 0 operacions.';
  }catch(error){
   list.replaceChildren();
   status.textContent='Demostració no completada: '+(error instanceof Error?error.message:'error desconegut');
  }finally{button.disabled=false;}
+});
+provenanceExport.addEventListener('click',()=>{
+ if(!lastMockProvenance||lastMockProvenance.simulatedOnly!==true)return;
+ const blob=new Blob([JSON.stringify(lastMockProvenance,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='jobosu-mock-provenance.json';
+ document.body.append(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
