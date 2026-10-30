@@ -102,3 +102,17 @@ node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; c
 - Mock protocol results now include the provenance ledger. The dashboard exposes a JSON export **only after** the local mock run passes the provenance gate. The UI heading was corrected to avoid implying there are no mock conversations.
 - Added automated tests for ledger determinism, tampering, source provenance, immutability of the input transcript, and the export gate. No external dependencies or credentials.
 - **Publication gate remains closed** until current GitHub Actions checks, browser rendering/mobile layout, and accessibility review are verified. This is not a real multi-model conversation or independent financial evidence. No paid APIs or trading have been enabled.
+
+
+## Development checkpoint — 2026-10-30
+
+- Improved keyboard and mobile usability: skip-to-content link, visible keyboard focus, focusable horizontally scrollable robustness table, 16px mobile form controls to avoid iOS input zoom, and 44px minimum mobile interactive controls.
+- Added a live textual chart summary containing the selected synthetic scenario, reproducible seed, strategy/benchmark returns and maximum drawdown. This supplements the SVG for assistive technology; it is **not** real market evidence.
+- Fixed a misleading error state: invalid simulation inputs now clear the previous chart and performance figures rather than leaving stale results visible.
+- Added two static regression tests for accessibility bindings and fail-closed error behavior. **GitHub Actions PR run #56 (2026-10-30, commit `cdd2bb7`) passed: 28 tests, 0 failures.** Push run #55 also passed. These are automated code/static checks, not a full browser, screen-reader, color-contrast or mobile-device audit.
+- PR #3 remains **draft**, and no changes have been merged to `master`. No external model APIs, real market data, provider billing, brokerage connections, or real-money transactions were enabled.
+
+### Remaining release checks
+- Review at 320px, 375px, 768px and desktop widths in an actual browser; check for overflow, focus order, keyboard operation and export buttons.
+- Test a screen reader and inspect WCAG contrast, chart semantics and responsive table usability.
+- Confirm the latest GitHub Actions run is green before considering a production merge.
