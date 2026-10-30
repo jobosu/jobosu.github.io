@@ -20,6 +20,7 @@ function render(){
  try{
   const prices=syntheticPrices({seed:Number($('ei-seed').value),scenario:$('ei-scenario').value}),result=backtest(prices);
   plot(result);
+  $('ei-chart-description').textContent='Gràfic amb dades sintètiques. Escenari: '+$('ei-scenario').selectedOptions[0].textContent+'. Llavor: '+$('ei-seed').value+'. Retorn de l’estratègia: '+pct(result.metrics.strategyReturnPct)+'. Retorn de la referència: '+pct(result.metrics.benchmarkReturnPct)+'. Caiguda màxima: '+format(result.metrics.maxDrawdownPct)+'%.';
   for(const [id,value] of [['ei-strategy',result.metrics.strategyReturnPct],['ei-benchmark',result.metrics.benchmarkReturnPct]]){
    const node=$(id);node.textContent=pct(value);node.className=value>=0?'ei-positive':'ei-negative';
   }
@@ -27,7 +28,14 @@ function render(){
   $('ei-trades').textContent=result.metrics.trades+' execucions';
   $('ei-fees').textContent='Comissions: '+format(result.metrics.feesPaid)+' unitats';
   status.textContent='Simulació local completada · motor v'+ENGINE_VERSION+'.';
- }catch(error){status.textContent='No executat: '+(error instanceof Error?error.message:'error desconegut');}
+ }catch(error){
+  const message=error instanceof Error?error.message:'error desconegut';
+  $('ei-chart').replaceChildren();
+  for(const id of ['ei-strategy','ei-benchmark','ei-drawdown','ei-trades'])$(id).textContent='—';
+  $('ei-fees').textContent='';
+  $('ei-chart-description').textContent='Gràfic no disponible: '+message;
+  status.textContent='No executat: '+message;
+ }
 }
 $('ei-run').addEventListener('click',render);
 render();
