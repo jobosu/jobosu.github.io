@@ -42,3 +42,22 @@ test('mock provenance can only be exported after a validated local session',()=>
  assert.match(dashboard,/lastMockProvenance\.simulatedOnly!==true/);
  assert.match(dashboard,/jobosu-mock-provenance\.json/);
 });
+
+
+test('keyboard entry, chart description and scrollable audit are accessible',()=>{
+ assert.match(page,/<a class="ei-skip" href="#ei-main">Salta al contingut<\/a>/);
+ assert.match(page,/<main id="ei-main" tabindex="-1">/);
+ assert.match(page,/aria-describedby="ei-chart-description"/);
+ assert.match(page,/id="ei-chart-description"[^>]*role="status"[^>]*aria-live="polite"/);
+ assert.match(page,/class="ei-table-scroll" role="region" tabindex="0" aria-label=/);
+ assert.match(page,/\.ei-table-scroll:focus-visible/);
+ assert.match(page,/\.ei-controls select,\.ei-controls input\{font-size:16px;min-height:44px\}/);
+ assert.match(dashboard,/\$\('ei-chart-description'\)\.textContent='Gràfic amb dades sintètiques/);
+});
+
+test('failed simulation removes stale chart and stale performance metrics',()=>{
+ assert.match(dashboard,/\$\('ei-chart'\)\.replaceChildren\(\)/);
+ assert.match(dashboard,/\['ei-strategy','ei-benchmark','ei-drawdown','ei-trades'\]/);
+ assert.match(dashboard,/\$\('ei-chart-description'\)\.textContent='Gràfic no disponible:/);
+ assert.match(dashboard,/status\.textContent='No executat: '\+message/);
+});
