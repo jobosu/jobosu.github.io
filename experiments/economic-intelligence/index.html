@@ -99,7 +99,15 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 .ei-debate-transcript small{display:block;color:var(--muted);font:11px/1.7 ui-monospace,monospace;overflow-wrap:anywhere}
 @media(max-width:720px){.ei-debate-head{flex-direction:column;align-items:stretch}.ei-debate-actions{min-width:0}.ei-debate-transcript{grid-template-columns:1fr}.ei-debate-transcript li:nth-child(odd){border-right:0}}
 </style>
-</head><body><main>
+<style>
+/* Keyboard entry, visible focus and comfortable touch controls. */
+.ei-skip{position:absolute;left:16px;top:-120px;z-index:100;background:#79f2d3;color:#05211a;padding:12px 16px;font-weight:700}
+.ei-skip:focus{top:16px}
+a:focus-visible{outline:2px solid #fff;outline-offset:4px}
+.ei-table-scroll:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+@media(max-width:720px){.ei-controls label{font-size:14px}.ei-controls select,.ei-controls input{font-size:16px;min-height:44px}.ei-audit-foot button,#ei-debate-run,#ei-debate-export{min-height:44px}.ei-caption{font-size:12px}}
+</style>
+</head><body><a class="ei-skip" href="#ei-main">Salta al contingut</a><main id="ei-main" tabindex="-1">
 <nav><a href="../../labs/">← JOBOSU // LAB</a><span>ECONOMIC INTELLIGENCE / EXPERIMENT</span></nav>
 <p class="eyebrow">RESEARCH SYSTEM / DEVELOPMENT TRACKER</p>
 <h1>Collective<br>Economic Intelligence.</h1>
@@ -122,7 +130,8 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <div class="ei-chart-panel">
 <div class="ei-kicker">OUT-OF-SAMPLE / 120 SYNTHETIC BARS</div><h3>Capital simulat · estratègia vs referència</h3>
 <div class="ei-legend"><span>EMA 12/26</span><span>Comprar i mantenir</span></div>
-<svg id="ei-chart" viewBox="0 0 800 320" role="img" aria-label="Gràfic de capital simulat comparatiu" preserveAspectRatio="none"></svg>
+<svg id="ei-chart" viewBox="0 0 800 320" role="img" aria-label="Gràfic de capital simulat comparatiu" aria-describedby="ei-chart-description" preserveAspectRatio="none"></svg>
+<p id="ei-chart-description" class="ei-caption" role="status" aria-live="polite">Resum del gràfic pendent de càlcul.</p>
 <p class="ei-caption">Les dades es generen localment amb una llavor fixa. No hi ha cap agent extern ni consulta a mercats en aquesta prova.</p>
 </div>
 <div class="ei-controls">
@@ -171,7 +180,7 @@ footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 <p>Auditoria reproduïble de 96 execucions sintètiques (32 llavors × 3 escenaris). Compara l'estratègia EMA 12/26 amb comprar i mantenir, amb comissions i lliscament. No és una prova de rendibilitat futura: cap d'aquestes trajectòries prové del mercat.</p>
 <div class="ei-audit">
 <div class="ei-terminal-top"><span>SEED SWEEP / 20261027–20261058</span><b>NO MARKET DATA · NO API</b></div>
-<div class="ei-table-scroll">
+<div class="ei-table-scroll" role="region" tabindex="0" aria-label="Taula de robustesa sintètica; desplaçament horitzontal disponible">
 <table class="ei-audit-table">
 <caption>Resultats agregats sobre trajectòries sintètiques. Diferència de rendibilitat expressada en punts percentuals (pp).</caption>
 <thead><tr><th scope="col">ESCENARI</th><th scope="col">PROVES</th><th scope="col">EXCÉS MEDIÀ</th><th scope="col">SUPERA REFERÈNCIA</th><th scope="col">PITJOR EXCÉS</th><th scope="col">PITJOR DRAWDOWN</th></tr></thead>
