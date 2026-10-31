@@ -16,3 +16,11 @@ test('benchmark starts in cash and enters at the same first executable bar',()=>
  const units=(r.config.initialCash/(1+fee))/(prices[entry]*(1+slip));
  assert.ok(Math.abs(r.benchmarkEquity[1]-units*prices[entry])<1e-8);
 });
+
+test('synthetic seed must be a valid integer; no silent xorshift truncation',()=>{
+ for(const seed of [0,0.5,1.5,-1,4294967296,NaN,Infinity,'123']){
+  assert.throws(()=>syntheticPrices({seed}),RangeError);
+ }
+ assert.deepEqual(syntheticPrices({seed:1}),syntheticPrices({seed:1}));
+ assert.equal(syntheticPrices({seed:4294967295}).length,360);
+});
