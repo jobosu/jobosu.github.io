@@ -46,6 +46,34 @@ jobs:
           timeout 60s google-chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-extensions --disable-background-networking --no-first-run --virtual-time-budget=8000 --window-size=1280,900 --dump-dom http://127.0.0.1:8765/experiments/economic-intelligence/ > /tmp/jobosu-rendered.html
           grep -q 'Simulació local completada' /tmp/jobosu-rendered.html
           grep -q '96 execucions reproduïbles' /tmp/jobosu-rendered.html
+          cat > browser-probe.html <<'HTML'
+          <!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0}iframe{display:block;width:100vw;height:100vh;border:0}</style></head><body>
+          <iframe id="frame" src="/experiments/economic-intelligence/"></iframe>
+          <script>
+          document.getElementById('frame').addEventListener('load',()=>{
+            const frame=document.getElementById('frame'),doc=frame.contentDocument,win=frame.contentWindow;
+            const heading=doc.querySelector('h1'),range=doc.createRange();
+            range.selectNodeContents(heading);
+            const text=range.getBoundingClientRect(),page=doc.documentElement;
+            const result={viewport:win.innerWidth,pageWidth:page.scrollWidth,headingRight:Math.round(text.right),headingLeft:Math.round(text.left)};
+            document.body.dataset.qa=(result.pageWidth<=result.viewport+1&&result.headingRight<=result.viewport+1&&result.headingLeft>=-1)?'pass':'fail';
+            document.body.dataset.metrics=JSON.stringify(result);
+          });
+          </script></body></html>
+          HTML
+          for width in 320 375 768 1280; do
+            timeout 60s google-chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-extensions --disable-background-networking --no-first-run --virtual-time-budget=8000 --window-size="$width,900" --dump-dom http://127.0.0.1:8765/browser-probe.html > "/tmp/jobosu-probe-$width.html"
+            python3 - "$width" <<'PY'
+          from pathlib import Path
+          import sys,re,html
+          width=sys.argv[1]
+          page=Path(f'/tmp/jobosu-probe-{width}.html').read_text()
+          status=re.search(r'data-qa="([^"]+)"',page)
+          details=re.search(r'data-metrics="([^"]+)"',page)
+          print(f'{width}px browser layout: {status.group(1) if status else "no result"}; {html.unescape(details.group(1)) if details else "no metrics"}')
+          assert status and status.group(1)=='pass', f'Viewport overflow or clipped heading at {width}px'
+          PY
+          done
           for width in 320 375 768 1280; do
             timeout 60s google-chrome --headless=new --no-sandbox --disable-dev-shm-usage --disable-gpu --disable-extensions --disable-background-networking --no-first-run --hide-scrollbars --virtual-time-budget=8000 --window-size="$width,900" --screenshot="browser-screenshots/dashboard-$width.png" http://127.0.0.1:8765/experiments/economic-intelligence/
           done
