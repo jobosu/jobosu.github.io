@@ -61,3 +61,7 @@ test('failed simulation removes stale chart and stale performance metrics',()=>{
  assert.match(dashboard,/\$\('ei-chart-description'\)\.textContent='Gràfic no disponible:/);
  assert.match(dashboard,/status\.textContent='No executat: '\+message/);
 });
+
+test('320px hero typography has an explicit narrow-viewport guard',()=>{
+ assert.match(page,/@media\(max-width:350px\)\{h1\{font-size:clamp\(2\.45rem,12\.3vw,2\.8rem\)/);
+});
