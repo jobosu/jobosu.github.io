@@ -3,6 +3,7 @@ export const ENGINE_VERSION='0.1.0';
 export const DEFAULTS=Object.freeze({initialCash:10000,feeBps:10,slippageBps:5,fastPeriod:12,slowPeriod:26,splitIndex:240});
 function check(n,name,min,max){if(!Number.isFinite(n)||n<min||n>max)throw new RangeError(name+' outside allowed range');}
 export function syntheticPrices({seed=20261026,points=360,scenario='regimes'}={}){
+ if(!Number.isInteger(seed))throw new RangeError('seed must be a 32-bit unsigned integer');
  check(seed,'seed',1,4294967295);
  if(!Number.isInteger(points)||points<60||points>5000)throw new RangeError('invalid points');
  if(!['regimes','trend','chop'].includes(scenario))throw new RangeError('unknown scenario');
