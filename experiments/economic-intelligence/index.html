@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="ca"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Seguiment transparent del projecte JOBOSU Economic Intelligence.">
+<title>Economic Intelligence // JOBOSU LAB</title>
+<script type="module" src="./dashboard.mjs"></script>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif;background:#060b12;color:#e9f1ff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 75% 0,#12314a 0,transparent 45%),#060b12}
+main{max-width:1050px;margin:auto;padding:clamp(22px,5vw,64px)}
+a{color:#72e6db}nav{display:flex;justify-content:space-between;gap:18px;font-size:.8rem;letter-spacing:.14em}
+.eyebrow{color:#72e6db;letter-spacing:.2em;font-size:.8rem;margin-top:90px}h1{font-size:clamp(2.5rem,7vw,5.5rem);line-height:1.02;letter-spacing:-.055em;margin:16px 0 22px}
+.lead{color:#a4b4c9;line-height:1.8;max-width:720px;font-size:1.08rem}
+.pill{display:inline-block;border:1px solid #36516b;border-radius:50px;padding:8px 13px;color:#b7c9da;font-size:.75rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px;margin:50px 0}
+.card{background:linear-gradient(145deg,#142337,#0b1420);border:1px solid #274056;border-radius:16px;padding:25px}
+.card small{color:#84a2bc;letter-spacing:.12em}.card h2{font-size:1.25rem;margin:16px 0 8px}.card p{color:#a4b4c9;line-height:1.6}
+section{margin:60px 0}section>h2{font-size:1.5rem}li{margin:12px 0;color:#b8c9d8;line-height:1.5}
+footer{border-top:1px solid #294056;padding:24px 0;color:#7791a9;font-size:.85rem}
+</style>
+<style>
+:root{--accent:#79f2d3;--ink:#ecf7f4;--muted:#9ab4bd;--edge:#29464b;--amber:#e1b47a}
+body{background:radial-gradient(ellipse at 84% 5%,#124037 0,transparent 37%),radial-gradient(ellipse at 6% 35%,#152b3e 0,transparent 45%),#060b11;color:var(--ink);font-family:Inter,Manrope,system-ui,sans-serif}
+main{max-width:1240px}nav{padding-bottom:22px;border-bottom:1px solid var(--edge);align-items:center}
+nav a{font-weight:700;letter-spacing:.12em}nav span{color:var(--muted)}
+.eyebrow{margin-top:105px}h1{font-size:clamp(3.1rem,8vw,7rem);max-width:1000px;line-height:.98;letter-spacing:-.07em}
+.lead{font-size:1.05rem;line-height:1.9}.pill{margin-top:20px;border-color:#4b766d;color:var(--accent)}
+.grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:65px 0}
+.card{min-height:176px;border-radius:0;border:1px solid var(--edge);background:linear-gradient(145deg,#152c30bb,#0a1620);transition:transform .2s,border-color .2s}
+.card:hover{transform:translateY(-3px);border-color:#5f9c8b}.card small{color:var(--accent);font-size:10px;letter-spacing:.12em}
+.card h2{font-size:1.2rem}.card p{font-size:.84rem}.card h2+p{margin-bottom:0}
+section>h2{font-size:clamp(1.7rem,3vw,2.5rem);letter-spacing:-.04em}
+.ei-section{margin:80px 0 90px}.ei-section>p{max-width:740px;color:var(--muted);line-height:1.8}
+.ei-kicker{color:var(--accent);font:11px ui-monospace,monospace;letter-spacing:.18em}
+.ei-terminal{border:1px solid var(--edge);background:#0a151c;box-shadow:0 32px 65px #0005;margin-top:30px}
+.ei-terminal-top{padding:17px 22px;border-bottom:1px solid var(--edge);display:flex;justify-content:space-between;gap:16px;color:#92b2ba;font:10px ui-monospace,monospace;letter-spacing:.13em}
+.ei-terminal-top b{color:var(--amber);font-weight:400}
+.ei-workspace{display:grid;grid-template-columns:minmax(0,1fr) 280px}
+.ei-chart-panel{padding:28px;min-width:0}.ei-chart-panel h3{font-size:1.3rem;margin:9px 0 6px}
+.ei-legend{display:flex;gap:24px;flex-wrap:wrap;color:var(--muted);font-size:11px;margin:20px 0}
+.ei-legend span:before{content:'';display:inline-block;width:20px;height:3px;vertical-align:middle;margin-right:8px;background:var(--accent)}
+.ei-legend span+span:before{background:var(--amber)}
+#ei-chart{display:block;width:100%;height:300px;background:linear-gradient(180deg,#11262d55,transparent)}
+.ei-caption{font:11px/1.8 ui-monospace,monospace;color:#8ba5ad;margin-top:16px}
+.ei-controls{padding:28px;border-left:1px solid var(--edge)}
+.ei-controls label{display:block;margin:18px 0 8px;font-size:12px;color:var(--muted)}
+.ei-controls select,.ei-controls input{display:block;width:100%;height:42px;background:#0c1d26;border:1px solid #38575e;color:var(--ink);padding:8px;font:12px ui-monospace,monospace}
+.ei-controls button{width:100%;background:var(--accent);color:#05211a;border:0;padding:14px 10px;font:700 11px ui-monospace,monospace;letter-spacing:.08em;margin-top:22px;cursor:pointer}
+.ei-controls button:hover{background:#b2ffeb}.ei-controls button:focus-visible,.ei-controls select:focus-visible,.ei-controls input:focus-visible{outline:2px solid #fff;outline-offset:3px}
+#ei-run-status{font:11px/1.6 ui-monospace,monospace;color:var(--muted);min-height:35px;margin:15px 0}
+.ei-assumptions{padding-top:18px;border-top:1px solid var(--edge);font:11px/1.9 ui-monospace,monospace;color:#a2b9c1}
+.ei-metrics{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--edge)}
+.ei-metrics>div{padding:25px;border-right:1px solid var(--edge);display:flex;flex-direction:column;gap:12px}
+.ei-metrics>div:last-child{border-right:0}.ei-metrics small{font:10px ui-monospace,monospace;color:var(--muted);letter-spacing:.07em}
+.ei-metrics strong{font:500 clamp(1.1rem,2.1vw,1.8rem) ui-monospace,monospace}.ei-metrics em{font:10px ui-monospace,monospace;color:var(--muted);font-style:normal}
+.ei-positive{color:var(--accent)}.ei-negative{color:#f0a1a1}
+.ei-protocol{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:25px}
+.ei-role{padding:18px;background:linear-gradient(140deg,#142930,#0c1720);border:1px solid var(--edge)}
+.ei-role span{color:var(--accent);font:10px ui-monospace,monospace}.ei-role h3{font-size:1rem;margin:18px 0 8px}
+.ei-role p{font-size:.76rem;line-height:1.7;color:var(--muted);margin:0}
+footer{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+@media(max-width:1050px){.grid{grid-template-columns:repeat(2,1fr)}.ei-protocol{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:720px){nav{flex-wrap:wrap}.ei-workspace{grid-template-columns:1fr}.ei-controls{border-left:0;border-top:1px solid var(--edge)}.ei-metrics{grid-template-columns:repeat(2,1fr)}.ei-metrics>div:nth-child(2){border-right:0}.ei-metrics>div:nth-child(-n+2){border-bottom:1px solid var(--edge)}.ei-protocol{grid-template-columns:repeat(2,1fr)}#ei-chart{height:230px}.ei-chart-panel{padding:20px}}
+@media(max-width:440px){.grid{grid-template-columns:1fr}.ei-protocol{grid-template-columns:1fr}.ei-terminal-top b{display:none}.ei-metrics>div{padding:17px}.ei-metrics strong{font-size:1.1rem}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<style>
+.ei-audit{border:1px solid var(--edge);background:#0a151c;margin-top:30px;box-shadow:0 32px 65px #0005}
+.ei-table-scroll{overflow-x:auto}
+.ei-audit-table{width:100%;min-width:770px;border-collapse:collapse;font:12px/1.6 ui-monospace,monospace;font-variant-numeric:tabular-nums}
+.ei-audit-table caption{text-align:left;padding:16px 22px;color:var(--muted);font-size:11px}
+.ei-audit-table th,.ei-audit-table td{text-align:left;padding:16px 18px;border-top:1px solid var(--edge)}
+.ei-audit-table thead th{color:var(--accent);font-size:10px;letter-spacing:.06em;font-weight:500}
+.ei-audit-table tbody th{color:var(--ink);font-weight:500}
+.ei-audit-table tbody tr:hover{background:#18312b66}
+.ei-audit-foot{padding:18px 22px;border-top:1px solid var(--edge);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.ei-audit-foot p{color:var(--muted);font:11px/1.6 ui-monospace,monospace;margin:0}
+.ei-audit-foot button{border:1px solid var(--accent);color:var(--accent);background:transparent;padding:12px 15px;cursor:pointer;font:11px ui-monospace,monospace}
+.ei-audit-foot button:hover{background:var(--accent);color:#05211a}
+.ei-audit-foot button:focus-visible{outline:2px solid white;outline-offset:3px}
+.ei-debate{margin-top:30px;border:1px solid var(--edge);background:linear-gradient(145deg,#0b1e25,#071219)}
+.ei-debate-head{display:flex;align-items:center;justify-content:space-between;gap:25px;padding:26px}
+.ei-debate-head h3{font-size:clamp(1.25rem,2.8vw,1.8rem);margin:12px 0}
+.ei-debate-head p{max-width:620px;color:var(--muted);line-height:1.7;font-size:.86rem}
+#ei-debate-run{flex-shrink:0;background:transparent;color:var(--accent);border:1px solid var(--accent);padding:14px 17px;cursor:pointer;font:700 11px ui-monospace,monospace;letter-spacing:.04em}
+.ei-debate-actions{display:flex;flex-direction:column;gap:10px;min-width:230px}
+#ei-debate-export{border:1px solid var(--edge);color:var(--muted);background:#10252a;padding:12px;cursor:pointer;font:11px ui-monospace,monospace}
+#ei-debate-export:not(:disabled):hover{color:var(--ink);border-color:var(--accent)}
+#ei-debate-export:disabled{opacity:.45;cursor:not-allowed}
+#ei-debate-export:focus-visible{outline:2px solid white;outline-offset:3px}
+#ei-debate-run:hover{background:#143c34}#ei-debate-run:focus-visible{outline:2px solid white;outline-offset:3px}
+#ei-debate-run:disabled{opacity:.55;cursor:wait}
+#ei-debate-status{padding:0 26px;color:var(--muted);font:11px/1.7 ui-monospace,monospace}
+.ei-debate-transcript{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+.ei-debate-transcript li{border-top:1px solid var(--edge);padding:24px 26px;min-width:0;margin:0}
+.ei-debate-transcript li:nth-child(odd){border-right:1px solid var(--edge)}
+.ei-debate-transcript h4{font:700 11px ui-monospace,monospace;letter-spacing:.12em;color:var(--accent);margin:0 0 12px}
+.ei-debate-transcript p{color:var(--ink);font-size:.88rem;line-height:1.7;margin:0 0 12px}
+.ei-debate-transcript small{display:block;color:var(--muted);font:11px/1.7 ui-monospace,monospace;overflow-wrap:anywhere}
+@media(max-width:720px){.ei-debate-head{flex-direction:column;align-items:stretch}.ei-debate-actions{min-width:0}.ei-debate-transcript{grid-template-columns:1fr}.ei-debate-transcript li:nth-child(odd){border-right:0}}
+</style>
+<style>
+/* Keyboard entry, visible focus and comfortable touch controls. */
+.ei-skip{position:absolute;left:16px;top:-120px;z-index:100;background:#79f2d3;color:#05211a;padding:12px 16px;font-weight:700}
+.ei-skip:focus{top:16px}
+a:focus-visible{outline:2px solid #fff;outline-offset:4px}
+.ei-table-scroll:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+@media(max-width:720px){.ei-controls label{font-size:14px}.ei-controls select,.ei-controls input{font-size:16px;min-height:44px}.ei-controls button{min-height:44px}.ei-audit-foot button,#ei-debate-run,#ei-debate-export{min-height:44px}.ei-caption{font-size:12px}}
+/* Prevent the longest hero word from clipping on 320px phones. */
+@media(max-width:350px){h1{font-size:clamp(2.45rem,12.3vw,2.8rem);letter-spacing:-.06em}}
+</style>
+</head><body><a class="ei-skip" href="#ei-main">Salta al contingut</a><main id="ei-main" tabindex="-1">
+<nav><a href="../../labs/">← JOBOSU // LAB</a><span>ECONOMIC INTELLIGENCE / EXPERIMENT</span></nav>
+<p class="eyebrow">RESEARCH SYSTEM / DEVELOPMENT TRACKER</p>
+<h1>Collective<br>Economic Intelligence.</h1>
+<p class="lead">Laboratori experimental multiagent per investigar oportunitats econòmiques, debatre hipòtesis i comprovar-les amb dades i simulacions. Aquest espai mostra l'estat verificable del desenvolupament, no resultats ficticis.</p>
+<span class="pill">● EN DESENVOLUPAMENT · SENSE OPERACIONS REALS</span>
+<div class="grid">
+<div class="card"><small>01 / ARQUITECTURA</small><h2>Definida</h2><p>Rols, protocol de debat, validació independent i salvaguardes documentades.</p></div>
+<div class="card"><small>02 / API PROVIDERS</small><h2>Pendent</h2><p>DeepSeek, Qwen, Kimi, GLM i altres models no estan connectats ni verificats.</p></div>
+<div class="card"><small>03 / SESSIONS</small><h2>0 verificades</h2><p>No hi ha debats reals executats. El motor local de simulació sintètica ja està implementat.</p></div>
+<div class="card"><small>04 / CAPITAL REAL</small><h2>Desactivat</h2><p>Només recerca i simulació. Sense ordres, transferències ni accés a comptes.</p></div>
+</div>
+
+<section class="ei-section" id="simulation" aria-labelledby="ei-simulation-title">
+<div class="ei-kicker">01 / QUANTITATIVE RESEARCH / SYNTHETIC ONLY</div>
+<h2 id="ei-simulation-title">The simulation desk.</h2>
+<p>Un experiment funcional i reproduïble: estratègia EMA 12/26, senyal calculat amb la barra anterior, comissions, lliscament i període d'avaluació separat. No són cotitzacions reals ni una predicció de beneficis.</p>
+<div class="ei-terminal">
+<div class="ei-terminal-top"><span>JOBOSU // SIMULATION ENGINE v0.1.0</span><b>NO API · NO BROKER · €0 AT RISK</b></div>
+<div class="ei-workspace">
+<div class="ei-chart-panel">
+<div class="ei-kicker">OUT-OF-SAMPLE / 120 SYNTHETIC BARS</div><h3>Capital simulat · estratègia vs referència</h3>
+<div class="ei-legend"><span>EMA 12/26</span><span>Comprar i mantenir</span></div>
+<svg id="ei-chart" viewBox="0 0 800 320" role="img" aria-label="Gràfic de capital simulat comparatiu" aria-describedby="ei-chart-description" preserveAspectRatio="none"></svg>
+<p id="ei-chart-description" class="ei-caption" role="status" aria-live="polite">Resum del gràfic pendent de càlcul.</p>
+<p class="ei-caption">Les dades es generen localment amb una llavor fixa. No hi ha cap agent extern ni consulta a mercats en aquesta prova.</p>
+</div>
+<div class="ei-controls">
+<div class="ei-kicker">SCENARIO CONTROLS</div>
+<label for="ei-scenario">Escenari sintètic</label>
+<select id="ei-scenario"><option value="regimes">Canvis de règim</option><option value="trend">Tendència</option><option value="chop">Lateral volàtil</option></select>
+<label for="ei-seed">Llavor reproduïble</label><input id="ei-seed" type="number" value="20261026" min="1" max="4294967295" step="1">
+<button type="button" id="ei-run">EXECUTAR SIMULACIÓ ↗</button>
+<p id="ei-run-status" role="status" aria-live="polite">Preparat per executar.</p>
+<div class="ei-assumptions">Capital: 10.000 unitats<br>Comissió: 10 bps · Lliscament: 5 bps<br>Warm-up/Test: 240 / 120 barres<br>Long-only · Sense apalancament</div>
+</div></div>
+<div class="ei-metrics">
+<div><small>RETORN ESTRATÈGIA</small><strong id="ei-strategy">—</strong></div>
+<div><small>RETORN REFERÈNCIA</small><strong id="ei-benchmark">—</strong></div>
+<div><small>MAX. DRAWDOWN</small><strong id="ei-drawdown">—</strong></div>
+<div><small>EXECUCIONS / COSTOS</small><strong id="ei-trades">—</strong><em id="ei-fees"></em></div>
+</div></div>
+</section>
+<section class="ei-section" aria-labelledby="ei-agents-title">
+<div class="ei-kicker">02 / MULTI-AGENT ARCHITECTURE</div><h2 id="ei-agents-title">Five roles. A transparent mock protocol.</h2>
+<p>Aquests són rols de disseny, no models connectats. Les APIs de DeepSeek, Qwen, Kimi, GLM i altres proveïdors encara estan pendents.</p>
+<div class="ei-protocol">
+<div class="ei-role"><span>ROLE 01 / PLANNED</span><h3>Researcher</h3><p>Fonts datades i evidència verificable.</p></div>
+<div class="ei-role"><span>ROLE 02 / PLANNED</span><h3>Quant</h3><p>Hipòtesis falsables i estadística.</p></div>
+<div class="ei-role"><span>ROLE 03 / LOCAL</span><h3>Builder</h3><p>Motor de simulació reproduïble.</p></div>
+<div class="ei-role"><span>ROLE 04 / PLANNED</span><h3>Skeptic</h3><p>Auditoria independent i biaixos.</p></div>
+<div class="ei-role"><span>ROLE 05 / PLANNED</span><h3>Editor</h3><p>Publicació amb fonts i limitacions.</p></div>
+</div>
+<div class="ei-debate" aria-labelledby="ei-debate-title">
+  <div class="ei-terminal-top"><span>LOCAL RESEARCH PROTOCOL / DEMONSTRATION</span><b>MOCK ONLY · 0 APIs · 0 TRADES</b></div>
+  <div class="ei-debate-head">
+    <div><div class="ei-kicker">DETERMINISTIC MULTI-AGENT DEMO</div>
+      <h3 id="ei-debate-title">A debate you can inspect.</h3>
+      <p>Executa quatre rols simulats amb respostes predefinides. No són converses entre IA reals, ni fonts de mercat: només una demostració verificable del protocol de recerca.</p>
+    </div>
+    <div class="ei-debate-actions"><button type="button" id="ei-debate-run">EXECUTAR DEBAT SIMULAT ↗</button><button type="button" id="ei-debate-export" disabled>EXPORTAR PROCEDÈNCIA JSON ↓</button></div>
+  </div>
+  <p id="ei-debate-status" role="status" aria-live="polite">Preparat · cap execució en aquesta sessió.</p>
+  <ol id="ei-debate-transcript" class="ei-debate-transcript" aria-label="Transcripció simulada del protocol"></ol>
+</div>
+</section>
+
+<section class="ei-section" aria-labelledby="ei-robustness-title">
+<div class="ei-kicker">03 / ROBUSTNESS AUDIT / SYNTHETIC ONLY</div>
+<h2 id="ei-robustness-title">One chart is not evidence.</h2>
+<p>Auditoria reproduïble de 96 execucions sintètiques (32 llavors × 3 escenaris). Compara l'estratègia EMA 12/26 amb comprar i mantenir, amb comissions i lliscament. No és una prova de rendibilitat futura: cap d'aquestes trajectòries prové del mercat.</p>
+<div class="ei-audit">
+<div class="ei-terminal-top"><span>SEED SWEEP / 20261027–20261058</span><b>NO MARKET DATA · NO API</b></div>
+<div class="ei-table-scroll" role="region" tabindex="0" aria-label="Taula de robustesa sintètica; desplaçament horitzontal disponible">
+<table class="ei-audit-table">
+<caption>Resultats agregats sobre trajectòries sintètiques. Diferència de rendibilitat expressada en punts percentuals (pp).</caption>
+<thead><tr><th scope="col">ESCENARI</th><th scope="col">PROVES</th><th scope="col">EXCÉS MEDIÀ</th><th scope="col">SUPERA REFERÈNCIA</th><th scope="col">PITJOR EXCÉS</th><th scope="col">PITJOR DRAWDOWN</th></tr></thead>
+<tbody id="ei-robustness-body"></tbody>
+</table></div>
+<div class="ei-audit-foot"><p id="ei-audit-status" role="status" aria-live="polite">Calculant proves sintètiques...</p><button type="button" id="ei-audit-export">EXPORTAR RESULTATS JSON ↓</button></div>
+</div>
+<p class="ei-caption">La primera part de cada sèrie (240 barres) només inicialitza les mitjanes mòbils: no hi ha entrenament ni optimització de paràmetres. Els resultats no representen observacions independents de mercat, no inclouen impacte real d'execució ni impostos, i no justifiquen invertir.</p>
+</section>
+<section><h2>Full de ruta</h2><ol><li>Interfície visual de seguiment i registre de sessions.</li><li>Integració segura d'APIs, control de costos i traçabilitat.</li><li>Debats reals amb fonts internacionals contrastables.</li><li>Backtesting i paper trading amb auditoria independent.</li><li>Valoració posterior d'una prova real, només amb autorització específica.</li></ol></section>
+<section><h2>Traçabilitat pública</h2><p class="lead">Consulta el codi i les decisions de desenvolupament a <a href="https://github.com/jobosu/jobosu.github.io/tree/agent/economic-intelligence">la branca del projecte</a>, <a href="https://github.com/jobosu/jobosu.github.io/pull/3">la proposta de publicació (PR #3, esborrany)</a> i <a href="https://github.com/jobosu/jobosu.github.io/blob/agent/economic-intelligence/experiments/economic-intelligence/README.md">l'especificació inicial</a>.</p></section>
+<footer>JOBOSU // LAB · Research first. Evidence always. No guaranteed returns.</footer>
+</main></body></html>

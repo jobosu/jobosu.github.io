@@ -1,0 +1,63 @@
+name: Economic Intelligence — synthetic research checks
+on:
+  push:
+    branches: [agent/economic-intelligence]
+    paths:
+      - 'experiments/economic-intelligence/**'
+      - '.github/workflows/economic-intelligence.yml'
+  pull_request:
+    paths:
+      - 'experiments/economic-intelligence/**'
+      - '.github/workflows/economic-intelligence.yml'
+permissions:
+  contents: read
+jobs:
+  research-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Run dependency-free Node tests
+        working-directory: experiments/economic-intelligence
+        run: |
+          node --version
+          npm test
+
+  browser-render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      - name: Render local synthetic dashboard in headless Chrome
+        shell: bash
+        run: |
+          set -euo pipefail
+          command -v google-chrome
+          mkdir -p browser-screenshots
+          python3 -m http.server 8765 --bind 127.0.0.1 >/tmp/jobosu-http.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for i in {1..30}; do
+            if curl --fail --silent --output /dev/null http://127.0.0.1:8765/experiments/economic-intelligence/; then break; fi
+            sleep 0.2
+          done
+          node experiments/economic-intelligence/browser-qa.mjs
+          python3 - <<'PY'
+          from pathlib import Path
+          import struct
+          for path in sorted(Path('browser-screenshots').glob('*.png')):
+              raw=path.read_bytes()
+              assert raw[:8]==b'\x89PNG\r\n\x1a\n' and len(raw)>5000, f'Invalid screenshot: {path}'
+              width,height=struct.unpack('>II',raw[16:24])
+              print(f'{path.name}: actual screenshot {width}x{height} (browser CLI may clamp narrow windows)')
+          PY
+      - name: Preserve screenshots for human visual review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: economic-intelligence-browser-screenshots
+          path: browser-screenshots/*.png
+          if-no-files-found: warn
+          retention-days: 7

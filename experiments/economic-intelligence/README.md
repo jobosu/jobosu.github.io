@@ -1,0 +1,130 @@
+# JOBOSU // LAB — Economic Intelligence
+
+Experimental multi-agent research lab. **Research and simulation only; no real-money trading.**
+
+## Mission
+Investigate evidence-based opportunities in global markets, macroeconomics, crypto, equities, and digital business. Agents must challenge each other's claims, cite timestamped sources, and produce reproducible experiments.
+
+## Roles
+- Researcher: gathers dated, attributable public evidence.
+- Quant: proposes falsifiable hypotheses and tests.
+- Builder: implements reproducible simulations.
+- Skeptic: independently audits assumptions, leakage, and arithmetic.
+- Editor: publishes verified summaries and experiment artifacts.
+- Codex (when integrated): engineering review and orchestration; not a continuous background service by default.
+
+Provider adapters may target DeepSeek, Qwen, Kimi, GLM, MiniMax or others, **only after API access is configured and verified**. No provider is claimed connected yet.
+
+## Execution contract
+1. Ingest public sources and record URL, timestamp, license and data quality.
+2. Generate competing hypotheses with clear falsification criteria.
+3. Debate using explicit agent messages (not private chain-of-thought).
+4. Backtest with transaction costs, slippage, realistic constraints and out-of-sample tests.
+5. Require independent audit before marking a result validated.
+6. Publish versioned artifacts and update experiment navigation only after tests pass.
+
+## Safety
+- Never commit API keys or personal financial information.
+- No trading, withdrawals, transfers, leverage, or live account access.
+- Default spend cap: zero until explicitly configured; require hard limits and a kill switch before paid runs.
+- No autonomous changes to permissions, budgets, or production infrastructure.
+- Research is not investment advice. Simulated profits are not real returns.
+
+## Delivery phases
+1. Premium interactive UI using clearly labeled demonstration data.
+2. Agent adapters, secret configuration, metering and trace logs.
+3. Scheduled research runs with source verification.
+4. Paper-trading evaluation and monitoring.
+5. Separate explicit authorization before any real-money pilot.
+
+
+## Verified development checkpoint — 2026-10-26
+
+**Implemented on `agent/economic-intelligence` (not yet merged to `master`):**
+- Browser-based simulation desk with three selectable synthetic market scenarios and reproducible seed.
+- Dependency-free `engine.mjs`: fixed EMA 12/26, previous-bar signal, next-bar execution, 240-bar EMA warm-up / 120-bar chronological test window, 10 bps fee and 5 bps slippage, long-only, end-of-test liquidation.
+- `orchestrator.mjs`: sequential Researcher → Quant → Skeptic → Editor protocol with explicit mock adapters, required source references and limitations. All transcripts are tagged mock.
+- Node tests for deterministic inputs, causal EMAs, transaction costs, no-lookahead, validation, and refusal of uncited claims/live mode.
+- Read-only GitHub Actions workflow for tests, subject to GitHub workflow execution and checks.
+
+**Local verification:** six engine tests passed in a local Node 22 environment using the same algorithm; the committed engine also passed ten direct invariant/integration checks. The committed mock orchestrator passed direct role-order and fail-closed checks. Browser screenshots are **not yet verified**. The initial GitHub Actions checks were later confirmed successful on 2026-10-26.
+
+**Not implemented:** external model APIs, news feeds, real financial datasets, live agent debates, brokerage connections, any real-money operation. Synthetic returns displayed in the UI are illustrative and must not be used to assess expected profit.
+
+### Run locally
+```sh
+cd experiments/economic-intelligence
+npm test
+(cd ../.. && python3 -m http.server 8000)
+# open http://localhost:8000/experiments/economic-intelligence/
+```
+No npm dependencies, provider credentials, or paid APIs are required for this phase.
+
+### Integration gates
+1. Add provider adapters server-side, never expose keys in GitHub Pages/browser JS.
+2. Store secrets in protected infrastructure, not repository files or chat.
+3. Enforce explicit monthly spend caps, request timeouts, rate limits and a kill switch before paid calls.
+4. Preserve original source URLs, retrieval dates, licenses and audit logs; label generated claims separately from verified data.
+5. Keep simulation and live trading infrastructure physically and logically separate. Real-money actions require a separate explicit approval.
+6. Do not merge/publish as production-ready until browser and accessibility checks and CI have passed.
+
+## Development checkpoint — 2026-10-27
+
+- Added `robustness.mjs`: deterministic 32-seed sweeps across three synthetic regimes (96 local simulations), reporting median excess return, share outperforming a benchmark, worst excess return and worst drawdown. All per-seed observations can be exported as JSON from the dashboard.
+- Added `robustness.test.mjs` to verify reproducibility, aggregation, configuration validation and explicit synthetic-only labeling.
+- Corrected a benchmark timing mismatch: buy-and-hold now enters on the same first executable bar as the EMA strategy. This avoids giving the benchmark one bar of advance exposure.
+- Clarified that the first 240 bars are **EMA warm-up**, not model training. There is no parameter fitting, optimization, independent financial sample or evidence of investment edge.
+- Confirmed the previous GitHub Actions checks on commit `e290d328a0afca886d116a9404488ca5e30306d6` succeeded on 2026-10-26. Checks on today's commits must be verified separately.
+- **Publication gate remains closed:** browser visual/accessibility QA and the current CI run are required before merging PR #3. No external APIs or real-money access are configured.
+
+### Audit command
+```sh
+cd experiments/economic-intelligence
+npm test
+node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; console.log(JSON.stringify(robustnessAudit({seeds:32}),null,2))"
+```
+
+
+## Development checkpoint — 2026-10-28
+
+- Investigated the 2026-10-27 GitHub Actions failure on commit `ca840a6` by reading the **actual failed job logs**: 17 of 18 tests passed, and one UI copy assertion looked for a phrase that the page did not contain. Commit `4d7a682` corrected the test to match the real disclosure. Its GitHub Actions run **#24 passed**. This was a test-copy mismatch, not a trading or API incident.
+- Added a click-to-run **mock research debate** to the interactive dashboard. The local, deterministic Researcher → Quant → Skeptic → Editor transcript is displayed with simulated source references and limitations. The page clearly labels it **MOCK ONLY / 0 APIs / 0 TRADES**. No external model is called.
+- Localized the mock agent statements into Catalan, added an explicit `synthetic://` provenance guard and rejected malformed/external references in mock mode. All transcript text is rendered via `textContent`, never as injected HTML.
+- Extended tests for UI bindings, honest disclosures, safe rendering, synthetic-only provenance and mock session invariants.
+- **GitHub Actions verified on commit `37eb35702f26131ad76eb862343fcb19f90209ee`: run #34 completed successfully on 2026-10-28 with 21 tests passed, 0 failed.** This is automated code verification, **not** a browser visual, mobile-device or accessibility audit.
+- No secrets, paid provider calls, real-money trading, brokerage connections or public production deployment. The changes remain in branch `agent/economic-intelligence` and PR #3; the publication gate remains closed pending visual/accessibility review.
+
+
+## Development checkpoint — 2026-10-29
+
+- Added `provenance.mjs`, an independent, fail-closed **synthetic evidence ledger** for the four-role mock transcript. Every record includes the role, claim, explicit `UNVERIFIED_SYNTHETIC` status, `synthetic://` source references, and limitations.
+- The ledger rejects incomplete transcripts, forged roles, non-synthetic URLs, absent limitations, any connected provider, any verified-market claim, and any real-money trade.
+- Mock protocol results now include the provenance ledger. The dashboard exposes a JSON export **only after** the local mock run passes the provenance gate. The UI heading was corrected to avoid implying there are no mock conversations.
+- Added automated tests for ledger determinism, tampering, source provenance, immutability of the input transcript, and the export gate. No external dependencies or credentials.
+- **Publication gate remains closed** until current GitHub Actions checks, browser rendering/mobile layout, and accessibility review are verified. This is not a real multi-model conversation or independent financial evidence. No paid APIs or trading have been enabled.
+
+
+## Development checkpoint — 2026-10-30
+
+- Improved keyboard and mobile usability: skip-to-content link, visible keyboard focus, focusable horizontally scrollable robustness table, 16px mobile form controls to avoid iOS input zoom, and 44px minimum mobile interactive controls.
+- Added a live textual chart summary containing the selected synthetic scenario, reproducible seed, strategy/benchmark returns and maximum drawdown. This supplements the SVG for assistive technology; it is **not** real market evidence.
+- Fixed a misleading error state: invalid simulation inputs now clear the previous chart and performance figures rather than leaving stale results visible.
+- Added two static regression tests for accessibility bindings and fail-closed error behavior. **GitHub Actions PR run #56 (2026-10-30, commit `cdd2bb7`) passed: 28 tests, 0 failures.** Push run #55 also passed. These are automated code/static checks, not a full browser, screen-reader, color-contrast or mobile-device audit.
+- PR #3 remains **draft**, and no changes have been merged to `master`. No external model APIs, real market data, provider billing, brokerage connections, or real-money transactions were enabled.
+
+### Remaining release checks
+- Review at 320px, 375px, 768px and desktop widths in an actual browser; check for overflow, focus order, keyboard operation and export buttons.
+- Test a screen reader and inspect WCAG contrast, chart semantics and responsive table usability.
+- Confirm the latest GitHub Actions run is green before considering a production merge.
+
+
+## Development checkpoint — 2026-10-31
+
+- Verified the repository is **public** and that the connected GitHub integration can read and update the development branch. No changes were merged to `master`.
+- Corrected a reproducibility defect: fractional synthetic seeds were previously silently truncated by the xorshift32 generator. The engine now rejects non-integer seeds; regression tests cover invalid and boundary values.
+- Added a **real Chromium/CDP browser audit** (`browser-qa.mjs`) to CI, without npm dependencies or external provider APIs. Unlike Chrome CLI screenshots, CDP explicitly emulates the *actual layout viewport* at 320, 375, 768 and 1280 pixels.
+- The browser audit checks that the dashboard initializes, that the full document and hero heading do not overflow, that mobile buttons meet a 44px touch target, that invalid input clears stale metrics, that a valid seed recovers, that four mock roles render, and that the page makes **zero external HTTP requests**.
+- Fixed the clipped hero heading at 320px and the mobile simulation button touch target. Captured full-page screenshots at all four viewports for visual review; these are CI artifacts, not proof of screen-reader compatibility.
+- **Verified CI on commit `f2a91df`: GitHub Actions run `41180112515` completed successfully on 2026-10-31. 30 Node tests passed, 0 failed; the real-browser job passed all four responsive widths and interaction/network checks.** Screenshot artifact `13033959417` is retained for seven days.
+- This is **synthetic-only QA**: no DeepSeek/Qwen/Kimi/GLM API connection, real market feed, paid service, broker, transfer, or live trading was enabled.
+- **Publication gate remains closed:** PR #3 is not to be merged until human review of full-page screenshots, keyboard/screen-reader behavior, color contrast, and release readiness is complete. Automated smoke tests do not replace a full WCAG audit.
