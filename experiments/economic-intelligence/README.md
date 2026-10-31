@@ -116,3 +116,15 @@ node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; c
 - Review at 320px, 375px, 768px and desktop widths in an actual browser; check for overflow, focus order, keyboard operation and export buttons.
 - Test a screen reader and inspect WCAG contrast, chart semantics and responsive table usability.
 - Confirm the latest GitHub Actions run is green before considering a production merge.
+
+
+## Development checkpoint — 2026-10-31
+
+- Verified the repository is **public** and that the connected GitHub integration can read and update the development branch. No changes were merged to `master`.
+- Corrected a reproducibility defect: fractional synthetic seeds were previously silently truncated by the xorshift32 generator. The engine now rejects non-integer seeds; regression tests cover invalid and boundary values.
+- Added a **real Chromium/CDP browser audit** (`browser-qa.mjs`) to CI, without npm dependencies or external provider APIs. Unlike Chrome CLI screenshots, CDP explicitly emulates the *actual layout viewport* at 320, 375, 768 and 1280 pixels.
+- The browser audit checks that the dashboard initializes, that the full document and hero heading do not overflow, that mobile buttons meet a 44px touch target, that invalid input clears stale metrics, that a valid seed recovers, that four mock roles render, and that the page makes **zero external HTTP requests**.
+- Fixed the clipped hero heading at 320px and the mobile simulation button touch target. Captured full-page screenshots at all four viewports for visual review; these are CI artifacts, not proof of screen-reader compatibility.
+- **Verified CI on commit `f2a91df`: GitHub Actions run `41180112515` completed successfully on 2026-10-31. 30 Node tests passed, 0 failed; the real-browser job passed all four responsive widths and interaction/network checks.** Screenshot artifact `13033959417` is retained for seven days.
+- This is **synthetic-only QA**: no DeepSeek/Qwen/Kimi/GLM API connection, real market feed, paid service, broker, transfer, or live trading was enabled.
+- **Publication gate remains closed:** PR #3 is not to be merged until human review of full-page screenshots, keyboard/screen-reader behavior, color contrast, and release readiness is complete. Automated smoke tests do not replace a full WCAG audit.
