@@ -88,6 +88,36 @@ async function main(){
  assert.notEqual(await evaluate("document.getElementById('ei-strategy').textContent"),'—');
  await evaluate("document.getElementById('ei-debate-run').click()");
  await waitFor(async()=>await evaluate("document.querySelectorAll('#ei-debate-transcript li').length===4 && !document.getElementById('ei-debate-export').disabled"),'mock debate completion');
+
+ // A11Y release gate: inspect the actual accessibility tree and keyboard behavior.
+ const ax=await send('Accessibility.getFullAXTree');
+ const nodes=(ax.nodes||[]).filter(node=>!node.ignored);
+ const buttonNames=nodes.filter(node=>node.role?.value==='button').map(node=>node.name?.value||'');
+ assert.ok(buttonNames.some(name=>name.includes('EXECUTAR SIMULACIÓ')),'Simulation button has no accessible name');
+ assert.ok(buttonNames.some(name=>name.includes('EXECUTAR DEBAT SIMULAT')),'Mock debate button has no accessible name');
+ assert.ok(nodes.some(node=>node.role?.value==='image' && (node.name?.value||'').includes('Gràfic de capital simulat')),'Chart is missing from the accessibility tree');
+ const semantics=await evaluate("(()=>{const skip=document.querySelector('.ei-skip'),chart=document.getElementById('ei-chart'),table=document.querySelector('.ei-table-scroll'),controls=[...document.querySelectorAll('input,select')];return {lang:document.documentElement.lang,skipTarget:document.querySelector(skip?.getAttribute('href'))?.id,chartDescription:document.getElementById(chart?.getAttribute('aria-describedby'))?.textContent||'',tableFocus:table?.tabIndex,unlabelledControls:controls.filter(el=>!el.labels?.length&&!el.getAttribute('aria-label')).map(el=>el.id)}})()");
+ assert.equal(semantics.lang,'ca','Document language must be Catalan');
+ assert.equal(semantics.skipTarget,'ei-main','Skip link must point to the main landmark');
+ assert.match(semantics.chartDescription,/Gràfic amb dades sintètiques/,'Chart must have a live textual summary');
+ assert.equal(semantics.tableFocus,0,'Scrollable audit must be keyboard focusable');
+ assert.deepEqual(semantics.unlabelledControls,[],'Every input/select needs an accessible label');
+ await send('Page.bringToFront');
+ await evaluate("document.querySelector('.ei-skip').focus()");
+ await send('Input.dispatchKeyEvent',{type:'keyDown',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,nativeVirtualKeyCode:9});
+ await send('Input.dispatchKeyEvent',{type:'keyUp',key:'Tab',code:'Tab',windowsVirtualKeyCode:9,nativeVirtualKeyCode:9});
+ assert.equal(await evaluate("document.activeElement?.getAttribute('href')"),'../../labs/','Tab from skip link must reach navigation');
+ // Conservative WCAG AA spot-checks on representative normal-size text and controls.
+ // For gradient-backed content, #124037 is the brightest declared backdrop.
+ const contrast=await evaluate(`(()=>{
+  const rgb=value=>{if(value.startsWith('#'))return [1,3,5].map(i=>parseInt(value.slice(i,i+2),16));return (value.match(/\\d+(?:\\.\\d+)?/g)||[]).slice(0,3).map(Number)};
+  const luminance=value=>rgb(value).map(v=>v/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4).reduce((s,v,i)=>s+v*[0.2126,0.7152,0.0722][i],0);
+  const ratio=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)};
+  return [['.lead','#124037'],['.ei-kicker','#124037'],['.ei-controls button',getComputedStyle(document.querySelector('.ei-controls button')).backgroundColor],['#ei-debate-run','#071219'],['.ei-audit-table thead th','#0a151c'],['#ei-debate-status','#071219']].map(([selector,bg])=>({selector,ratio:ratio(getComputedStyle(document.querySelector(selector)).color,bg)}));
+ })()`);
+ for(const item of contrast)assert.ok(item.ratio>=4.5,'WCAG AA contrast under 4.5:1 for '+item.selector+' ('+item.ratio.toFixed(2)+')');
+ console.log('PASS accessibility: named controls/chart in Chrome AX tree, Catalan labels, keyboard Tab, chart summary, six contrast spot-checks');
+
  assert.deepEqual(errors,[],'Uncaught JavaScript errors');
  const external=requests.filter(url=>/^https?:/i.test(url)&&!url.startsWith(new URL(base).origin+'/'));
  assert.deepEqual(external,[],'Unexpected non-local network requests');
