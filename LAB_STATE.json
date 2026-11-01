@@ -1,21 +1,31 @@
 {
   "schema_version": 1,
-  "mode": "setup",
-  "current_experiment": null,
-  "last_completed": null,
-  "next_action": "Inspect existing labs and experiments, then propose three novel candidates and implement one on a separate branch.",
+  "mode": "in_progress",
+  "current_experiment": "A002 — DRIFT ATLAS",
+  "last_completed": "A001 — Particle Ecosystem (published on master)",
+  "next_action": "Continue A002: commit UI HTML/CSS/JS and smoke test; integrate field.mjs; verify WebGL GPU rendering, physical mobile touch/performance and accessibility. Keep PR draft and do not publish until premium quality gate passes.",
   "quota": {
     "source": "unknown",
     "remaining": null,
     "reset_at": null
   },
   "automation": {
-    "enabled": false,
-    "scheduler": null
+    "enabled": true,
+    "scheduler": "ChatGPT weekly automation (observed running 2026-11-01)"
   },
   "safety": {
     "paid_api_allowed": false,
     "auto_merge": false,
     "production_deploy": false
+  },
+  "current_branch": "agent/experiment-002-drift-atlas",
+  "current_pr": "https://github.com/jobosu/jobosu.github.io/pull/5",
+  "quality_gate": {
+    "status": "blocked",
+    "reasons": [
+      "WebGL unavailable in test sandbox",
+      "UI prototype not yet committed to GitHub",
+      "Physical mobile and accessibility not verified"
+    ]
   }
 }
