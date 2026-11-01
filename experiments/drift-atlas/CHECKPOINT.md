@@ -17,19 +17,23 @@ Deep petrol/navy, luminous mint tracers, warm-coral actual track, typographic ed
 - Plot departure and arrival with pointer/touch; drag either marker; keyboard arrow keys adjust arrival and Shift+arrows departure.
 - Synthetic distance, time and drift readouts; route trajectory recomputed after control changes.
 - Reduced-motion default pause, capped pixel ratio, mobile particle budget, WebGL fallback, semantic controls.
-- Self-contained HTML, CSS, JavaScript, README and Playwright smoke test.
+- A complete self-contained HTML/CSS/JS prototype and Playwright smoke test were built and executed locally. **The UI prototype is not yet committed to GitHub; only the tested core engine and unit tests are in this branch.**
 
 ## Verified locally — 2026-11-01
 - `node --check app.js`: passed.
 - Playwright Chromium desktop (1440×900), mobile emulation (390×844), reduced-motion (900×700): passed with no JS page errors or horizontal overflow.
 - Checked route (91 points), 370–850 particles depending on viewport, live numeric readouts, 0% current → 0.0 nm drift, slider changes, rotation, pause/resume, two-step plot, keyboard adjustment and reset.
-- Desktop and mobile screenshots visually inspected. Source snapshot is in `source/DRIFT_ATLAS_A002_source.tar.xz` (archive includes HTML, CSS, JS, README and tests). Extract with `tar xf source/DRIFT_ATLAS_A002_source.tar.xz`.
+- Desktop and mobile screenshots visually inspected. The full UI source is available in the downloadable preview artifact from this run, but has **not** been uploaded to this branch. The repository currently contains `field.mjs` and `tests/field.test.mjs` only.
+
+## Additional core-engine verification
+
+- `node --test tests/field.test.mjs`: **5 tests passed** (bounds, zero drift, deterministic finite field, rotation sensitivity, invalid inputs). The committed `field.mjs` and unit test are byte-for-byte equivalent to those locally tested.
 
 ## Quality gate: NOT YET PASSED
 The sandboxed test browser exposes **no WebGL context**, so the shader could not be compiled/rendered on a GPU-capable browser. Real iPhone/Safari and Android touch/performance, WebGL context restoration, contrast and accessibility review remain unverified. **Do not publish or merge to master** until these checks pass and source files are extracted into a normal reviewable directory on this feature branch.
 
 ## Next steps
-1. Extract the source archive into `experiments/drift-atlas/` as reviewable source files, then rerun the included smoke tests against those exact files.
+1. Commit the UI prototype (`index.html`, `style.css`, `app.js`) and Playwright smoke test as reviewable source files in `experiments/drift-atlas/`, integrate the committed `field.mjs` module, and rerun the tests against the exact GitHub source.
 2. Validate WebGL on a GPU-capable browser and inspect shader output.
 3. Test physical mobile touch, frame-time and keyboard/screen-reader behavior.
 4. Only then prepare a separate release PR to master containing the experiment and an **AGENT EXP A002** link in `labs/index.html`, published together. No existing published projects may be changed.
