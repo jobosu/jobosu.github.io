@@ -128,3 +128,12 @@ node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; c
 - **Verified CI on commit `f2a91df`: GitHub Actions run `41180112515` completed successfully on 2026-10-31. 30 Node tests passed, 0 failed; the real-browser job passed all four responsive widths and interaction/network checks.** Screenshot artifact `13033959417` is retained for seven days.
 - This is **synthetic-only QA**: no DeepSeek/Qwen/Kimi/GLM API connection, real market feed, paid service, broker, transfer, or live trading was enabled.
 - **Publication gate remains closed:** PR #3 is not to be merged until human review of full-page screenshots, keyboard/screen-reader behavior, color contrast, and release readiness is complete. Automated smoke tests do not replace a full WCAG audit.
+
+
+## Release-readiness checkpoint — 2026-11-01
+
+- Downloaded and **visually inspected** the four full-page Chromium screenshots from GitHub Actions run `41180206211` (320, 375, 768, 1280 px). The hero, navigation, simulation desk, mock debate, audit table and footer appear intact and readable at those widths; this is a visual review of captured desktop Chromium emulation, **not** a physical iPhone/Android test.
+- Extended `browser-qa.mjs` to inspect Chromium's accessibility tree for named simulation/mock buttons and chart, validate Catalan document language and input labels, verify the skip-link target and a native keyboard Tab transition, and spot-check six representative text/control contrasts against the declared dark backgrounds.
+- GitHub Actions PR run `41285787623` and push run `41285784681` on commit `9d3e7a0` both passed on 2026-11-01. Existing Node unit tests and the four-width browser suite remain green.
+- **Limitations:** the contrast checks sample six elements, not every possible color/gradient combination. Chromium's accessibility tree is not a real screen-reader usability test. Physical mobile devices, VoiceOver/NVDA and a complete WCAG audit remain future QA tasks.
+- Safe release scope, if approved: an explicitly labelled **experimental synthetic-only public preview**; no provider API keys, external LLM calls, real market data, brokerage connection, live trades or paid infrastructure. Public preview must never be described as production-ready financial intelligence.
