@@ -116,7 +116,7 @@ async function main(){
  // Conservative WCAG AA spot-checks on representative normal-size text and controls.
  // For gradient-backed content, #124037 is the brightest declared backdrop.
  const contrast=await evaluate(`(()=>{
-  const rgb=value=>{if(value.startsWith('#'))return [1,3,5].map(i=>parseInt(value.slice(i,i+2),16));return (value.match(/\d+(?:\\.\d+)?/g)||[]).slice(0,3).map(Number)};
+  const rgb=value=>{if(value.startsWith('#'))return [1,3,5].map(i=>parseInt(value.slice(i,i+2),16));return (value.match(/\\d+(?:\\.\\d+)?/g)||[]).slice(0,3).map(Number)};
   const luminance=value=>rgb(value).map(v=>v/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4).reduce((s,v,i)=>s+v*[0.2126,0.7152,0.0722][i],0);
   const ratio=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)};
   return [['.lead','#124037'],['.ei-kicker','#124037'],['.ei-controls button',getComputedStyle(document.querySelector('.ei-controls button')).backgroundColor],['#ei-debate-run','#071219'],['.ei-audit-table thead th','#0a151c'],['#ei-debate-status','#071219']].map(([selector,bg])=>({selector,ratio:ratio(getComputedStyle(document.querySelector(selector)).color,bg)}));
