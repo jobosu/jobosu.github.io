@@ -137,3 +137,14 @@ node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; c
 - GitHub Actions PR run `41285787623` and push run `41285784681` on commit `9d3e7a0` both passed on 2026-11-01. Existing Node unit tests and the four-width browser suite remain green.
 - **Limitations:** the contrast checks sample six elements, not every possible color/gradient combination. Chromium's accessibility tree is not a real screen-reader usability test. Physical mobile devices, VoiceOver/NVDA and a complete WCAG audit remain future QA tasks.
 - Safe release scope, if approved: an explicitly labelled **experimental synthetic-only public preview**; no provider API keys, external LLM calls, real market data, brokerage connection, live trades or paid infrastructure. Public preview must never be described as production-ready financial intelligence.
+
+
+## Development checkpoint — 2026-11-02
+
+- Confirmed repository write permissions and inspected the latest branch and GitHub Actions state before changes. The first **synthetic-only public preview** was merged into `master` on 2026-11-01 (squash commit `5faf9d5`); its GitHub Pages deployment run `41285908142` reported success. This is not independent proof of live HTTP availability.
+- Added a **downside distribution lens** to the synthetic robustness audit: count of trajectories that fail to outperform the benchmark, empirical 10th/90th percentiles of excess return and worst observed strategy drawdown. Results are derived from the same 96 deterministic synthetic trajectories, without external data or new dependencies.
+- Added regression tests that reconcile the pooled 96-run statistics with per-scenario observations and independently recalculate the percentile interpolation.
+- Updated the public-preview traceability text in the development branch to correctly mark PR #3 as merged and link outstanding accessibility QA in issue #4.
+- **Interpretation boundary:** synthetic percentiles are neither confidence intervals nor real-market loss probabilities. No investment edge, predictive validity or real-world financial inference is implied.
+- **Release status:** this new downside lens is committed only to `agent/economic-intelligence`. It must pass CI/browser checks and a separate clean publication review before any merge to `master`. The original feature branch predates a squash merge, so comparing it directly with `master` misleadingly shows the entire old preview as added; a fresh release branch based on `master` is preferable for the next PR.
+- No providers, credentials, market feeds, paid APIs, brokerage connections or real-money operations have been enabled.
