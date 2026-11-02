@@ -42,3 +42,32 @@ test('invalid audit configurations fail closed',()=>{
   {scenarios:'trend'}
  ])assert.throws(()=>robustnessAudit(args),RangeError);
 });
+
+
+test('downside lens reconciles with all synthetic runs and uses empirical percentiles',()=>{
+ const audit=robustnessAudit({seeds:16,startSeed:750});
+ const allRows=audit.groups.flatMap(group=>group.rows);
+ const quantile=(values,p)=>{
+  const sorted=[...values].sort((a,b)=>a-b),position=(sorted.length-1)*p;
+  const low=Math.floor(position),high=Math.ceil(position);
+  return sorted[low]+(sorted[high]-sorted[low])*(position-low);
+ };
+ assert.equal(audit.overall.runs,48);
+ assert.equal(audit.overall.underperformCount,allRows.filter(row=>row.excessReturnPct<=0).length);
+ assert.equal(audit.overall.underperformCount+audit.overall.outperformCount,48);
+ for(const {stats,rows} of [
+  ...audit.groups.map(group=>({stats:group,rows:group.rows})),
+  {stats:audit.overall,rows:allRows}
+ ]){
+  const excess=rows.map(row=>row.excessReturnPct);
+  assert.equal(stats.underperformCount,rows.filter(row=>row.excessReturnPct<=0).length);
+  assert.equal(stats.underperformPct,100*stats.underperformCount/rows.length);
+  assert.equal(stats.p10ExcessPct,quantile(excess,.10));
+  assert.equal(stats.p90ExcessPct,quantile(excess,.90));
+  assert.ok(stats.worstExcessPct<=stats.p10ExcessPct);
+  assert.ok(stats.p10ExcessPct<=stats.medianExcessPct);
+  assert.ok(stats.medianExcessPct<=stats.p90ExcessPct);
+  assert.ok(stats.p90ExcessPct<=Math.max(...excess));
+ }
+ assert.ok(audit.limitations.some(text=>text.includes('not confidence intervals')));
+});
