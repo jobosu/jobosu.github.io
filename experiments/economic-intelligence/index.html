@@ -108,6 +108,19 @@ a:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @media(max-width:720px){.ei-controls label{font-size:14px}.ei-controls select,.ei-controls input{font-size:16px;min-height:44px}.ei-controls button{min-height:44px}.ei-audit-foot button,#ei-debate-run,#ei-debate-export{min-height:44px}.ei-caption{font-size:12px}}
 /* Prevent the longest hero word from clipping on 320px phones. */
 @media(max-width:350px){h1{font-size:clamp(2.45rem,12.3vw,2.8rem);letter-spacing:-.06em}}
+
+/* Risk distribution: observed synthetic paths only, not market probabilities. */
+.ei-risk-lens{margin-top:18px;border:1px solid var(--edge);background:linear-gradient(130deg,#102329,#08151c);padding:clamp(22px,3vw,32px)}
+.ei-risk-head{display:flex;justify-content:space-between;align-items:end;gap:22px;flex-wrap:wrap;margin-bottom:22px}
+.ei-risk-head h3{font-size:clamp(1.35rem,2.5vw,2rem);letter-spacing:-.04em;margin:10px 0 0}
+.ei-risk-head p{max-width:590px;font-size:.82rem;line-height:1.7;color:var(--muted);margin:0}
+.ei-risk-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.ei-risk-stat{border:1px solid #35515a;background:#0a1a22;padding:20px;min-width:0;display:flex;flex-direction:column;gap:10px}
+.ei-risk-stat small{color:#9cb9c0;font:10px/1.6 ui-monospace,monospace;letter-spacing:.06em}
+.ei-risk-stat strong{color:var(--ink);font:500 clamp(1.25rem,2.5vw,2rem) ui-monospace,monospace;overflow-wrap:anywhere}
+.ei-risk-stat span{color:var(--muted);font-size:.72rem;line-height:1.6}
+@media(max-width:900px){.ei-risk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:440px){.ei-risk-grid{grid-template-columns:1fr}}
 </style>
 </head><body><a class="ei-skip" href="#ei-main">Salta al contingut</a><main id="ei-main" tabindex="-1">
 <nav><a href="../../labs/">← JOBOSU // LAB</a><span>ECONOMIC INTELLIGENCE / EXPERIMENT</span></nav>
@@ -185,14 +198,23 @@ a:focus-visible{outline:2px solid #fff;outline-offset:4px}
 <div class="ei-table-scroll" role="region" tabindex="0" aria-label="Taula de robustesa sintètica; desplaçament horitzontal disponible">
 <table class="ei-audit-table">
 <caption>Resultats agregats sobre trajectòries sintètiques. Diferència de rendibilitat expressada en punts percentuals (pp).</caption>
-<thead><tr><th scope="col">ESCENARI</th><th scope="col">PROVES</th><th scope="col">EXCÉS MEDIÀ</th><th scope="col">SUPERA REFERÈNCIA</th><th scope="col">PITJOR EXCÉS</th><th scope="col">PITJOR DRAWDOWN</th></tr></thead>
+<thead><tr><th scope="col">ESCENARI</th><th scope="col">PROVES</th><th scope="col">MEDIANA EXCÉS</th><th scope="col">SUPERA REFERÈNCIA</th><th scope="col">PITJOR EXCÉS</th><th scope="col">PITJOR DRAWDOWN</th></tr></thead>
 <tbody id="ei-robustness-body"></tbody>
 </table></div>
 <div class="ei-audit-foot"><p id="ei-audit-status" role="status" aria-live="polite">Calculant proves sintètiques...</p><button type="button" id="ei-audit-export">EXPORTAR RESULTATS JSON ↓</button></div>
 </div>
+<div class="ei-risk-lens" aria-labelledby="ei-risk-title">
+<div class="ei-risk-head"><div><div class="ei-kicker">DOWNSIDE LENS / SYNTHETIC DISTRIBUTION</div><h3 id="ei-risk-title">The downside matters.</h3></div>
+<p>Percentils empírics de 96 trajectòries inventades. No són intervals de confiança, probabilitats de mercat ni estimacions de pèrdues futures.</p></div>
+<div class="ei-risk-grid">
+<div class="ei-risk-stat"><small>NO SUPERA LA REFERÈNCIA</small><strong id="ei-risk-underperform">—</strong><span>Camins sintètics amb excés de retorn nul o negatiu.</span></div>
+<div class="ei-risk-stat"><small>P10 / EXCÉS DE RETORN</small><strong id="ei-risk-p10">—</strong><span>Percentil 10 de la diferència de retorn, en punts percentuals.</span></div>
+<div class="ei-risk-stat"><small>P90 / EXCÉS DE RETORN</small><strong id="ei-risk-p90">—</strong><span>Percentil 90 de la diferència de retorn, en punts percentuals.</span></div>
+<div class="ei-risk-stat"><small>PITJOR CAIGUDA OBSERVADA</small><strong id="ei-risk-drawdown">—</strong><span>Màxim drawdown de l'estratègia entre les 96 simulacions.</span></div>
+</div></div>
 <p class="ei-caption">La primera part de cada sèrie (240 barres) només inicialitza les mitjanes mòbils: no hi ha entrenament ni optimització de paràmetres. Els resultats no representen observacions independents de mercat, no inclouen impacte real d'execució ni impostos, i no justifiquen invertir.</p>
 </section>
 <section><h2>Full de ruta</h2><ol><li>Interfície visual de seguiment i registre de sessions.</li><li>Integració segura d'APIs, control de costos i traçabilitat.</li><li>Debats reals amb fonts internacionals contrastables.</li><li>Backtesting i paper trading amb auditoria independent.</li><li>Valoració posterior d'una prova real, només amb autorització específica.</li></ol></section>
-<section><h2>Traçabilitat pública</h2><p class="lead">Consulta el codi i les decisions de desenvolupament a <a href="https://github.com/jobosu/jobosu.github.io/tree/agent/economic-intelligence">la branca del projecte</a>, <a href="https://github.com/jobosu/jobosu.github.io/pull/3">la proposta de publicació (PR #3, esborrany)</a> i <a href="https://github.com/jobosu/jobosu.github.io/blob/agent/economic-intelligence/experiments/economic-intelligence/README.md">l'especificació inicial</a>.</p></section>
+<section><h2>Traçabilitat pública</h2><p class="lead">Consulta el codi i les decisions de desenvolupament a <a href="https://github.com/jobosu/jobosu.github.io/tree/agent/economic-intelligence">la branca del projecte</a>, <a href="https://github.com/jobosu/jobosu.github.io/pull/3">la primera publicació (PR #3, fusionada l'1/11/2026)</a> i <a href="https://github.com/jobosu/jobosu.github.io/blob/agent/economic-intelligence/experiments/economic-intelligence/README.md">l'especificació inicial</a> i <a href="https://github.com/jobosu/jobosu.github.io/issues/4">les verificacions d'accessibilitat pendents</a>.</p></section>
 <footer>JOBOSU // LAB · Research first. Evidence always. No guaranteed returns.</footer>
 </main></body></html>

@@ -3,6 +3,7 @@ import {mockAdapters,runProtocol} from './orchestrator.mjs';
 const $=id=>document.getElementById(id);
 const format=(v,d=2)=>new Intl.NumberFormat('ca-ES',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v);
 const pct=v=>(v>0?'+':'')+format(v)+'%';
+const pp=v=>(v>0?'+':'')+format(v)+' pp';
 const NS='http://www.w3.org/2000/svg';
 function el(tag,attrs={}){const node=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))node.setAttribute(k,String(v));return node;}
 function plot(result){
@@ -45,6 +46,11 @@ import {robustnessAudit} from './robustness.mjs';
 const audit=robustnessAudit({seeds:32,startSeed:20261027});
 const scenarioNames={regimes:'Canvis de règim',trend:'Tendència',chop:'Lateral volàtil'};
 const tbody=$('ei-robustness-body');
+/* Observed fractions of fabricated paths, never market probabilities. */
+$('ei-risk-underperform').textContent=audit.overall.underperformCount+' / '+audit.overall.runs;
+$('ei-risk-p10').textContent=pp(audit.overall.p10ExcessPct);
+$('ei-risk-p90').textContent=pp(audit.overall.p90ExcessPct);
+$('ei-risk-drawdown').textContent=format(audit.overall.worstDrawdownPct)+'%';
 for(const group of audit.groups){
  const tr=document.createElement('tr');
  const values=[scenarioNames[group.scenario],String(group.runs),format(group.medianExcessPct)+' pp',format(group.outperformPct)+'%',format(group.worstExcessPct)+' pp',format(group.worstDrawdownPct)+'%'];
