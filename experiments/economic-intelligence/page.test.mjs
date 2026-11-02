@@ -11,7 +11,7 @@ test('menu links to the research tracker and the module exists',()=>{
  assert.match(page,/<script type="module" src="\.\/dashboard\.mjs"><\/script>/);
 });
 test('every dashboard and audit element has a unique HTML id',()=>{
- const ids=['ei-chart','ei-scenario','ei-seed','ei-run','ei-run-status','ei-strategy','ei-benchmark','ei-drawdown','ei-trades','ei-fees','ei-robustness-body','ei-audit-status','ei-audit-export','ei-debate-run','ei-debate-export','ei-debate-status','ei-debate-transcript'];
+ const ids=['ei-chart','ei-scenario','ei-seed','ei-run','ei-run-status','ei-strategy','ei-benchmark','ei-drawdown','ei-trades','ei-fees','ei-robustness-body','ei-audit-status','ei-audit-export','ei-debate-run','ei-debate-export','ei-debate-status','ei-debate-transcript','ei-risk-underperform','ei-risk-p10','ei-risk-p90','ei-risk-drawdown'];
  for(const id of ids){
   const occurrences=page.match(new RegExp('id="'+id+'"','g'))||[];
   assert.equal(occurrences.length,1,'missing or duplicate '+id);
@@ -64,4 +64,17 @@ test('failed simulation removes stale chart and stale performance metrics',()=>{
 
 test('320px hero typography has an explicit narrow-viewport guard',()=>{
  assert.match(page,/@media\(max-width:350px\)\{h1\{font-size:clamp\(2\.45rem,12\.3vw,2\.8rem\)/);
+});
+
+test('downside lens is synthetic-only, accessible and current about the preview release',()=>{
+ assert.match(page,/id="ei-risk-title"/);
+ assert.match(page,/class="ei-risk-lens" aria-labelledby="ei-risk-title"/);
+ assert.match(page,/No són intervals de confiança, probabilitats de mercat/);
+ assert.match(page,/MEDIANA EXCÉS/);
+ assert.match(page,/PR #3, fusionada/);
+ assert.match(page,/issues\/4/);
+ assert.match(dashboard,/audit\.overall\.underperformCount/);
+ assert.match(dashboard,/audit\.overall\.p10ExcessPct/);
+ assert.match(dashboard,/audit\.overall\.p90ExcessPct/);
+ assert.match(dashboard,/audit\.overall\.worstDrawdownPct/);
 });
