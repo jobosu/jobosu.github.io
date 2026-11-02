@@ -66,6 +66,12 @@ async function main(){
   await send('Page.navigate',{url:base});
   await waitFor(async()=>await evaluate("document.readyState==='complete' && document.getElementById('ei-run-status')?.textContent.includes('Simulació local completada') && document.getElementById('ei-audit-status')?.textContent.includes('96 execucions reproduïbles')"),'dashboard initialization at '+width+'px');
   const result=await evaluate("(()=>{const h=document.querySelector('h1'),r=document.createRange();r.selectNodeContents(h);const box=r.getBoundingClientRect(),p=document.documentElement;return {viewport:innerWidth,pageWidth:p.scrollWidth,headingLeft:box.left,headingRight:box.right,mockButtonHeight:document.getElementById('ei-debate-run').getBoundingClientRect().height,simButtonHeight:document.getElementById('ei-run').getBoundingClientRect().height};})()");
+  const downside=await evaluate("(()=>{const id=x=>document.getElementById(x)?.textContent||'';return {cards:document.querySelectorAll('.ei-risk-stat').length,underperform:id('ei-risk-underperform'),p10:id('ei-risk-p10'),p90:id('ei-risk-p90'),drawdown:id('ei-risk-drawdown')}})()");
+  assert.equal(downside.cards,4,'Downside lens must render four metrics at '+width+'px');
+  assert.match(downside.underperform,/^\d+ \/ 96$/,'Synthetic underperformance count must reconcile');
+  assert.match(downside.p10,/^[+-]?\d+,\d{2} pp$/,'P10 must be a formatted percentile');
+  assert.match(downside.p90,/^[+-]?\d+,\d{2} pp$/,'P90 must be a formatted percentile');
+  assert.match(downside.drawdown,/^\d+,\d{2}%$/,'Worst synthetic drawdown must be visible');
   assert.equal(result.viewport,width,'Chrome viewport mismatch');
   assert.ok(result.pageWidth<=width+1,'Horizontal overflow at '+width+'px: '+JSON.stringify(result));
   assert.ok(result.headingRight<=width+1&&result.headingLeft>=-1,'Clipped heading at '+width+'px: '+JSON.stringify(result));

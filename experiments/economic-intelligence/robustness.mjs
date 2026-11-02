@@ -9,12 +9,23 @@ function median(numbers){
  const middle=Math.floor(values.length/2);
  return values.length%2?values[middle]:(values[middle-1]+values[middle])/2;
 }
+function quantile(numbers,q){
+ const values=[...numbers].sort((a,b)=>a-b);
+ const position=(values.length-1)*q,lower=Math.floor(position),upper=Math.ceil(position);
+ return values[lower]+(values[upper]-values[lower])*(position-lower);
+}
 function summary(rows){
+ const excess=rows.map(row=>row.excessReturnPct);
+ const underperformCount=rows.filter(row=>row.excessReturnPct<=0).length;
  return {
   runs:rows.length,
   outperformCount:rows.filter(row=>row.excessReturnPct>0).length,
   outperformPct:100*rows.filter(row=>row.excessReturnPct>0).length/rows.length,
-  medianExcessPct:median(rows.map(row=>row.excessReturnPct)),
+  medianExcessPct:median(excess),
+  underperformCount,
+  underperformPct:100*underperformCount/rows.length,
+  p10ExcessPct:quantile(excess,0.10),
+  p90ExcessPct:quantile(excess,0.90),
   medianStrategyPct:median(rows.map(row=>row.strategyReturnPct)),
   medianBenchmarkPct:median(rows.map(row=>row.benchmarkReturnPct)),
   worstExcessPct:Math.min(...rows.map(row=>row.excessReturnPct)),
@@ -52,11 +63,13 @@ export function robustnessAudit({seeds=32,startSeed=20261027,scenarios=SCENARIOS
   startSeed,
   totalRuns:seeds*scenarios.length,
   groups,
+  overall:summary(groups.flatMap(group=>group.rows)),
   limitations:[
    'Synthetic seeded paths are not observed market data or independent financial evidence.',
    'No hyperparameter optimization or walk-forward training is performed; the first 240 bars only warm up EMAs.',
    'Execution costs are simplified; liquidity, spreads, market impact and tax are not modelled.',
-   'Performance across these paths cannot establish predictive power or expected live returns.'
+   'Performance across these paths cannot establish predictive power or expected live returns.',
+   'P10/P90 are empirical percentiles of synthetic runs, not confidence intervals, real-market probabilities or value-at-risk estimates.'
   ]
  };
 }
