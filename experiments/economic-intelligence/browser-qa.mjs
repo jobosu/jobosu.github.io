@@ -68,10 +68,10 @@ async function main(){
   const result=await evaluate("(()=>{const h=document.querySelector('h1'),r=document.createRange();r.selectNodeContents(h);const box=r.getBoundingClientRect(),p=document.documentElement;return {viewport:innerWidth,pageWidth:p.scrollWidth,headingLeft:box.left,headingRight:box.right,mockButtonHeight:document.getElementById('ei-debate-run').getBoundingClientRect().height,simButtonHeight:document.getElementById('ei-run').getBoundingClientRect().height};})()");
   const downside=await evaluate("(()=>{const id=x=>document.getElementById(x)?.textContent||'';return {cards:document.querySelectorAll('.ei-risk-stat').length,underperform:id('ei-risk-underperform'),p10:id('ei-risk-p10'),p90:id('ei-risk-p90'),drawdown:id('ei-risk-drawdown')}})()");
   assert.equal(downside.cards,4,'Downside lens must render four metrics at '+width+'px');
-  assert.match(downside.underperform,/^\\d+ \\/ 96$/,'Synthetic underperformance count must reconcile');
-  assert.match(downside.p10,/^[+-]?\\d+,\\d{2} pp$/,'P10 must be a formatted percentile');
-  assert.match(downside.p90,/^[+-]?\\d+,\\d{2} pp$/,'P90 must be a formatted percentile');
-  assert.match(downside.drawdown,/^\\d+,\\d{2}%$/,'Worst synthetic drawdown must be visible');
+  assert.match(downside.underperform,/^\d+ \/ 96$/,'Synthetic underperformance count must reconcile');
+  assert.match(downside.p10,/^[+-]?\d+,\d{2} pp$/,'P10 must be a formatted percentile');
+  assert.match(downside.p90,/^[+-]?\d+,\d{2} pp$/,'P90 must be a formatted percentile');
+  assert.match(downside.drawdown,/^\d+,\d{2}%$/,'Worst synthetic drawdown must be visible');
   assert.equal(result.viewport,width,'Chrome viewport mismatch');
   assert.ok(result.pageWidth<=width+1,'Horizontal overflow at '+width+'px: '+JSON.stringify(result));
   assert.ok(result.headingRight<=width+1&&result.headingLeft>=-1,'Clipped heading at '+width+'px: '+JSON.stringify(result));
@@ -116,7 +116,7 @@ async function main(){
  // Conservative WCAG AA spot-checks on representative normal-size text and controls.
  // For gradient-backed content, #124037 is the brightest declared backdrop.
  const contrast=await evaluate(`(()=>{
-  const rgb=value=>{if(value.startsWith('#'))return [1,3,5].map(i=>parseInt(value.slice(i,i+2),16));return (value.match(/\\d+(?:\\.\\d+)?/g)||[]).slice(0,3).map(Number)};
+  const rgb=value=>{if(value.startsWith('#'))return [1,3,5].map(i=>parseInt(value.slice(i,i+2),16));return (value.match(/\d+(?:\\.\d+)?/g)||[]).slice(0,3).map(Number)};
   const luminance=value=>rgb(value).map(v=>v/255).map(v=>v<=0.04045?v/12.92:((v+0.055)/1.055)**2.4).reduce((s,v,i)=>s+v*[0.2126,0.7152,0.0722][i],0);
   const ratio=(a,b)=>{const x=luminance(a),y=luminance(b);return (Math.max(x,y)+0.05)/(Math.min(x,y)+0.05)};
   return [['.lead','#124037'],['.ei-kicker','#124037'],['.ei-controls button',getComputedStyle(document.querySelector('.ei-controls button')).backgroundColor],['#ei-debate-run','#071219'],['.ei-audit-table thead th','#0a151c'],['#ei-debate-status','#071219']].map(([selector,bg])=>({selector,ratio:ratio(getComputedStyle(document.querySelector(selector)).color,bg)}));
