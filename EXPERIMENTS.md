@@ -20,3 +20,9 @@ Autonomous experimentation framework initialized. No autonomous experiment has r
 - **Unverified:** GPU WebGL shader (sandbox has no WebGL), real phone touch/performance, full accessibility; final GitHub UI integration. Therefore **NO PUBLICATION**.
 - **Resources:** no paid API; no quota measurements available. No production files or menu modified.
 - **Next:** commit local UI source and smoke tests, integrate field module, verify on GPU/mobile, then release experiment and LABS link together only after premium gate passes.
+
+## A002 — review 2026-11-08
+- Recovered original local UI archive and reran JS syntax, Playwright desktop/mobile-emulated/reduced-motion smoke tests: PASS; WebGL unavailable (`gl:false`).
+- Added 4 committed core-engine test cases to feature branch; corrected signed-zero assertion; final **9/9 tests passed locally**.
+- Updated feature-branch CHECKPOINT.md; UI source remains uncommitted and no production/menu changes were made.
+- Previous 8–15 November publication estimate is at risk; next decision checkpoint 15 November, with date reassessment after integration and GPU/mobile/accessibility validation.
