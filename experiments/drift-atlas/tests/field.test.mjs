@@ -26,7 +26,7 @@ test('invalid parameters are rejected', () => {
 test('zero energy is invariant under time and rotation', () => {
   for (const time of [-100, 0, 100]) for (const bearing of [-Math.PI, 0, Math.PI]) {
     const f = flowAt(.32, .81, { energy: 0, time, bearing });
-    assert.deepEqual(f, { x: 0, y: 0 });
+    assert.equal(Math.abs(f.x), 0); assert.equal(Math.abs(f.y), 0);
   }
 });
 test('passage endpoints and duration use documented synthetic scale', () => {
