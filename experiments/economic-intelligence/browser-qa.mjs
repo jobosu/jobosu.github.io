@@ -35,10 +35,10 @@ async function evaluate(expression){
  if(result.exceptionDetails)throw new Error('Browser JS evaluation failed: '+result.exceptionDetails.text);
  return result.result?.value;
 }
-async function waitFor(check,label){
+async function waitFor(check,label,{fatal=()=>false}={}){
  let lastError;
  for(let i=0;i<200;i++){
-  try{if(await check())return;}catch(error){lastError=error;}
+  try{if(await check())return;}catch(error){if(fatal(error))throw error;lastError=error;}
   await sleep(100);
  }
  throw new Error('Timed out waiting for '+label+(lastError?': '+lastError.message:''));
@@ -49,7 +49,7 @@ async function main(){
   if(chromeSpawnError)throw chromeSpawnError;
   if(chrome.exitCode!==null)throw new Error('Chrome exited before CDP startup (exit '+chrome.exitCode+')');
   try{debugPort=Number((await readFile(join(profile,'DevToolsActivePort'),'utf8')).split('\n')[0]);return Number.isInteger(debugPort)&&debugPort>0;}catch{return false;}
- },'Chrome debugging port');
+ },'Chrome debugging port',{fatal:()=>Boolean(chromeSpawnError)||chrome.exitCode!==null});
  const tabs=await (await fetch('http://127.0.0.1:'+debugPort+'/json/list')).json();
  const page=tabs.find(tab=>tab.type==='page');
  assert.ok(page?.webSocketDebuggerUrl,'Chrome page target missing');
