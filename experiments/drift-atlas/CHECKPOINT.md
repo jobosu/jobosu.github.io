@@ -39,3 +39,11 @@ The sandboxed test browser exposes **no WebGL context**, so the shader could not
 4. Only then prepare a separate release PR to master containing the experiment and an **AGENT EXP A002** link in `labs/index.html`, published together. No existing published projects may be changed.
 
 **Safety:** no paid services, secrets, trading, real-world ocean data, or external APIs.
+
+## Progress checkpoint — 2026-11-08
+
+- Recovered the original 2026-11-01 local prototype archive and reran its checks: `node --check app.js` passed, `node --test tests/field.test.mjs` passed 5/5, and `python tests/smoke.py` passed Chromium desktop, mobile emulation and reduced-motion interactions. The browser again reported `gl: false`, so WebGL rendering remains unverified.
+- Extended the committed core-engine suite with four numerical/bounds checks; an initial assertion exposed JavaScript signed zero (-0 vs +0), which was corrected in the test without altering the simulation. Final suite: **9/9 passed locally**.
+- The prototype HTML/CSS/JS and Playwright smoke test are still in the local archive, **not committed** to GitHub. No claim of deployability or production readiness.
+- **Quality gate remains BLOCKED**: GitHub source integration, GPU shader, physical mobile performance and accessibility audits still pending. No public release or menu change.
+- **Publication estimate:** previously communicated 2026-11-08 to 2026-11-15. That window is **at risk**, not confirmed. Next decision checkpoint 2026-11-15; publication date to be reassessed after UI source is committed and critical browser tests can run. Do not promise a launch date without evidence.
