@@ -14,7 +14,11 @@ const chrome=spawn(process.env.CHROME_BIN||'google-chrome',[
  '--disable-extensions','--disable-background-networking','--no-first-run',
  '--remote-allow-origins=*','--remote-debugging-port=0',
  '--user-data-dir='+profile,'about:blank'
-],{stdio:'ignore'});
+],{stdio:['ignore','ignore','pipe']});
+let chromeStderr='';
+chrome.stderr?.on('data',chunk=>{chromeStderr=(chromeStderr+chunk.toString()).slice(-12000);});
+let chromeSpawnError;
+chrome.on('error',error=>{chromeSpawnError=error;});
 let socket,sequence=0;
 const pending=new Map(),errors=[],requests=[];
 function send(method,params={}){
@@ -31,10 +35,10 @@ async function evaluate(expression){
  if(result.exceptionDetails)throw new Error('Browser JS evaluation failed: '+result.exceptionDetails.text);
  return result.result?.value;
 }
-async function waitFor(check,label){
+async function waitFor(check,label,{fatal=()=>false}={}){
  let lastError;
- for(let i=0;i<100;i++){
-  try{if(await check())return;}catch(error){lastError=error;}
+ for(let i=0;i<200;i++){
+  try{if(await check())return;}catch(error){if(fatal(error))throw error;lastError=error;}
   await sleep(100);
  }
  throw new Error('Timed out waiting for '+label+(lastError?': '+lastError.message:''));
@@ -42,9 +46,10 @@ async function waitFor(check,label){
 async function main(){
  let debugPort;
  await waitFor(async()=>{
-  if(chrome.exitCode!==null)throw new Error('Chrome exited before CDP startup');
+  if(chromeSpawnError)throw chromeSpawnError;
+  if(chrome.exitCode!==null)throw new Error('Chrome exited before CDP startup (exit '+chrome.exitCode+')');
   try{debugPort=Number((await readFile(join(profile,'DevToolsActivePort'),'utf8')).split('\n')[0]);return Number.isInteger(debugPort)&&debugPort>0;}catch{return false;}
- },'Chrome debugging port');
+ },'Chrome debugging port',{fatal:()=>Boolean(chromeSpawnError)||chrome.exitCode!==null});
  const tabs=await (await fetch('http://127.0.0.1:'+debugPort+'/json/list')).json();
  const page=tabs.find(tab=>tab.type==='page');
  assert.ok(page?.webSocketDebuggerUrl,'Chrome page target missing');
@@ -130,7 +135,7 @@ async function main(){
  console.log('PASS interactions: input recovery, four mock roles, zero external HTTP requests');
 }
 try{await main();}
-catch(error){console.error(error);process.exitCode=1;}
+catch(error){console.error(error);if(chromeStderr)console.error('Chrome startup diagnostics (last 12KB):\n'+chromeStderr);process.exitCode=1;}
 finally{
  socket?.close();chrome.kill();
  await new Promise(resolve=>{if(chrome.exitCode!==null)return resolve();chrome.once('exit',resolve);setTimeout(resolve,2000).unref();});
