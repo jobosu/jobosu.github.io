@@ -45,3 +45,24 @@ test('malformed or non-finite price inputs fail closed',()=>{
   assert.throws(()=>backtest(p),RangeError);
  }
 });
+
+test('benchmark ledger is causal before a changed future bar',()=>{
+ const pivot=300,changed=[...base];
+ for(let i=pivot;i<changed.length;i++)changed[i]*=0.7;
+ const before=backtest(base),after=backtest(changed);
+ const prefix=pivot-DEFAULTS.splitIndex;
+ assert.deepEqual(before.benchmarkEquity.slice(0,prefix),after.benchmarkEquity.slice(0,prefix));
+});
+
+test('benchmark costs reduce returns across all synthetic regimes',()=>{
+ for(const scenario of ['regimes','trend','chop']){
+  for(const seed of [1,20261103,4294967295]){
+   const prices=syntheticPrices({scenario,seed});
+   const free=backtest(prices,{feeBps:0,slippageBps:0});
+   const costly=backtest(prices,{feeBps:10,slippageBps:5});
+   assert.ok(costly.metrics.benchmarkReturnPct<free.metrics.benchmarkReturnPct,
+    'Costs unexpectedly improved '+scenario+' / '+seed);
+   assert.ok(Number.isFinite(costly.metrics.endingEquity)&&costly.metrics.endingEquity>0);
+  }
+ }
+});
