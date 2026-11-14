@@ -1,5 +1,6 @@
 import {syntheticPrices,backtest,ENGINE_VERSION} from './engine.mjs';
-import {mockAdapters,runProtocol} from './orchestrator.mjs';
+import {mockAdapters,runProtocol,ROLES} from './orchestrator.mjs';
+import {adjudicateMockProposal} from './decision-gate.mjs';
 const $=id=>document.getElementById(id);
 const format=(v,d=2)=>new Intl.NumberFormat('ca-ES',{minimumFractionDigits:d,maximumFractionDigits:d}).format(v);
 const pct=v=>(v>0?'+':'')+format(v)+'%';
@@ -74,18 +75,37 @@ $('ei-audit-export').addEventListener('click',()=>{
 /* A click-to-run, explicitly fictional protocol demonstration. No API calls. */
 const mockRoleNames={researcher:'01 / RESEARCHER',quant:'02 / QUANT',skeptic:'03 / SKEPTIC',editor:'04 / EDITOR'};
 let lastMockProvenance=null;
+let lastMockSession=null;
+let lastMockDecision=null;
+const decisionRun=$('ei-decision-run');
+const decisionExport=$('ei-decision-export');
+const decisionOutcome=$('ei-decision-outcome');
+const decisionStatus=$('ei-decision-status');
+function clearDecision({disableRun=false}={}){
+ lastMockDecision=null;
+ decisionExport.disabled=true;
+ if(disableRun)decisionRun.disabled=true;
+ decisionOutcome.textContent='NO AVALUAT · CAP AUTORITZACIÓ';
+ decisionOutcome.removeAttribute('data-result');
+ $('ei-decision-limits').replaceChildren();
+ decisionStatus.textContent=disableRun?'Pendent del debat local; no hi ha cap decisió.':'Vots modificats o nova sessió: cal tornar a avaluar.';
+}
 const provenanceExport=$('ei-debate-export');
 $('ei-debate-run').addEventListener('click',async()=>{
  const button=$('ei-debate-run'),status=$('ei-debate-status'),list=$('ei-debate-transcript');
  button.disabled=true;
  provenanceExport.disabled=true;
  lastMockProvenance=null;
+ lastMockSession=null;
+ clearDecision({disableRun:true});
  status.textContent='Executant únicament adaptadors locals simulats...';
  try{
   const session=await runProtocol({adapters:mockAdapters(),mode:'mock'});
   if(session.mode!=='mock'||session.connectedProviders!==0||session.liveTrades!==0||session.transcript.some(m=>m.mock!==true)||session.provenance?.kind!=='MOCK_EVIDENCE_LEDGER'||session.provenance.entries.length!==session.transcript.length)throw new Error('Protocol de simulació no verificat');
   lastMockProvenance=session.provenance;
+  lastMockSession=session;
   provenanceExport.disabled=false;
+  decisionRun.disabled=false;
   list.replaceChildren();
   for(const message of session.transcript){
    const item=document.createElement('li'),heading=document.createElement('h4'),summary=document.createElement('p'),sources=document.createElement('small'),limits=document.createElement('small');
@@ -106,6 +126,41 @@ provenanceExport.addEventListener('click',()=>{
  const blob=new Blob([JSON.stringify(lastMockProvenance,null,2)],{type:'application/json'});
  const url=URL.createObjectURL(blob),link=document.createElement('a');
  link.href=url;link.download='jobosu-mock-provenance.json';
+ document.body.append(link);link.click();link.remove();
+ setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+
+/* Decision gate: manual fictional ballots only. Fail closed and never authorize publication or trading. */
+for(const role of ROLES)$('ei-vote-'+role).addEventListener('change',()=>clearDecision());
+decisionRun.addEventListener('click',()=>{
+ clearDecision();
+ try{
+  if(!lastMockSession||lastMockSession.mode!=='mock'||lastMockSession.connectedProviders!==0||lastMockSession.liveTrades!==0)throw new TypeError('Cal una sessió mock validada');
+  const ref=lastMockSession.provenance?.uniqueSourceRefs?.[0];
+  if(typeof ref!=='string'||!ref.startsWith('synthetic://'))throw new TypeError('Falta procedència sintètica validada');
+  const proposal={id:'MOCK-EMA-001',hypothesis:'Hipòtesi EMA fictícia per a una avaluació exclusivament sintètica.',sourceRefs:[ref],simulationOnly:true};
+  const ballots=ROLES.map(role=>({role,stance:$('ei-vote-'+role).value,reason:'Vot fictici seleccionat manualment, sense anàlisi de mercat.',sourceRefs:[ref]}));
+  const result=adjudicateMockProposal({session:lastMockSession,proposal,ballots});
+  if(result.simulatedOnly!==true||result.publicationAuthorized!==false||result.tradingAuthorized!==false||result.connectedProviders!==0||result.liveTrades!==0)throw new Error('La porta no garanteix el mode segur');
+  lastMockDecision=result;
+  decisionOutcome.dataset.result=result.status;
+  const labels={MOCK_VETOED:'VETO · HIPÒTESI BLOQUEJADA',MOCK_UNRESOLVED:'PENDENT · SENSE CONSENS',MOCK_RESEARCH_CANDIDATE:'CANDIDATA A RECERCA · NO VERIFICADA'};
+  decisionOutcome.textContent=labels[result.status]||'RESULTAT NO RECONEGUT';
+  if(!labels[result.status])throw new Error('Estat no reconegut');
+  decisionStatus.textContent='4 vots ficticis auditats · '+result.vetoRoles.length+' vetos · 0 APIs · 0 operacions · cap autorització.';
+  const limits=$('ei-decision-limits');
+  for(const note of result.limitations){const item=document.createElement('li');item.textContent=note;limits.append(item);}
+  decisionExport.disabled=false;
+ }catch(error){
+  clearDecision();
+  decisionStatus.textContent='Avaluació rebutjada: '+(error instanceof Error?error.message:'error desconegut');
+ }
+});
+decisionExport.addEventListener('click',()=>{
+ if(!lastMockDecision||lastMockDecision.simulatedOnly!==true||lastMockDecision.tradingAuthorized!==false||lastMockDecision.publicationAuthorized!==false)return;
+ const blob=new Blob([JSON.stringify(lastMockDecision,null,2)],{type:'application/json'});
+ const url=URL.createObjectURL(blob),link=document.createElement('a');
+ link.href=url;link.download='jobosu-mock-decision.json';
  document.body.append(link);link.click();link.remove();
  setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
