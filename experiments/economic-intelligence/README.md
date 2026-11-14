@@ -148,3 +148,13 @@ node --input-type=module -e "import {robustnessAudit} from './robustness.mjs'; c
 - **Interpretation boundary:** synthetic percentiles are neither confidence intervals nor real-market loss probabilities. No investment edge, predictive validity or real-world financial inference is implied.
 - **Release process:** this downside lens was developed and verified on `agent/economic-intelligence`. A separate clean release branch based on `master` is used for review; confirm the current PR, CI and deployment status independently before claiming publication. The original feature branch predates a squash merge, so comparing it directly with `master` misleadingly shows the entire old preview as added; a fresh release branch based on `master` is preferable for the next PR.
 - No providers, credentials, market feeds, paid APIs, brokerage connections or real-money operations have been enabled.
+
+
+## Checkpoint — 2026-11-14: mock decision gate UI
+
+- The **fail-closed adjudication engine** (PR #9) is integrated in `master`. It requires four ordered fictional ballots and a validated synthetic provenance ledger; veto blocks, abstention remains unresolved, unanimity is only a mock research candidate.
+- The dashboard now includes a responsive, keyboard-operable decision panel with explicit **manual fictional votes**, status announcements, and a JSON audit export gated on successful local validation.
+- Editing a ballot clears the previous result and disables export until the next evaluation. No result grants permission to publish research claims or perform transactions.
+- Node and Chromium checks exercise veto, abstention, research-only outcomes, stale-state invalidation, accessibility semantics and zero external HTTP requests. Full-page captures at 320, 375, 768 and 1280 px were inspected for obvious layout defects.
+- **No provider APIs, secrets, market feeds, billing, brokers or real trades**. The UI is a local simulation; it is not a real multi-model debate or evidence of investment performance.
+- Deployment verification is separate from code integration. Human screen-reader and device testing remain desirable before calling this accessibility-complete.
