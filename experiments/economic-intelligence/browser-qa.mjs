@@ -100,6 +100,23 @@ async function main(){
  await evaluate("document.getElementById('ei-debate-run').click()");
  await waitFor(async()=>await evaluate("document.querySelectorAll('#ei-debate-transcript li').length===4 && !document.getElementById('ei-debate-export').disabled"),'mock debate completion');
 
+ assert.equal(await evaluate("document.getElementById('ei-decision-run').disabled"),false,'Decision gate must unlock only after validated mock session');
+ await evaluate("document.getElementById('ei-decision-run').click()");
+ const veto=await evaluate("({status:document.getElementById('ei-decision-outcome').dataset.result,text:document.getElementById('ei-decision-outcome').textContent,exportDisabled:document.getElementById('ei-decision-export').disabled})");
+ assert.equal(veto.status,'MOCK_VETOED','Skeptic veto must block');
+ assert.match(veto.text,/BLOQUEJADA/);
+ assert.equal(veto.exportDisabled,false,'Validated mock result must be exportable');
+ await evaluate("document.getElementById('ei-vote-skeptic').value='SUPPORT';document.getElementById('ei-vote-skeptic').dispatchEvent(new Event('change'))");
+ assert.equal(await evaluate("document.getElementById('ei-decision-export').disabled"),true,'Changing a vote invalidates previous export');
+ await evaluate("document.getElementById('ei-decision-run').click()");
+ const candidate=await evaluate("({status:document.getElementById('ei-decision-outcome').dataset.result,text:document.getElementById('ei-decision-status').textContent})");
+ assert.equal(candidate.status,'MOCK_RESEARCH_CANDIDATE');
+ assert.match(candidate.text,/cap autorització/,'Research candidate must never authorize publication or trades');
+ await evaluate("document.getElementById('ei-vote-quant').value='ABSTAIN';document.getElementById('ei-vote-quant').dispatchEvent(new Event('change'));document.getElementById('ei-decision-run').click()");
+ assert.equal(await evaluate("document.getElementById('ei-decision-outcome').dataset.result"),'MOCK_UNRESOLVED','Abstention must remain unresolved');
+ console.log('PASS mock decision gate: skeptic veto, abstention, stale-result invalidation, research-only candidate');
+
+
  // A11Y release gate: inspect the actual accessibility tree and keyboard behavior.
  const ax=await send('Accessibility.getFullAXTree');
  const nodes=(ax.nodes||[]).filter(node=>!node.ignored);
