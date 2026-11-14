@@ -122,6 +122,27 @@ a:focus-visible{outline:2px solid #fff;outline-offset:4px}
 @media(max-width:900px){.ei-risk-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:440px){.ei-risk-grid{grid-template-columns:1fr}}
 </style>
+
+<style>
+/* Mock decision gate: local, accessible, explicitly non-operational. */
+.ei-decision{margin-top:22px;padding:clamp(18px,3vw,32px);border:1px solid #42645d;background:linear-gradient(145deg,#12272a,#0a171d);box-shadow:0 24px 60px #0004}
+.ei-decision h3{font-size:clamp(1.45rem,3vw,2.1rem);letter-spacing:-.04em;margin:10px 0}
+.ei-decision p{color:#b5cbd0;line-height:1.75;max-width:760px}
+.ei-vote-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:24px 0}
+.ei-vote-grid label{display:block;color:#d4e6e6;font:12px ui-monospace,monospace;margin-bottom:9px}
+.ei-vote-grid select{width:100%;min-width:0;min-height:44px;border:1px solid #5d807b;border-radius:3px;background:#091a20;color:#f0fcf8;font:16px system-ui,sans-serif;padding:8px}
+.ei-decision-actions{display:flex;gap:12px;flex-wrap:wrap}
+.ei-decision-actions button{min-height:44px;border:1px solid #79f2d3;padding:12px 16px;background:#79f2d3;color:#06231e;font:700 12px ui-monospace,monospace;cursor:pointer}
+.ei-decision-actions button+button{background:transparent;color:#b7eee0}
+.ei-decision-actions button:disabled{opacity:.5;cursor:not-allowed}
+.ei-decision :is(button,select):focus-visible{outline:2px solid #fff;outline-offset:3px}
+.ei-decision-outcome{margin-top:20px;padding:18px;border-left:3px solid #e1b47a;background:#091a20;font:700 14px/1.65 ui-monospace,monospace;color:#f5d6a6}
+.ei-decision-outcome[data-result="MOCK_RESEARCH_CANDIDATE"]{border-color:#79f2d3;color:#a9f5e1}
+.ei-decision-outcome[data-result="MOCK_VETOED"]{border-color:#e7a6a6;color:#ffd0d0}
+.ei-decision-limits{font-size:12px;color:#b5cbd0;line-height:1.6;padding-left:20px}
+@media(max-width:800px){.ei-vote-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:390px){.ei-vote-grid{grid-template-columns:1fr}.ei-decision-actions button{width:100%}}
+</style>
 </head><body><a class="ei-skip" href="#ei-main">Salta al contingut</a><main id="ei-main" tabindex="-1">
 <nav><a href="../../labs/">← JOBOSU // LAB</a><span>ECONOMIC INTELLIGENCE / EXPERIMENT</span></nav>
 <p class="eyebrow">RESEARCH SYSTEM / DEVELOPMENT TRACKER</p>
@@ -186,6 +207,24 @@ a:focus-visible{outline:2px solid #fff;outline-offset:4px}
   </div>
   <p id="ei-debate-status" role="status" aria-live="polite">Preparat · cap execució en aquesta sessió.</p>
   <ol id="ei-debate-transcript" class="ei-debate-transcript" aria-label="Transcripció simulada del protocol"></ol>
+</div>
+<div class="ei-decision" aria-labelledby="ei-decision-title">
+  <div class="ei-kicker">MOCK DECISION GATE / AUDITABLE VETO</div>
+  <h3 id="ei-decision-title">A decision you can challenge.</h3>
+  <p>Configura quatre <strong>vots ficticis</strong> sobre una hipòtesi inventada. Primer executa el debat local. Cap vot és d'una IA externa, cap font és de mercat i cap resultat autoritza publicar o operar.</p>
+  <div class="ei-vote-grid">
+    <div><label for="ei-vote-researcher">RESEARCHER · VOT FICTICI</label><select id="ei-vote-researcher"><option value="SUPPORT">Suport simulat</option><option value="ABSTAIN">Abstenció</option><option value="VETO">Veto</option></select></div>
+    <div><label for="ei-vote-quant">QUANT · VOT FICTICI</label><select id="ei-vote-quant"><option value="SUPPORT">Suport simulat</option><option value="ABSTAIN">Abstenció</option><option value="VETO">Veto</option></select></div>
+    <div><label for="ei-vote-skeptic">SKEPTIC · VOT FICTICI</label><select id="ei-vote-skeptic"><option value="VETO">Veto</option><option value="SUPPORT">Suport simulat</option><option value="ABSTAIN">Abstenció</option></select></div>
+    <div><label for="ei-vote-editor">EDITOR · VOT FICTICI</label><select id="ei-vote-editor"><option value="SUPPORT">Suport simulat</option><option value="ABSTAIN">Abstenció</option><option value="VETO">Veto</option></select></div>
+  </div>
+  <div class="ei-decision-actions">
+    <button type="button" id="ei-decision-run" disabled>AVALUAR VOTS FICTICIS</button>
+    <button type="button" id="ei-decision-export" disabled>EXPORTAR DECISIÓ MOCK JSON</button>
+  </div>
+  <p id="ei-decision-status" role="status" aria-live="polite">Pendent del debat local; no hi ha cap decisió.</p>
+  <div id="ei-decision-outcome" class="ei-decision-outcome" role="status" aria-live="polite">NO AVALUAT · CAP AUTORITZACIÓ</div>
+  <ul id="ei-decision-limits" class="ei-decision-limits"><li>Mode simulació · 0 APIs · 0 operacions · cap evidència financera real.</li></ul>
 </div>
 </section>
 
