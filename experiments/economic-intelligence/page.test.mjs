@@ -11,7 +11,7 @@ test('menu links to the research tracker and the module exists',()=>{
  assert.match(page,/<script type="module" src="\.\/dashboard\.mjs"><\/script>/);
 });
 test('every dashboard and audit element has a unique HTML id',()=>{
- const ids=['ei-chart','ei-scenario','ei-seed','ei-run','ei-run-status','ei-strategy','ei-benchmark','ei-drawdown','ei-trades','ei-fees','ei-robustness-body','ei-audit-status','ei-audit-export','ei-debate-run','ei-debate-export','ei-debate-status','ei-debate-transcript','ei-risk-underperform','ei-risk-p10','ei-risk-p90','ei-risk-drawdown','ei-vote-researcher','ei-vote-quant','ei-vote-skeptic','ei-vote-editor','ei-decision-run','ei-decision-export','ei-decision-status','ei-decision-outcome','ei-decision-limits'];
+ const ids=['ei-chart','ei-scenario','ei-seed','ei-run','ei-run-status','ei-strategy','ei-benchmark','ei-drawdown','ei-trades','ei-fees','ei-robustness-body','ei-audit-status','ei-audit-export','ei-debate-run','ei-debate-export','ei-debate-status','ei-debate-transcript','ei-risk-underperform','ei-risk-p10','ei-risk-p90','ei-risk-drawdown','ei-decision-run','ei-decision-export','ei-decision-status','ei-decision-outcome','ei-decision-limits'];
  for(const id of ids){
   const occurrences=page.match(new RegExp('id="'+id+'"','g'))||[];
   assert.equal(occurrences.length,1,'missing or duplicate '+id);
@@ -87,6 +87,7 @@ test('decision gate is mock-only, keyboard accessible and requires a completed d
  for(const role of ['researcher','quant','skeptic','editor']){
   assert.match(page,new RegExp('label for="ei-vote-'+role+'"'));
   assert.match(page,new RegExp('select id="ei-vote-'+role+'"'));
+  assert.match(dashboard,/\$\('ei-vote-'\+role\)/);
  }
  assert.match(page,/id="ei-decision-status" role="status" aria-live="polite"/);
  assert.match(dashboard,/adjudicateMockProposal\(\{session:lastMockSession,proposal,ballots\}\)/);
