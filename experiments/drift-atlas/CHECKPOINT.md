@@ -24,6 +24,7 @@ A generative, fictional ocean-current observatory showing how an invisible vecto
 - Screenshots inspected locally; initial active field and desktop/mobile layouts rendered. Chromium navigation to localhost/file was blocked by sandbox policy, so the smoke runner used `page.set_content` with CSS/JS and field source inlined. This verifies UI behavior but **does not verify ES module loading over HTTP or deployment**.
 - Chromium reported WebGL unavailable; this implementation does not depend on WebGL.
 - New UI source was committed and re-read from GitHub; no GitHub Actions CI result or physical-device test is claimed.
+- Added a Canvas2D-unavailable fallback and ResizeObserver fallback. Forced-null Canvas2D test displayed a readable error message with no JavaScript exceptions in local Chromium.
 
 ## Remaining release blockers
 
