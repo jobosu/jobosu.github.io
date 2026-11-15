@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ca">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#071c28">
+  <meta name="description" content="DRIFT ATLAS — un observatori oceànic generatiu amb corrents i trajectòries sintètiques.">
+  <title>DRIFT ATLAS / JOBOSU LAB A002</title>
+  <link rel="stylesheet" href="./style.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <a class="skip" href="#observatory">Salta a l'observatori</a>
+  <div class="shell">
+    <header class="topbar">
+      <a class="brand" href="../../labs/" aria-label="Torna a JOBOSU LABS"><span class="brand-mark">J<span class="brand-dot">•</span></span><span>JOBOSU <em>/</em> LABS</span></a>
+      <div class="top-meta"><span class="live-dot" aria-hidden="true"></span> GENERATIVE FIELD STUDY <span class="meta-divider">/</span> A002 — 2026</div>
+      <a class="back" href="../../labs/">← LABS INDEX</a>
+    </header>
+    <main id="observatory">
+      <section class="intro" aria-labelledby="hero-title">
+        <div class="eyebrow"><span class="serial">FIELD NOTE / 002</span><span class="line"></span><span>SYNTHETIC OCEANOGRAPHY</span></div>
+        <h1 id="hero-title">DRIFT <span>ATLAS<span class="period">.</span></span></h1>
+        <div class="intro-foot"><p>Una cartografia d'allò invisible. Modifica els corrents, traça una travessia i observa com el mar reescriu el camí.</p><span class="coordinates">00° 00′ N<br>000° 00′ E<br><i>IMAGINARY SEA</i></span></div>
+      </section>
+      <section class="workbench" aria-label="Observatori interactiu">
+        <div class="chart" id="chart-wrap">
+          <canvas id="sea" role="img" aria-label="Camp de corrents marins ficticis amb ruta prevista i trajectòria simulada"></canvas>
+          <div class="chart-top"><div class="chart-identity"><span class="chart-index">FIG. 01 — FLOW FIELD</span><strong>THE UNSEEN CURRENT</strong></div><span class="chart-badge" id="status">● LIVE FIELD</span></div>
+          <div class="chart-bottom"><div class="legend"><span><i class="legend-intended"></i> INTENDED</span><span><i class="legend-drift"></i> DRIFTED</span><span><i class="legend-current"></i> CURRENT</span></div><span class="chart-scale">SYNTHETIC SPACE / NOT TO SCALE</span></div>
+          <div class="chart-cross" aria-hidden="true">+</div>
+        </div>
+        <aside class="panel" aria-label="Controls de l'observatori">
+          <div class="panel-head"><span>CONTROL DECK</span><span>01 / 03</span></div>
+          <div class="panel-title">Shape the<br><em>invisible.</em></div>
+          <p class="panel-intro">Cada canvi transforma el camp vectorial i la deriva calculada. Les dades són completament fictícies.</p>
+          <div class="control"><label for="energy"><span>CURRENT ENERGY</span><output id="energy-val" for="energy">65%</output></label><input type="range" id="energy" min="0" max="100" step="1" value="65"><div class="range-ends"><span>CALM</span><span>STORM</span></div></div>
+          <div class="control"><label for="bearing"><span>FIELD ROTATION</span><output id="bearing-val" for="bearing">0°</output></label><input type="range" id="bearing" min="-180" max="180" step="1" value="0"><div class="range-ends"><span>−180°</span><span>+180°</span></div></div>
+          <div class="actions"><button id="pause" type="button" aria-pressed="false">Ⅱ <span>PAUSE FIELD</span></button><button id="reset" type="button">↺ <span>RESET</span></button></div>
+          <div class="route-head"><span>PASSAGE SIMULATOR</span><span>02 / 03</span></div>
+          <p class="route-help" id="route-help">Toca dos punts del mapa per definir sortida i arribada. Arrossega els marcadors per ajustar-los.</p>
+          <button class="route-mode" id="plot" type="button" aria-pressed="false">+ PLOT NEW PASSAGE</button>
+          <div class="metrics" aria-live="off"><div><span>DISTANCE</span><strong id="distance">—</strong><small>synthetic nm</small></div><div><span>DRIFT</span><strong id="drift">—</strong><small>synthetic nm</small></div><div><span>PASSAGE</span><strong id="duration">—</strong><small>synthetic hours</small></div></div>
+          <div class="panel-footer"><span>MODEL / DETERMINISTIC VECTOR FIELD</span><span>NO EXTERNAL DATA</span></div>
+        </aside>
+      </section>
+      <section class="footnotes"><div><span class="foot-num">01 / EXPERIMENT</span><h2>Maps are stories<br>about motion.</h2></div><div><p>La ruta blanca representa el rumb previst. La línia corall mostra la trajectòria integrada en un camp de corrents artificials. Fes servir les fletxes del teclat per moure l'arribada; amb Majúscules, mou la sortida.</p><p class="disclaimer"><strong>AVÍS IMPORTANT</strong> — Aquest experiment és art generatiu i simulació matemàtica. No utilitza dades geogràfiques ni meteorològiques reals. No serveix per navegar ni per prendre decisions de seguretat.</p></div></section>
+    </main>
+    <footer class="site-footer"><span>© JOBOSU // LAB</span><span>THE EXPLANATION IS THE DEMONSTRATION</span><a href="../../labs/">RETURN TO LABS ↗</a></footer>
+  </div>
+  <div class="sr-only" id="announcement" role="status" aria-live="polite"></div>
+</body>
+</html>
