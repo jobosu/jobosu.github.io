@@ -26,3 +26,9 @@ Autonomous experimentation framework initialized. No autonomous experiment has r
 - Added 4 committed core-engine test cases to feature branch; corrected signed-zero assertion; final **9/9 tests passed locally**.
 - Updated feature-branch CHECKPOINT.md; UI source remains uncommitted and no production/menu changes were made.
 - Previous 8–15 November publication estimate is at risk; next decision checkpoint 15 November, with date reassessment after integration and GPU/mobile/accessibility validation.
+
+## A002 — review 2026-11-15
+- Committed the full responsive UI (`index.html`, `style.css`, `app.js`) and reproducible Chromium smoke script (`tests/smoke.py`) to `agent/experiment-002-drift-atlas` (draft PR #5). Existing `field.mjs` is now imported by the UI. No public menu or production changes.
+- Rebuilt and tested local source-equivalent version: `node --check app.js` PASS; `node --test tests/field.test.mjs` **9/9 PASS**; Chromium desktop 1440×900, mobile-emulated 390×844, reduced-motion 900×700 PASS for interactive controls, route plotting, zero drift, keyboard arrows, no page errors/overflow. Inspected active desktop and mobile screenshots.
+- Browser policy blocked localhost/file navigation; Playwright used inline CSS/JS/field source via `set_content`. Native HTTP module loading and exact deployed GitHub source were NOT tested. Physical mobile touch/performance and full accessibility remain unverified. Canvas2D is the intentional renderer; no WebGL validation claimed.
+- **Quality gate BLOCKED / NO PUBLICATION.** The prior 8–15 November target was missed. Next checkpoint **22 November**; tentative release **22–29 November** only if all critical checks can be completed. Otherwise revise target, never bypass the gate.
