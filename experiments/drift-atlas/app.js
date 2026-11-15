@@ -1,6 +1,13 @@
 import {flowAt, integratePassage, clamp} from './field.mjs';
 const $ = id => document.getElementById(id);
 const canvas = $('sea'), wrap = $('chart-wrap'), ctx = canvas.getContext('2d', {alpha:false});
+if (!ctx) {
+  const note = document.createElement('p');
+  note.className = 'canvas-error';
+  note.textContent = 'El navegador no permet dibuixar el camp. Prova una versió actualitzada.';
+  wrap.append(note);
+  $('status').textContent = '○ RENDER UNAVAILABLE';
+} else {
 const energy = $('energy'), bearing = $('bearing'), status = $('status'), pause = $('pause'), plot = $('plot');
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 const state = { energy:.65, bearing:0, time:0, paused:reduced.matches, start:{x:.22,y:.68}, end:{x:.78,y:.32}, plotting:0, dragging:null, pointer:null, particles:[], width:0, height:0, raf:0, last:0 };
@@ -30,5 +37,9 @@ function release(){state.dragging=null;state.pointer=null}canvas.addEventListene
 canvas.tabIndex=0;canvas.setAttribute('aria-keyshortcuts','ArrowUp ArrowDown ArrowLeft ArrowRight Shift+ArrowUp Shift+ArrowDown Shift+ArrowLeft Shift+ArrowRight');
 canvas.addEventListener('keydown',e=>{const delta={ArrowUp:[0,-.01],ArrowDown:[0,.01],ArrowLeft:[-.01,0],ArrowRight:[.01,0]}[e.key];if(!delta)return;e.preventDefault();const key=e.shiftKey?'start':'end';const p=state[key];state[key]={x:clamp(p.x+delta[0],.035,.965),y:clamp(p.y+delta[1],.07,.93)};draw();announce((key==='start'?'Sortida':'Arribada')+' ajustada')});
 if(reduced.matches)syncPause();reduced.addEventListener('change',e=>{state.paused=e.matches;syncPause()});
-new ResizeObserver(resize).observe(wrap);sync();resize();state.raf=requestAnimationFrame(tick);
+if (typeof ResizeObserver !== 'undefined') new ResizeObserver(resize).observe(wrap);
+else window.addEventListener('resize',resize);
+sync();resize();state.raf=requestAnimationFrame(tick);
 document.addEventListener('visibilitychange',()=>{state.last=0});
+
+}
