@@ -47,4 +47,15 @@ with sync_playwright() as p:
         assert not errors, (name, errors)
         print(name, "PASS (emulated browser; not physical device)")
         context.close()
+    # Force Canvas2D failure to verify graceful error state.
+    context = browser.new_context()
+    page = context.new_page()
+    errors = []
+    page.on("pageerror", lambda error: errors.append(str(error)))
+    broken = html.replace("<script>" + js + "</script>", "<script>HTMLCanvasElement.prototype.getContext=()=>null;</script><script>" + js + "</script>")
+    page.set_content(broken, wait_until="load")
+    assert page.locator(".canvas-error").is_visible()
+    assert not errors
+    print("Canvas2D-unavailable fallback PASS")
+    context.close()
     browser.close()
