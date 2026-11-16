@@ -146,6 +146,42 @@ async function main(){
  for(const item of contrast)assert.ok(item.ratio>=4.5,'WCAG AA contrast under 4.5:1 for '+item.selector+' ('+item.ratio.toFixed(2)+')');
  console.log('PASS accessibility: named controls/chart in Chrome AX tree, Catalan labels, keyboard Tab, chart summary, six contrast spot-checks');
 
+
+ // Decision Atlas release gate: real module loading, responsive layout, filters and keyboard.
+ for(const width of [320,375,768,1280]){
+  await send('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:false});
+  await send('Page.navigate',{url:new URL('decision-atlas.html',base).href});
+  await waitFor(async()=>await evaluate("document.getElementById('atlas-status')?.textContent.includes('combinacions fictícies visibles')"),'decision atlas at '+width+'px');
+  const state=await evaluate("(()=>({width:innerWidth,pageWidth:document.documentElement.scrollWidth,veto:document.getElementById('count-veto').textContent,pending:document.getElementById('count-unresolved').textContent,candidate:document.getElementById('count-candidate').textContent,cells:document.querySelectorAll('.cell').length,exportDisabled:document.getElementById('atlas-export').disabled,matrixScroll:document.querySelector('.matrix-scroll').scrollWidth>document.querySelector('.matrix-scroll').clientWidth}))()");
+  assert.equal(state.width,width,'Atlas viewport mismatch');
+  assert.ok(state.pageWidth<=width+1,'Atlas horizontal overflow at '+width+'px: '+JSON.stringify(state));
+  assert.deepEqual([state.veto,state.pending,state.candidate],['65','15','1'],'Atlas counts mismatch');
+  assert.equal(state.cells,81,'Atlas must render every fictional case');
+  assert.equal(state.exportDisabled,false,'Export must unlock only after validated local audit');
+  if(width<=375)assert.equal(state.matrixScroll,true,'Narrow Atlas matrix must scroll within its own region');
+  const layout=await send('Page.getLayoutMetrics');
+  const height=Math.min(10000,Math.ceil(layout.cssContentSize.height));
+  const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:true,clip:{x:0,y:0,width,height,scale:1}});
+  const bytes=Buffer.from(shot.data,'base64');
+  assert.equal(bytes.readUInt32BE(16),width,'Atlas screenshot width mismatch');
+  await writeFile(join(screenshots,'decision-atlas-'+width+'-full.png'),bytes);
+  console.log('PASS Decision Atlas '+width+'px: 81 cases, validated mock flags, no page overflow');
+ }
+ await evaluate("document.querySelector('[data-filter=\"MOCK_RESEARCH_CANDIDATE\"]').click()");
+ const candidateAtlas=await evaluate("({visible:document.querySelectorAll('.cell:not([hidden])').length,verdict:document.getElementById('case-verdict').textContent,votes:document.querySelectorAll('#case-votes li').length})");
+ assert.equal(candidateAtlas.visible,1,'Candidate filter must expose exactly one fictional case');
+ assert.match(candidateAtlas.verdict,/CANDIDATA FICTÍCIA/);
+ assert.equal(candidateAtlas.votes,4,'Inspector must show four mock roles');
+ await evaluate("document.querySelector('[data-filter=\"MOCK_UNRESOLVED\"]').click()");
+ assert.equal(await evaluate("document.querySelectorAll('.cell:not([hidden])').length"),15,'Unresolved filter mismatch');
+ await evaluate("document.querySelector('[data-filter=\"MOCK_VETOED\"]').click()");
+ assert.equal(await evaluate("document.querySelectorAll('.cell:not([hidden])').length"),65,'Veto filter mismatch');
+ await evaluate("document.querySelector('[data-filter=\"all\"]').click();document.querySelector('.cell').click();document.querySelector('.cell').dispatchEvent(new KeyboardEvent('keydown',{key:'ArrowRight',bubbles:true}))");
+ assert.match(await evaluate("document.getElementById('case-id').textContent"),/CASE 02 \/ 81/,'Arrow-key navigation failed');
+ const atlasAx=await send('Accessibility.getFullAXTree');
+ assert.ok((atlasAx.nodes||[]).some(node=>node.role?.value==='button'&&(node.name?.value||'').includes('Cas 1:')),'Atlas cell lacks an accessible name');
+ console.log('PASS Decision Atlas interactions: filters, four-role inspector, keyboard navigation and accessibility tree');
+
  assert.deepEqual(errors,[],'Uncaught JavaScript errors');
  const external=requests.filter(url=>/^https?:/i.test(url)&&!url.startsWith(new URL(base).origin+'/'));
  assert.deepEqual(external,[],'Unexpected non-local network requests');
