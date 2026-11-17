@@ -31,6 +31,11 @@ test('unanimous fictional support is sensitive to all eight changes',async()=>{
  assert.equal(report.status,'MOCK_RESEARCH_CANDIDATE');
  assert.equal(report.pivotalFlips,8);
 });
+test('one abstention with three supports has five pivotal rule changes',async()=>{
+ const audit=await makeAudit();
+ const index=audit.outcomes.findIndex(o=>o.stances[0]==='ABSTAIN'&&o.stances.slice(1).every(s=>s==='SUPPORT'));
+ assert.equal(inspectDecisionSensitivity(audit,index).pivotalFlips,5);
+});
 test('four fictional vetos have zero pivotal single-vote changes',async()=>{
  const audit=await makeAudit();
  const index=audit.outcomes.findIndex(o=>o.stances.every(s=>s==='VETO'));
