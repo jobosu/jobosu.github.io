@@ -32,3 +32,14 @@ test('accessible filter, keyboard controls, inspector and guarded JSON export',(
  assert.match(script,/document\.createElement\('button'\)/);
  assert.match(page,/@media\(prefers-reduced-motion:reduce\)/);
 });
+
+test('premium what-if panel is guarded, accessible and entirely local',()=>{
+ assert.match(page,/id="case-sensitivity-summary"[^>]*role="status" aria-live="polite"/);
+ assert.match(page,/id="case-sensitivity"[^>]*aria-label=/);
+ assert.match(page,/Vuit alternatives fictícies/);
+ assert.match(script,/inspectDecisionSensitivity\(audit,index\)/);
+ assert.match(script,/sensitivity\.publicationAuthorized!==false\|\|sensitivity\.tradingAuthorized!==false/);
+ assert.match(script,/sensitivityList\.replaceChildren\(\)/);
+ assert.match(script,/change\.textContent=/);
+ assert.doesNotMatch(script,/fetch\s*\(|XMLHttpRequest|WebSocket|\.innerHTML\s*=/);
+});
