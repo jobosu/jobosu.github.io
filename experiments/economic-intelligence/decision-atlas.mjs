@@ -1,5 +1,6 @@
 /** Decision Atlas: visualizes only locally generated, fully synthetic counterfactual votes. */
 import {auditMockDecisionSpace,DECISION_SPACE_SCHEMA} from './decision-space.mjs';
+import {inspectDecisionSensitivity,SENSITIVITY_SCHEMA} from './decision-sensitivity.mjs';
 import {runProtocol,mockAdapters} from './orchestrator.mjs';
 
 const $=id=>document.getElementById(id);
@@ -49,6 +50,19 @@ function selectCase(index,{focus=false}={}){
   'Un o més vetos bloquegen la hipòtesi. Cap vot representa una revisió d’IA real.':
   outcome.status==='MOCK_UNRESOLVED'?'Sense veto, però almenys una abstenció impedeix la unanimitat.':
   'Quatre suports ficticis: només una candidata de recerca, sense evidència ni autorització.';
+ const sensitivity=inspectDecisionSensitivity(audit,index);
+ if(sensitivity.schema!==SENSITIVITY_SCHEMA||sensitivity.mode!=='mock'||sensitivity.simulatedOnly!==true||
+    sensitivity.connectedProviders!==0||sensitivity.liveTrades!==0||
+    sensitivity.publicationAuthorized!==false||sensitivity.tradingAuthorized!==false)throw new Error('Sensibilitat no validada');
+ const sensitivityList=$('case-sensitivity');sensitivityList.replaceChildren();
+ for(const flip of sensitivity.flips){
+  const li=document.createElement('li'),change=document.createElement('span'),result=document.createElement('strong');
+  change.textContent=flip.role.toUpperCase()+' · '+stanceLabels[flip.from]+' → '+stanceLabels[flip.to];
+  result.textContent=flip.changesOutcome?'CANVIA · '+(flip.status==='MOCK_VETOED'?'VETO':flip.status==='MOCK_UNRESOLVED'?'PENDENT':'CANDIDATA'):'SENSE CANVI';
+  result.dataset.pivotal=String(flip.changesOutcome);
+  li.append(change,result);sensitivityList.append(li);
+ }
+ $('case-sensitivity-summary').textContent=sensitivity.pivotalFlips+' de 8 canvis d’un únic vot alteren el resultat d’aquest cas fictici.';
  if(focus)cells[index].focus();
 }
 function applyFilter(next){
@@ -107,7 +121,8 @@ try{
  draw();
 }catch(error){
  audit=null;selected=-1;cells.length=0;
- $('decision-matrix').replaceChildren();$('case-votes').replaceChildren();
+ $('decision-matrix').replaceChildren();$('case-votes').replaceChildren();$('case-sensitivity').replaceChildren();
+ $('case-sensitivity-summary').textContent='No disponible: auditoria sintètica rebutjada.';
  $('case-verdict').textContent='NO DISPONIBLE';
  $('case-explanation').textContent='La validació ha fallat; cap resultat s’ha presentat com a fiable.';
  $('atlas-export').disabled=true;
