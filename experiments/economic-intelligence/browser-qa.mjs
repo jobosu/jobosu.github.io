@@ -178,7 +178,7 @@ async function main(){
  assert.match(candidateSensitivity.summary,/8 de 8/);
  await evaluate("document.querySelector('[data-filter=\"MOCK_UNRESOLVED\"]').click()");
  assert.equal(await evaluate("document.querySelectorAll('.cell:not([hidden])').length"),15,'Unresolved filter mismatch');
- assert.match(await evaluate("document.getElementById('case-sensitivity-summary').textContent"),/2 de 8/,'One fictional abstention should have two pivotal flips');
+ assert.match(await evaluate("document.getElementById('case-sensitivity-summary').textContent"),/5 de 8/,'One fictional abstention with three supports should have five pivotal flips');
  await evaluate("document.querySelector('[data-filter=\"MOCK_VETOED\"]').click()");
  assert.equal(await evaluate("document.querySelectorAll('.cell:not([hidden])').length"),65,'Veto filter mismatch');
  assert.match(await evaluate("document.getElementById('case-sensitivity-summary').textContent"),/2 de 8/,'One fictional veto should have two pivotal flips');
